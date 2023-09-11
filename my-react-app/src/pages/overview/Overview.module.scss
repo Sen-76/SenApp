@@ -1,0 +1,94 @@
+.overview {
+  padding: 10px;
+  .wrapProcessManage {
+    display: flex;
+    flex-wrap: wrap;
+    .processManage {
+      width: calc((100% - 80px) / 4);
+      gap: 5px;
+      min-width: 200px;
+      height: 100px;
+      display: flex;
+      align-items: center;
+      flex-direction: column;
+      margin: 10px;
+      padding: 20px;
+      box-shadow: rgba(0, 0, 0, 0.16) 0px 10px 36px 0px, rgba(0, 0, 0, 0.06) 0px 0px 0px 1px;
+      border-radius: 8px;
+      .processInfo {
+        display: flex;
+        justify-content: space-between;
+        width: 100%;
+      }
+    }
+  }
+  .contentOverview {
+    display: flex;
+    justify-content: space-between;
+    margin: 10px;
+    .right {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+      width: calc((100% - 80px) / 4);
+      .callendar {
+        box-shadow: rgba(0, 0, 0, 0.16) 0px 10px 36px 0px, rgba(0, 0, 0, 0.06) 0px 0px 0px 1px;
+        .callenderHeader {
+          font-weight: 600;
+          padding: 12px 20px;
+          display: flex;
+          justify-content: space-between;
+        }
+      }
+      .todoList {
+        box-shadow: rgba(0, 0, 0, 0.16) 0px 10px 36px 0px, rgba(0, 0, 0, 0.06) 0px 0px 0px 1px;
+        background-color: #ffffff;
+        border-radius: 8px;
+        :global {
+          .ant-list-header {
+            padding: 0 !important;
+          }
+        }
+        .todoHeader {
+          padding: 12px 20px;
+          font-weight: 600;
+          display: flex;
+          justify-content: space-between;
+        }
+      }
+      .timeLine {
+        box-shadow: rgba(0, 0, 0, 0.16) 0px 10px 36px 0px, rgba(0, 0, 0, 0.06) 0px 0px 0px 1px;
+        background-color: #ffffff;
+        border-radius: 8px;
+        .timeLineHeader {
+          padding: 12px 20px;
+          font-weight: 600;
+          border-bottom: 1px solid rgba(5, 5, 5, 0.06);
+          display: flex;
+          justify-content: space-between;
+        }
+        .timeContent {
+          padding: 25px;
+        }
+      }
+    }
+    .left {
+      width: 75%;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px 13px;
+      .draft {
+        box-shadow: rgba(0, 0, 0, 0.16) 0px 10px 36px 0px, rgba(0, 0, 0, 0.06) 0px 0px 0px 1px;
+        border-radius: 8px;
+        width: 100%;
+        min-height: 220px;
+      }
+      .draftHalf {
+        box-shadow: rgba(0, 0, 0, 0.16) 0px 10px 36px 0px, rgba(0, 0, 0, 0.06) 0px 0px 0px 1px;
+        border-radius: 8px;
+        width: 49.5%;
+        min-height: 220px;
+      }
+    }
+  }
+}

@@ -1,0 +1,45 @@
+.navItem {
+  width: 8.125rem;
+  white-space: normal;
+  line-height: 1.1;
+  word-break: break-word;
+}
+.leftNav {
+  height: 100%;
+  background-color: #ffffff;
+  color: #222222;
+  font-size: 16px;
+  font-weight: 600;
+  padding: 10px;
+  padding-top: 64px;
+  :global {
+    li,
+    .ant-menu-submenu-title {
+      min-height: 60px;
+      span {
+        color: #3b3737 !important;
+        .anticon {
+          svg {
+            width: 16px;
+            height: 16px;
+          }
+        }
+        .ant-menu-title-content {
+          font-size: 16px;
+          overflow: hidden;
+        }
+      }
+      .ant-menu-submenu-arrow {
+        color: #3b3737 !important;
+      }
+      &.ant-menu-item-selected {
+        background-color: rgba(188, 216, 111, 0.386);
+      }
+    }
+    .ant-menu-sub {
+      li {
+        padding-right: 24px;
+      }
+    }
+  }
+}

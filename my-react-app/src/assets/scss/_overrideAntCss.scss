@@ -1,0 +1,18 @@
+:global {
+  .ant-picker {
+    width: 100%;
+  }
+  .ant-collapse-header {
+    border-radius: 0 !important;
+    border-bottom: 1px solid rgba(97, 84, 99, 0.404);
+    padding-bottom: 8px !important;
+  }
+  .ant-collapse-content-box {
+    padding-left: 10px !important;
+    padding-right: 10px !important;
+    background-color: rgba(214, 200, 184, 0.274);
+  }
+  .ant-form-item-label {
+    font-weight: 600 !important;
+  }
+}

@@ -1,0 +1,50 @@
+.drawer {
+  position: relative;
+  .btmDrawer {
+    width: 100%;
+    border-top: 1px solid rgba(163, 155, 155, 0.377);
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    padding: 10px 20px;
+    background-color: #fff;
+    z-index: 100;
+    button {
+      min-width: 80px;
+    }
+    button + button {
+      margin-left: 10px;
+    }
+  }
+  .form {
+    margin-bottom: 150px;
+  }
+  //   .workItem {
+  //     padding-bottom: 10px;
+  //   }
+  //   .workItem + .workItem {
+  //     border-top: 1px solid rgba(247, 2, 2, 0.377);
+  //     padding-top: 10px;
+  //   }
+}
+:global {
+  .ant-picker {
+    width: 100%;
+  }
+  .ant-collapse-header {
+    border-radius: 0 !important;
+    border-bottom: 1px solid rgba(97, 84, 99, 0.404);
+    padding-bottom: 8px !important;
+  }
+  .ant-collapse-content-box {
+    padding-left: 10px !important;
+    padding-right: 10px !important;
+    background-color: rgba(214, 200, 184, 0.274);
+  }
+  .ant-form-item-label {
+    label {
+      font-size: 14px !important;
+      font-weight: 500;
+    }
+  }
+}

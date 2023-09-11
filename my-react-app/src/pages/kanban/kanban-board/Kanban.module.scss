@@ -1,0 +1,37 @@
+.wrap {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  width: 80%;
+  height: 80vh;
+  gap: 8px;
+  .column {
+    display: flex;
+    flex-direction: column;
+    background-color: #dddddd8f;
+    padding: 10px;
+    .list {
+      border-radius: 12px;
+      padding: 16;
+      display: flex;
+      flex-direction: column;
+      gap: 7px;
+      flex-grow: 1;
+      margin-top: 8px;
+      .item {
+        background-color: #ffffff;
+        border-radius: 6px;
+        padding: 4px 8px;
+        transition: background-color 0.8s ease-out;
+        margin-top: 8;
+      }
+    }
+    .create {
+      background-color: #ffffff;
+      border-radius: 6px;
+      padding: 4px 8px;
+      transition: background-color 0.8s ease-out;
+      margin-top: 8;
+      cursor: pointer;
+    }
+  }
+}
