@@ -1,6 +1,6 @@
 import { Menu, MenuProps } from 'antd';
 import React, { useState, useEffect } from 'react';
-import { BarsOutlined, ArrowRightOutlined, BulbOutlined, HddOutlined } from '@ant-design/icons';
+import { BarsOutlined, ArrowRightOutlined, BulbOutlined, HddOutlined, SettingOutlined } from '@ant-design/icons';
 import styles from './LeftNav.module.scss';
 import { useNavigate, useLocation } from 'react-router';
 
@@ -62,6 +62,19 @@ const items: CustomMenuItem[] = [
     path: '/kanban',
     icon: renderIcon(HddOutlined),
     key: 'kanban'
+  },
+  {
+    label: 'Configuration',
+    icon: renderIcon(SettingOutlined),
+    key: 'configuration',
+    children: [
+      {
+        label: 'Account Configuration',
+        path: '/configuration/account-configuration',
+        icon: renderIcon(ArrowRightOutlined),
+        key: 'account-configuration'
+      }
+    ]
   }
 ];
 

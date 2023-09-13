@@ -2,6 +2,7 @@ import { Avatar, Divider, Dropdown, MenuProps } from 'antd';
 import { ImportOutlined, UserOutlined } from '@ant-design/icons';
 import styles from './UserAvatar.module.scss';
 import React from 'react';
+import { Link } from 'react-router-dom';
 
 const draftUser = {
   photoUrl: 'https://top10tphcm.com/wp-content/uploads/2023/02/hinh-anh-meo.jpeg',
@@ -24,12 +25,21 @@ function UserAvatar() {
     const items: MenuProps['items'] = [
       {
         label: (
+          <Link to="/user/profile" className={styles.avatarDropdownItem}>
+            <UserOutlined />
+            <div className="dropdown-item-text">Profile</div>
+          </Link>
+        ),
+        key: '1'
+      },
+      {
+        label: (
           <div onClick={loginOut} className={styles.avatarDropdownItem}>
             <ImportOutlined />
             <div className="dropdown-item-text">Sign out</div>
           </div>
         ),
-        key: '1'
+        key: '2'
       }
     ];
     //   if (currentRoleList.length > 1 && location.pathname !== '/selectrole') {
@@ -74,7 +84,7 @@ function UserAvatar() {
           </div>
         )}
       >
-        <Avatar size={40} src={draftUser.photoUrl}>
+        <Avatar size={40} src={draftUser.photoUrl} style={{ cursor: 'pointer' }}>
           {draftUser.userName.split('')[0]}
         </Avatar>
       </Dropdown>
