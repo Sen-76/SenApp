@@ -1,9 +1,7 @@
 import { CloseOutlined } from '@ant-design/icons';
-import { Button, DatePicker, Drawer, Form, Input, Select } from 'antd';
+import { Button, Drawer, Form, Input, InputNumber, Select } from 'antd';
 import { forwardRef, useImperativeHandle, useState } from 'react';
-import styles from '../AccountConfiguration.module.scss';
-import dayjs from 'dayjs';
-import { GenderOptions, DepartmentOptions, RoleOptions } from '../AccountConfiguration.Model';
+import styles from '../FileConfiguration.module.scss';
 import { useTranslation } from 'react-i18next';
 
 interface IProps {
@@ -11,9 +9,9 @@ interface IProps {
 }
 function Panel(props: IProps, ref: A) {
   const [open, setOpen] = useState<boolean>(false);
-  const [isEdit, setIsEdit] = useState<boolean>(false);
-  const [editData, setEditData] = useState<A>();
   const { t } = useTranslation();
+  const [editData, setEditData] = useState<A>();
+  const [isEdit, setIsEdit] = useState<boolean>(false);
   const [form] = Form.useForm();
 
   useImperativeHandle(ref, () => ({
@@ -24,7 +22,6 @@ function Panel(props: IProps, ref: A) {
     setOpen(true);
     setIsEdit(false);
     if (data) {
-      data.dob = dayjs(data.dob);
       setIsEdit(true);
       setEditData(data);
       form.setFieldsValue(data);
@@ -43,37 +40,31 @@ function Panel(props: IProps, ref: A) {
   return (
     <>
       <Drawer
-        title={isEdit ? `${t('edit account')}` : `${t('add account')}`}
+        title="Panel"
         placement="right"
         open={open}
         extra={<CloseOutlined onClick={closeDrawer} />}
         onClose={closeDrawer}
         maskClosable={false}
         closable={false}
-        width={720}
+        width={520}
         destroyOnClose={true}
       >
         <Form form={form} onFinish={onFinish} layout="vertical" className={styles.panelform}>
-          <Form.Item name="fullName" label={t('name')}>
+          <Form.Item name="title" label={t('title')}>
             <Input />
           </Form.Item>
-          <Form.Item name="email" label={t('email')}>
-            <Input />
+          <Form.Item name="fileSize" label={`${t('file size')} ( Mb )`}>
+            <InputNumber />
           </Form.Item>
-          <Form.Item name="phone" label={t('phone')}>
-            <Input />
+          <Form.Item name="fileSize" label={t('file size')}>
+            <Select />
           </Form.Item>
-          <Form.Item name="dob" label={t('date of birth')}>
-            <DatePicker format={'DD MMM YYYY'} />
+          <Form.Item name="fileAccept" label={t('file size')}>
+            <Select mode="multiple" />
           </Form.Item>
-          <Form.Item name="gender" label={t('gender')}>
-            <Select options={GenderOptions} />
-          </Form.Item>
-          <Form.Item name="department" label={t('department')}>
-            <Select options={DepartmentOptions} />
-          </Form.Item>
-          <Form.Item name="role" label={t('role')}>
-            <Select options={RoleOptions} />
+          <Form.Item name="numberOfFile" label={t('file size')}>
+            <Select />
           </Form.Item>
           <div className="actionBtnBottom">
             <Button onClick={closeDrawer}>Cancel</Button>

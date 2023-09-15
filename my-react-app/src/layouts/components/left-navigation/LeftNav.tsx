@@ -3,6 +3,7 @@ import React, { useState, useEffect } from 'react';
 import { BarsOutlined, ArrowRightOutlined, BulbOutlined, HddOutlined, SettingOutlined } from '@ant-design/icons';
 import styles from './LeftNav.module.scss';
 import { useNavigate, useLocation } from 'react-router';
+import { useTranslation } from 'react-i18next';
 
 type MenuItem = Required<MenuProps>['items'][number];
 type CustomMenuItem = MenuItem & { path?: string; children?: CustomMenuItem[] };
@@ -19,70 +20,76 @@ const renderIcon = (icon: A) => {
   });
 };
 
-const items: CustomMenuItem[] = [
-  {
-    label: 'Overview',
-    path: '/',
-    icon: renderIcon(BarsOutlined),
-    key: 'overview'
-  },
-  {
-    label: 'Test',
-    icon: renderIcon(BulbOutlined),
-    key: 'dormmanagement',
-    children: [
-      {
-        label: 'Test Page',
-        path: '/test/test-page',
-        icon: renderIcon(ArrowRightOutlined),
-        key: 'testPage'
-      },
-      {
-        label: 'Test Table',
-        path: '/test/test-table',
-        icon: renderIcon(ArrowRightOutlined),
-        key: 'testtable'
-      },
-      {
-        label: 'Test Shorted Table',
-        path: '/test/test-shortedtable',
-        icon: renderIcon(ArrowRightOutlined),
-        key: 'testshortedtable'
-      },
-      {
-        label: 'Test Image',
-        path: '/test/test-image',
-        icon: renderIcon(ArrowRightOutlined),
-        key: 'testimage'
-      }
-    ]
-  },
-  {
-    label: 'Kanban',
-    path: '/kanban',
-    icon: renderIcon(HddOutlined),
-    key: 'kanban'
-  },
-  {
-    label: 'Configuration',
-    icon: renderIcon(SettingOutlined),
-    key: 'configuration',
-    children: [
-      {
-        label: 'Account Configuration',
-        path: '/configuration/account-configuration',
-        icon: renderIcon(ArrowRightOutlined),
-        key: 'account-configuration'
-      }
-    ]
-  }
-];
-
 function LeftNav() {
   const [selectedKey, setSelectedKey] = useState<string[]>(['overview']);
   const navigate = useNavigate();
   const location = useLocation();
+  const { t } = useTranslation();
 
+  const items: CustomMenuItem[] = [
+    {
+      label: t('overview'),
+      path: '/',
+      icon: renderIcon(BarsOutlined),
+      key: 'overview'
+    },
+    {
+      label: t('test'),
+      icon: renderIcon(BulbOutlined),
+      key: 'dormmanagement',
+      children: [
+        {
+          label: t('test page'),
+          path: '/test/test-page',
+          icon: renderIcon(ArrowRightOutlined),
+          key: 'testPage'
+        },
+        {
+          label: t('test table'),
+          path: '/test/test-table',
+          icon: renderIcon(ArrowRightOutlined),
+          key: 'testtable'
+        },
+        {
+          label: t('test sorted table'),
+          path: '/test/test-shortedtable',
+          icon: renderIcon(ArrowRightOutlined),
+          key: 'testshortedtable'
+        },
+        {
+          label: t('test image'),
+          path: '/test/test-image',
+          icon: renderIcon(ArrowRightOutlined),
+          key: 'testimage'
+        }
+      ]
+    },
+    {
+      label: 'Kanban',
+      path: '/kanban',
+      icon: renderIcon(HddOutlined),
+      key: 'kanban'
+    },
+    {
+      label: t('configuration'),
+      icon: renderIcon(SettingOutlined),
+      key: 'configuration',
+      children: [
+        {
+          label: t('account configuration'),
+          path: '/configuration/account-configuration',
+          icon: renderIcon(ArrowRightOutlined),
+          key: 'account-configuration'
+        },
+        {
+          label: t('file configuration'),
+          path: '/configuration/file-configuration',
+          icon: renderIcon(ArrowRightOutlined),
+          key: 'file-configuration'
+        }
+      ]
+    }
+  ];
   useEffect(() => {
     const pathName = location.pathname;
     const activeKey = findItemNodeByKeyOrPath('path', pathName);

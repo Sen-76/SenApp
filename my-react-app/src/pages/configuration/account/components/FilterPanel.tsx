@@ -3,6 +3,7 @@ import { Button, Checkbox, Col, Collapse, CollapseProps, Drawer, Form, Input, Ro
 import { forwardRef, useImperativeHandle, useState } from 'react';
 import styles from '../AccountConfiguration.module.scss';
 import { DepartmentOptions, GenderOptions, RoleOptions, StatusOptions } from '../AccountConfiguration.Model';
+import { useTranslation } from 'react-i18next';
 
 interface IProps {
   refreshList: () => void;
@@ -11,6 +12,7 @@ interface IProps {
 function FilterPanel(props: IProps, ref: A) {
   const [open, setOpen] = useState<boolean>(false);
   const [items, setItems] = useState<CollapseProps['items']>([]);
+  const { t } = useTranslation();
   const [form] = Form.useForm();
   const { Paragraph } = Typography;
 
@@ -105,7 +107,7 @@ function FilterPanel(props: IProps, ref: A) {
   return (
     <>
       <Drawer
-        title="Filter"
+        title={t('filter')}
         placement="right"
         open={open}
         extra={<CloseOutlined onClick={closeDrawer} />}

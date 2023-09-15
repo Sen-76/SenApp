@@ -18,6 +18,7 @@ import { EState } from '../AccountConfiguration.Model';
 import { useLoading } from '../../../../common/context/useLoading';
 import { Link } from 'react-router-dom';
 import Paragraph from 'antd/es/typography/Paragraph';
+import { useTranslation } from 'react-i18next';
 
 interface IProps {
   data: A[];
@@ -28,6 +29,7 @@ function DataTable(props: IProps) {
   const [loading, setLoading] = useState<boolean>(false);
   const [selectedItem, setSelectedItem] = useState<A[]>([]);
   const { showLoading, closeLoading } = useLoading();
+  const { t } = useTranslation();
   const { confirm } = Modal;
   const { Search } = Input;
   const [pagination, setPagination] = useState<TablePaginationConfig>({
@@ -39,7 +41,7 @@ function DataTable(props: IProps) {
 
   const columns: ColumnsType<A> = [
     {
-      title: 'Name',
+      title: `${t('name')}`,
       dataIndex: 'fullname',
       key: 'fullname',
       width: 150,
@@ -49,7 +51,7 @@ function DataTable(props: IProps) {
             placement="bottom"
             title={<div className={styles.customTooltip}>{record.fullName}</div>}
             color="#ffffff"
-            arrow={false}
+            arrow={true}
           >
             <div style={{ display: 'flex', alignItems: 'center', minWidth: 250 }}>
               <Avatar size={40} src={record.photoUrl} style={{ marginRight: 10 }} />
@@ -66,7 +68,7 @@ function DataTable(props: IProps) {
       }
     },
     {
-      title: 'Email',
+      title: `${t('email')}`,
       dataIndex: 'email',
       width: 150,
       key: 'email',
@@ -76,7 +78,7 @@ function DataTable(props: IProps) {
             placement="bottom"
             title={<div className={styles.customTooltip}>{record.email}</div>}
             color="#ffffff"
-            arrow={false}
+            arrow={true}
           >
             <Paragraph
               className={styles.paragraph}
@@ -90,7 +92,7 @@ function DataTable(props: IProps) {
       }
     },
     {
-      title: 'Phone',
+      title: `${t('phone')}`,
       dataIndex: 'phone',
       width: 110,
       key: 'phone',
@@ -99,7 +101,7 @@ function DataTable(props: IProps) {
       }
     },
     {
-      title: 'Date of birth',
+      title: `${t('date of birth')}`,
       dataIndex: 'dob',
       width: 120,
       key: 'dob',
@@ -108,16 +110,34 @@ function DataTable(props: IProps) {
       }
     },
     {
-      title: 'Gender',
+      title: `${t('gender')}`,
       dataIndex: 'gender',
       width: 90,
       key: 'gender',
       render: (_, record) => {
-        return record.gender === 'Male' ? <ManOutlined /> : <WomanOutlined />;
+        return record.gender === 'Male' ? (
+          <Tooltip
+            placement="bottom"
+            title={<div className={styles.customTooltip}>{t('man')}</div>}
+            color="#ffffff"
+            arrow={true}
+          >
+            <ManOutlined />
+          </Tooltip>
+        ) : (
+          <Tooltip
+            placement="bottom"
+            title={<div className={styles.customTooltip}>{t('woman')}</div>}
+            color="#ffffff"
+            arrow={true}
+          >
+            <WomanOutlined />
+          </Tooltip>
+        );
       }
     },
     {
-      title: 'Role',
+      title: `${t('role')}`,
       dataIndex: 'role',
       width: 100,
       key: 'role',
@@ -126,7 +146,7 @@ function DataTable(props: IProps) {
       }
     },
     {
-      title: 'Status',
+      title: `${t('status')}`,
       dataIndex: 'status',
       width: 80,
       key: 'status',
@@ -156,21 +176,30 @@ function DataTable(props: IProps) {
             await apiHandle(value);
           }
         };
-        console.log(record.status);
         return (
           <div>
-            <Switch
-              checked={record.status === EState.Activate.toString() ? true : false}
-              onChange={activeChange}
-              style={{ marginRight: 5 }}
-            />
-            {/* <label className={styles.mLeft10}>{record.status === EState.Activate ? 'Active' : 'Inactive'}</label> */}
+            <Tooltip
+              placement="bottom"
+              title={
+                <div className={styles.customTooltip}>
+                  {record.status === EState.Activate.toString() ? t('activate') : t('inactivate')}
+                </div>
+              }
+              color="#ffffff"
+              arrow={true}
+            >
+              <Switch
+                checked={record.status === EState.Activate.toString() ? true : false}
+                onChange={activeChange}
+                style={{ marginRight: 5 }}
+              />
+            </Tooltip>
           </div>
         );
       }
     },
     {
-      title: 'Action',
+      title: `${t('action')}`,
       dataIndex: 'action',
       key: 'action',
       fixed: 'right',
@@ -181,7 +210,14 @@ function DataTable(props: IProps) {
         };
         return (
           <div>
-            <Button type="text" onClick={editClick} icon={<EditOutlined />} />
+            <Tooltip
+              placement="bottom"
+              title={<div className={styles.customTooltip}>{t('edit')}</div>}
+              color="#ffffff"
+              arrow={true}
+            >
+              <Button type="text" onClick={editClick} icon={<EditOutlined />} />
+            </Tooltip>
           </div>
         );
       }
@@ -247,7 +283,7 @@ function DataTable(props: IProps) {
       <>
         <div className={styles.tableHeaderLeft}>
           <Button type="text" onClick={() => props.openPanel()} icon={<PlusOutlined />}>
-            Add new
+            {t('add new')}
           </Button>
           <Button
             onClick={deleteSelected}
@@ -256,12 +292,19 @@ function DataTable(props: IProps) {
             icon={<DeleteOutlined />}
             disabled={selectedItem.length === 0}
           >
-            Delete Selected
+            {t('delete selected')}
           </Button>
         </div>
         <div className={styles.tableHeaderRight}>
-          <Button type="text" onClick={() => props.openFilterPanel()} icon={<FilterOutlined />} />
-          <Search placeholder="Search Name" allowClear onSearch={onSearch} style={{ width: 250 }} />
+          <Tooltip
+            placement="bottom"
+            title={<div className={styles.customTooltip}>{t('filter')}</div>}
+            color="#ffffff"
+            arrow={true}
+          >
+            <Button type="text" onClick={() => props.openFilterPanel()} icon={<FilterOutlined />} />
+          </Tooltip>
+          <Search placeholder={t('search by name')} allowClear onSearch={onSearch} style={{ width: 250 }} />
         </div>
       </>
     );

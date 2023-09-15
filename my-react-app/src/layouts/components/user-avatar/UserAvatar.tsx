@@ -3,6 +3,7 @@ import { ImportOutlined, UserOutlined } from '@ant-design/icons';
 import styles from './UserAvatar.module.scss';
 import React from 'react';
 import { Link } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 
 const draftUser = {
   photoUrl: 'https://top10tphcm.com/wp-content/uploads/2023/02/hinh-anh-meo.jpeg',
@@ -13,6 +14,7 @@ const draftUser = {
 };
 
 function UserAvatar() {
+  const { t } = useTranslation();
   const loginOut = () => {
     console.log('logout');
   };
@@ -27,7 +29,7 @@ function UserAvatar() {
         label: (
           <Link to="/user/profile" className={styles.avatarDropdownItem}>
             <UserOutlined />
-            <div className="dropdown-item-text">Profile</div>
+            <div className="dropdown-item-text">{t('profile')}</div>
           </Link>
         ),
         key: '1'
@@ -36,23 +38,12 @@ function UserAvatar() {
         label: (
           <div onClick={loginOut} className={styles.avatarDropdownItem}>
             <ImportOutlined />
-            <div className="dropdown-item-text">Sign out</div>
+            <div className="dropdown-item-text">{t('sign out')}</div>
           </div>
         ),
         key: '2'
       }
     ];
-    //   if (currentRoleList.length > 1 && location.pathname !== '/selectrole') {
-    //     items.unshift({
-    //       label: (
-    //         <div onClick={selectRoleClick}>
-    //           <UserSwitchOutlined />
-    //           <div className="dropdown-item-text">Select Role</div>
-    //         </div>
-    //       ),
-    //       key: '2'
-    //     });
-    //   }
     return items;
   };
   return (

@@ -1,0 +1,22 @@
+button + button {
+  margin-left: 5px;
+  min-width: 70px;
+}
+.customTooltip {
+  color: #222222;
+  font-size: 14px;
+  line-height: 18px;
+  padding: 9px 8px;
+  color: #fff;
+}
+.actionBtnBottom {
+  bottom: 0;
+  left: 0;
+  position: absolute;
+  width: 100%;
+  display: flex;
+  justify-content: flex-end;
+  padding: 10px;
+  background-color: #ffffff;
+  border-top: 1px solid rgba(206, 190, 190, 0.356);
+}

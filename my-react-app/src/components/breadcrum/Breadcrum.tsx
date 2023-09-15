@@ -51,7 +51,6 @@ export const SiteBreadcrumb = (props: IBreadcrumbProps) => {
       if (item.onClick) {
         temp.onClick = item.onClick;
       }
-      const isCanClick = Boolean(item.onClick || item.path);
       temp.title = (
         <div className={`${styles.breadcrumbIcon} ${styles.canClickBreadcrumb}`}>
           {item.icon ? <span style={{ marginRight: 10 }}>{item.icon}</span> : null}

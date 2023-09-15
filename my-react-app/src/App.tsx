@@ -4,6 +4,7 @@ import { BreadcrumbProvider } from './components/breadcrum/Breadcrum';
 import { ConfigProvider, App as AntdApp } from 'antd';
 import TableEmpty from './components/tab-empty/TabEmpty';
 import theme from './theme';
+import './i18n';
 
 function App() {
   const renderEmpty = (name?: string) => {
