@@ -1,6 +1,13 @@
 import { Menu, MenuProps } from 'antd';
 import React, { useState, useEffect } from 'react';
-import { BarsOutlined, ArrowRightOutlined, BulbOutlined, HddOutlined, SettingOutlined } from '@ant-design/icons';
+import {
+  BarsOutlined,
+  ArrowRightOutlined,
+  BulbOutlined,
+  HddOutlined,
+  SettingOutlined,
+  GroupOutlined
+} from '@ant-design/icons';
 import styles from './LeftNav.module.scss';
 import { useNavigate, useLocation } from 'react-router';
 import { useTranslation } from 'react-i18next';
@@ -69,6 +76,12 @@ function LeftNav() {
       path: '/kanban',
       icon: renderIcon(HddOutlined),
       key: 'kanban'
+    },
+    {
+      label: 'Department',
+      path: '/department',
+      icon: renderIcon(GroupOutlined),
+      key: 'department'
     },
     {
       label: t('configuration'),
