@@ -5,6 +5,7 @@ import Overview from './routes/OverviewRoutes';
 import Kanban from './routes/KanbanRoutes';
 import User from './routes/UserRoutes';
 import Configuration from './routes/ConfigurationRoutes';
+import Department from './routes/DepartmentRoutes'
 
 const AppLayout = lazy(() => import('../AppLayout'));
 const LoginPage = lazy(() => import('../pages/Login'));
@@ -16,6 +17,6 @@ export const routers: IRouter.IRoute[] = [
     element: AppLayout,
     name: 'layout',
     meta: { role: [ERole.Admin], pageTitle: 'layout' },
-    children: [...Overview, ...TestRoutes, ...Kanban, ...User, ...Configuration]
+    children: [...Overview, ...TestRoutes, ...Kanban, ...User, ...Configuration, ...Department]
   }
 ];
