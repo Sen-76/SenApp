@@ -2,7 +2,7 @@ import { ExclamationCircleFilled, LogoutOutlined, SmileOutlined, SolutionOutline
 import { Avatar, Button, Modal, Table, TablePaginationConfig, Tooltip, notification } from 'antd';
 import { ColumnsType } from 'antd/es/table';
 import { useState } from 'react';
-import styles from '../Member.module.scss';
+import styles from '../Teams.module.scss';
 import { useTranslation } from 'react-i18next';
 import Paragraph from 'antd/es/typography/Paragraph';
 
@@ -28,40 +28,36 @@ function DataTable(props: IProps) {
       key: 'name',
       render: (_, record) => {
         return (
-          <Tooltip
-            placement="bottom"
-            title={<div className={styles.customTooltip}>{record.name}</div>}
-            color="#ffffff"
-            arrow={true}
+          <Paragraph
+            className={styles.paragraph}
+            ellipsis={{ rows: 3, expandable: false }}
+            style={{ maxWidth: 150, minWidth: 30 }}
           >
-            <div style={{ display: 'flex', alignItems: 'center', minWidth: 250 }}>
-              <Avatar size={40} src={record.photoUrl} style={{ marginRight: 10 }} />
-              <Paragraph
-                className={styles.paragraph}
-                ellipsis={{ rows: 3, expandable: false }}
-                style={{ maxWidth: 150, minWidth: 30 }}
-              >
-                {record.name}
-              </Paragraph>
-            </div>
-          </Tooltip>
+            {record.name}
+          </Paragraph>
         );
       }
     },
     {
-      title: t('gender'),
+      title: t('members'),
       dataIndex: 'gender',
       key: 'gender',
       render: (_, record) => {
-        return record.gender;
+        return (
+          <Avatar.Group maxCount={2} maxStyle={{ color: '#f56a00', backgroundColor: '#fde3cf' }}>
+            {Array.from({ length: 5 }).map((_, i) => (
+              <Avatar key={i} src={record.photoUrl} />
+            ))}
+          </Avatar.Group>
+        );
       }
     },
     {
-      title: t('job'),
+      title: t('description'),
       dataIndex: 'job',
       key: 'job',
       render: (_, record) => {
-        return record.job;
+        return record.description;
       }
     },
     {

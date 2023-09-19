@@ -1,17 +1,17 @@
 import { CloseOutlined } from '@ant-design/icons';
 import { Button, Drawer, Form, Input } from 'antd';
 import { forwardRef, useImperativeHandle, useState } from 'react';
-import styles from '../Department.module.scss';
+import styles from '../EmailConfiguation.module.scss';
+import { useTranslation } from 'react-i18next';
 
 interface IProps {
   refreshList: () => void;
 }
 function Panel(props: IProps, ref: A) {
   const [open, setOpen] = useState<boolean>(false);
+  const { t } = useTranslation();
   const [isEdit, setIsEdit] = useState<boolean>(false);
-  const [editData, setEditData] = useState<A>();
   const [form] = Form.useForm();
-  const { TextArea } = Input;
 
   useImperativeHandle(ref, () => ({
     openDrawer
@@ -22,43 +22,47 @@ function Panel(props: IProps, ref: A) {
     setIsEdit(false);
     if (data) {
       setIsEdit(true);
-      setEditData(data);
       form.setFieldsValue(data);
     }
   };
 
   const closeDrawer = () => {
     setOpen(false);
+    form.resetFields();
   };
 
   const onFinish = (val: A) => {
     console.log(val);
   };
 
+  const formRule = {
+    title: [{ required: true, message: t('this field is required.') }]
+  };
+
   return (
     <>
       <Drawer
-        title={isEdit ? 'Edit Department' : 'Add Department'}
+        title={isEdit ? t('edit email configuration') : t('create email configuration')}
         placement="right"
         open={open}
         extra={<CloseOutlined onClick={closeDrawer} />}
         onClose={closeDrawer}
         maskClosable={false}
         closable={false}
-        width={720}
+        width={520}
         destroyOnClose={true}
       >
         <Form form={form} onFinish={onFinish} layout="vertical" className={styles.panelform}>
-          <Form.Item name="title" label="Title">
+          <Form.Item name="title" label={t('title')} rules={formRule.title}>
             <Input />
           </Form.Item>
-          <Form.Item name="description" label="Description">
-            <TextArea />
+          <Form.Item name="description" label={t('description')}>
+            <Input.TextArea />
           </Form.Item>
           <div className="actionBtnBottom">
-            <Button onClick={closeDrawer}>Cancel</Button>
+            <Button onClick={closeDrawer}>{t('cancel')}</Button>
             <Button type="primary" htmlType="submit">
-              Save
+              {t('confirm')}
             </Button>
           </div>
         </Form>

@@ -30,30 +30,30 @@ function DataTable(props: IProps) {
       }
     },
     {
-      title: `${t('file size')}`,
+      title: `${t('file size')} (MB)`,
       dataIndex: 'fileSize',
-      width: 110,
+      width: 130,
       key: 'fileSize',
       render: (_, record) => {
         return record.fileSize;
       }
     },
     {
-      title: `${t('enable file extension')}`,
+      title: `${t('file accept')}`,
       dataIndex: 'enableFileExtension',
       width: 110,
       key: 'fileSize',
       render: (_, record) => {
-        return record.fileAccept;
+        return record.fileAccept.join(', ');
       }
     },
     {
-      title: `${t('file of folder')}`,
+      title: `${t('file type')}`,
       dataIndex: 'fileOfFoder',
       width: 110,
       key: 'fileSize',
       render: (_, record) => {
-        return record.numberOfFile;
+        return record.numberOfFile ? 'Multiple' : 'Single';
       }
     },
     {
@@ -61,7 +61,8 @@ function DataTable(props: IProps) {
       dataIndex: 'action',
       key: 'action',
       fixed: 'right',
-      width: 100,
+      className: 'actionCollumn',
+      width: 80,
       render: (_, record) => {
         const editClick = () => {
           props.openPanel(record);
@@ -120,6 +121,7 @@ function DataTable(props: IProps) {
         columns={columns}
         dataSource={props.data}
         pagination={pagination}
+        scroll={{ x: 780 }}
         locale={{
           emptyText: (
             <>

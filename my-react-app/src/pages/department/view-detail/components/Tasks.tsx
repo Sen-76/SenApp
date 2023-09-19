@@ -1,5 +1,5 @@
 function Tasks() {
-    return ( <>Tasks</> );
+  return <>Tasks</>;
 }
 
 export default Tasks;

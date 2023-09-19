@@ -5,6 +5,7 @@ import styles from './Department.module.scss';
 
 import Panel from './components/Panel';
 import DataTable from './components/DataTable';
+import { useTranslation } from 'react-i18next';
 
 const draftDepartment = [
   {
@@ -21,10 +22,11 @@ const draftDepartment = [
 function Department() {
   const { setBreadcrumb } = useBreadcrumb();
   const panelRef = useRef();
+  const { t } = useTranslation();
 
   useEffect(() => {
-    setBreadcrumb([{ icon: <GroupOutlined />, text: 'Department' }]);
-  }, []);
+    setBreadcrumb([{ icon: <GroupOutlined />, text: t('department') }]);
+  }, [t]);
 
   const openPanel = (data?: A) => {
     (panelRef.current as A).openDrawer(data);

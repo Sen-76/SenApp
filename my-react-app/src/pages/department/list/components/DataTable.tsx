@@ -1,10 +1,10 @@
 import { EditOutlined, InfoCircleOutlined, PlusOutlined, SmileOutlined } from '@ant-design/icons';
-import { Button, Input, Table } from 'antd';
-import Search from 'antd/es/input/Search';
+import { Button, Input, Table, Tooltip } from 'antd';
 import styles from '../Department.module.scss';
 import { useState } from 'react';
 import { ColumnsType, TablePaginationConfig } from 'antd/es/table';
 import { Link } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 
 interface IProps {
   data: A[];
@@ -13,6 +13,7 @@ interface IProps {
 function DataTable(props: IProps) {
   const [loading, setLoading] = useState<boolean>(false);
   const { Search } = Input;
+  const { t } = useTranslation();
   const [pagination, setPagination] = useState<TablePaginationConfig>({
     current: 1,
     pageSize: 10,
@@ -22,7 +23,7 @@ function DataTable(props: IProps) {
 
   const columns: ColumnsType<A> = [
     {
-      title: 'Title',
+      title: t('title'),
       dataIndex: 'title',
       key: 'title',
       render: (_, record) => {
@@ -30,7 +31,7 @@ function DataTable(props: IProps) {
       }
     },
     {
-      title: 'Description',
+      title: t('description'),
       dataIndex: 'description',
       key: 'description',
       render: (_, record) => {
@@ -38,21 +39,35 @@ function DataTable(props: IProps) {
       }
     },
     {
-      title: 'Action',
+      title: t('action'),
       dataIndex: 'action',
       key: 'action',
-      //   fixed: 'right',
-      width: 200,
+      fixed: 'right',
+      width: 130,
       render: (_, record) => {
         const editClick = () => {
           props.openPanel(record);
         };
         return (
           <div>
-            <Button type="text" onClick={editClick} icon={<EditOutlined />} />
-            <Link to={`/department/department-detail/${record.id}`}>
-              <Button type="text" icon={<InfoCircleOutlined />} />
-            </Link>
+            <Tooltip
+              placement="bottom"
+              title={<div className={styles.customTooltip}>{t('edit')}</div>}
+              color="#ffffff"
+              arrow={true}
+            >
+              <Button type="text" onClick={editClick} icon={<EditOutlined />} />
+            </Tooltip>
+            <Tooltip
+              placement="bottom"
+              title={<div className={styles.customTooltip}>{t('view detail')}</div>}
+              color="#ffffff"
+              arrow={true}
+            >
+              <Link to={`/department/department-detail/${record.id}`}>
+                <Button type="text" icon={<InfoCircleOutlined />} />
+              </Link>
+            </Tooltip>
           </div>
         );
       }
@@ -81,7 +96,7 @@ function DataTable(props: IProps) {
       <>
         <div className={styles.tableHeaderLeft}>
           <Button type="text" onClick={() => props.openPanel()} icon={<PlusOutlined />}>
-            Add new
+            {t('add new')}
           </Button>
         </div>
         <div className={styles.tableHeaderRight}>

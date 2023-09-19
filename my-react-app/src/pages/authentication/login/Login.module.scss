@@ -1,0 +1,14 @@
+.login {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  .form {
+    width: 500px;
+    :global {
+      .ant-col {
+        width: 100% !important;
+      }
+    }
+  }
+}

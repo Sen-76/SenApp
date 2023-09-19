@@ -8,7 +8,7 @@ import Configuration from './routes/ConfigurationRoutes';
 import Department from './routes/DepartmentRoutes'
 
 const AppLayout = lazy(() => import('../AppLayout'));
-const LoginPage = lazy(() => import('../pages/Login'));
+const LoginPage = lazy(() => import('../pages/authentication/login/Login'));
 
 export const routers: IRouter.IRoute[] = [
   { path: '/login', name: 'login', element: LoginPage, meta: { pageTitle: 'login' } },

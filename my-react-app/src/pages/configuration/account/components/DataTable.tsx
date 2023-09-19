@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Avatar, Button, Input, Modal, Switch, Table, Tooltip, notification } from 'antd';
+import { Avatar, Button, Input, Modal, Radio, RadioChangeEvent, Switch, Table, Tooltip, notification } from 'antd';
 import type { ColumnsType } from 'antd/es/table';
 import type { TablePaginationConfig, TableRowSelection } from 'antd/es/table/interface';
 import styles from '../AccountConfiguration.module.scss';
@@ -28,7 +28,10 @@ interface IProps {
 function DataTable(props: IProps) {
   const [loading, setLoading] = useState<boolean>(false);
   const [selectedItem, setSelectedItem] = useState<A[]>([]);
+  const [isModalOpen, setIsOpenModal] = useState<boolean>(false);
+  const [choosenUser, setChoosenUser] = useState<A>();
   const { showLoading, closeLoading } = useLoading();
+  const [value, setValue] = useState<number>(0);
   const { t } = useTranslation();
   const { confirm } = Modal;
   const { Search } = Input;
@@ -148,7 +151,7 @@ function DataTable(props: IProps) {
     {
       title: `${t('status')}`,
       dataIndex: 'status',
-      width: 80,
+      width: 110,
       key: 'status',
       render: (_, record) => {
         const apiHandle = async (value: boolean) => {
@@ -189,7 +192,7 @@ function DataTable(props: IProps) {
               arrow={true}
             >
               <Switch
-                checked={record.status === EState.Activate.toString() ? true : false}
+                checked={record.status === EState.Activate.toString()}
                 onChange={activeChange}
                 style={{ marginRight: 5 }}
               />
@@ -203,13 +206,14 @@ function DataTable(props: IProps) {
       dataIndex: 'action',
       key: 'action',
       fixed: 'right',
-      width: 100,
+      width: 140,
+      className: 'actionCollumn',
       render: (_, record) => {
         const editClick = () => {
           props.openPanel(record);
         };
         return (
-          <div>
+          <div style={{ width: 100 }}>
             <Tooltip
               placement="bottom"
               title={<div className={styles.customTooltip}>{t('edit')}</div>}
@@ -217,6 +221,21 @@ function DataTable(props: IProps) {
               arrow={true}
             >
               <Button type="text" onClick={editClick} icon={<EditOutlined />} />
+            </Tooltip>
+            <Tooltip
+              placement="bottom"
+              title={<div className={styles.customTooltip}>{t('delete')}</div>}
+              color="#ffffff"
+              arrow={true}
+            >
+              <Button
+                type="text"
+                onClick={() => {
+                  setIsOpenModal(true);
+                  setChoosenUser(record);
+                }}
+                icon={<DeleteOutlined />}
+              />
             </Tooltip>
           </div>
         );
@@ -260,25 +279,25 @@ function DataTable(props: IProps) {
     console.log(val);
   };
 
+  const onChange = (e: RadioChangeEvent) => {
+    setValue(Number(e.target.value));
+  };
+
+  const onCancelModal = () => {
+    setIsOpenModal(false);
+    setChoosenUser(null);
+    setValue(0);
+  };
+
+  const confirmDelete = () => {
+    console.log(selectedItem);
+    notification.open({
+      message: 'Delete thử thôi chứ k xóa đc đâu :")',
+      type: 'success'
+    });
+  };
+
   const TableHeader = () => {
-    const deleteSelected = () => {
-      confirm({
-        title: 'Do you Want to delete these items?',
-        icon: <ExclamationCircleFilled />,
-        content: 'Some descriptions',
-        onOk() {
-          tableLoading();
-          console.log(selectedItem);
-          notification.open({
-            message: 'Delete thử thôi chứ k xóa đc đâu :")',
-            type: 'success'
-          });
-        },
-        onCancel() {
-          console.log('Cancel');
-        }
-      });
-    };
     return (
       <>
         <div className={styles.tableHeaderLeft}>
@@ -286,7 +305,7 @@ function DataTable(props: IProps) {
             {t('add new')}
           </Button>
           <Button
-            onClick={deleteSelected}
+            onClick={() => setIsOpenModal(true)}
             loading={loading}
             type="text"
             icon={<DeleteOutlined />}
@@ -329,6 +348,39 @@ function DataTable(props: IProps) {
         onChange={handleTableChange}
         title={() => TableHeader()}
       />
+      <Modal
+        title={
+          <>
+            <ExclamationCircleFilled style={{ marginRight: 10, color: '#d0cf23', fontSize: 20 }} />
+            <span>Confirm Delete</span>
+          </>
+        }
+        open={isModalOpen}
+        footer={<></>}
+        onCancel={onCancelModal}
+      >
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
+          <div style={{ fontSize: 16, margin: '10px 0' }}>
+            {choosenUser
+              ? t('do you wanna delete this user?').replaceAll('{0}', choosenUser.fullName)
+              : t('do you want to delete those users?')}
+          </div>
+          <Radio.Group
+            onChange={onChange}
+            style={{ display: 'flex', flexDirection: 'column', gap: 10, marginBottom: 60, marginLeft: 20 }}
+            value={value}
+          >
+            <Radio value={1}>{t('hard delete')}</Radio>
+            <Radio value={2}>{t('soft delete')}</Radio>
+          </Radio.Group>
+          <div className="actionBtnBottom">
+            <Button onClick={onCancelModal}>Cancel</Button>
+            <Button type="primary" disabled={value === 0} onClick={confirmDelete}>
+              Delete
+            </Button>
+          </div>
+        </div>
+      </Modal>
     </>
   );
 }

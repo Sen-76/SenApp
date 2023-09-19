@@ -78,7 +78,7 @@ function LeftNav() {
       key: 'kanban'
     },
     {
-      label: 'Department',
+      label: t('department'),
       path: '/department',
       icon: renderIcon(GroupOutlined),
       key: 'department'
@@ -99,6 +99,12 @@ function LeftNav() {
           path: '/configuration/file-configuration',
           icon: renderIcon(ArrowRightOutlined),
           key: 'file-configuration'
+        },
+        {
+          label: t('email configuration'),
+          path: '/configuration/email-configuration',
+          icon: renderIcon(ArrowRightOutlined),
+          key: 'email-configuration'
         }
       ]
     }

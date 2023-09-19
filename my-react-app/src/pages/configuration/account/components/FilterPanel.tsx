@@ -127,11 +127,11 @@ function FilterPanel(props: IProps, ref: A) {
             expandIconPosition="end"
             collapsible="icon"
           />
-          <div className={styles.actionBtnBottom}>
+          <div className="actionBtnBottom">
             <Button onClick={closeDrawer}>Cancel</Button>
             <Button onClick={closeDrawer}>Reset</Button>
             <Button type="primary" htmlType="submit">
-              Save
+              Confirm
             </Button>
           </div>
         </Form>

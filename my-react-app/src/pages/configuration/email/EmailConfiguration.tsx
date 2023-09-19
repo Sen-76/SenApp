@@ -1,30 +1,21 @@
 import { SettingOutlined } from '@ant-design/icons';
-import { useTranslation } from 'react-i18next';
-import { useEffect, useRef } from 'react';
-import { useBreadcrumb } from '../../../components/breadcrum/Breadcrum';
-import styles from './FileConfiguration.module.scss';
-
-//component
 import DataTable from './components/DataTable';
+import styles from './EmailConfiguation.module.scss';
+import { useTranslation } from 'react-i18next';
+import { useBreadcrumb } from '../../../components/breadcrum/Breadcrum';
+import { useRef, useEffect } from 'react';
 import Panel from './components/Panel';
 
-const fileList = [
+const draftEmail = [
   {
-    id: 2,
-    title: 'Avatar',
-    fileSize: '5',
-    fileAccept: ['jpg', 'png'],
-    numberOfFile: true
-  },
-  {
-    id: 1,
-    title: 'Attachment',
-    fileSize: '15',
-    fileAccept: ['pdf', 'png'],
-    numberOfFile: false
+    title: 'Test email',
+    description: 'N/A',
+    updatedDate: '2012/12/12 12:12:12',
+    status: 'Active',
+    modifiedBy: 'Sen'
   }
 ];
-function FileConfiguration() {
+function EmailConfiguration() {
   const { t } = useTranslation();
   const { setBreadcrumb } = useBreadcrumb();
   const panelRef = useRef();
@@ -41,11 +32,11 @@ function FileConfiguration() {
   };
 
   return (
-    <div className={styles.fileconfiguration}>
-      <DataTable data={fileList} openPanel={openPanel} />
+    <div className={styles.emailConfiguration}>
+      <DataTable data={draftEmail} openPanel={openPanel} />
       <Panel refreshList={() => console.log('refresh')} ref={panelRef} />
     </div>
   );
 }
 
-export default FileConfiguration;
+export default EmailConfiguration;

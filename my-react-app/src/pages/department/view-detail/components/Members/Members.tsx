@@ -2,7 +2,15 @@ import { useRef } from 'react';
 import DataTable from './components/DataTable';
 import DetailPanel from './components/DetailPanel';
 
-const draftMembers = [{ id: 1, name: 'Sen', job: 'Developer', gender: 'Male' }];
+const draftMembers = [
+  {
+    id: 1,
+    name: 'Sen',
+    job: 'Developer',
+    gender: 'Male',
+    photoUrl: 'https://top10tphcm.com/wp-content/uploads/2023/02/hinh-anh-meo.jpeg'
+  }
+];
 function Members() {
   const detailPanelRef = useRef();
 
