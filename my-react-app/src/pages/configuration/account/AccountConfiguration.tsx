@@ -3,11 +3,13 @@ import { SettingOutlined } from '@ant-design/icons';
 import { useEffect, useRef } from 'react';
 import styles from './AccountConfiguration.module.scss';
 import { useTranslation } from 'react-i18next';
+import { Tabs } from 'antd';
 
 //components
 import DataTable from './components/DataTable';
 import Panel from './components/Panel';
 import FilterPanel from './components/FilterPanel';
+import { useLoading } from '../../../common/context/useLoading';
 
 const accountList = [
   {
@@ -21,6 +23,7 @@ const accountList = [
     email: 'sen76201@gmail.com',
     stars: 500,
     department: 'Tester',
+    job: 'Tester',
     status: 'Active',
     role: 'Admin'
   },
@@ -35,15 +38,29 @@ const accountList = [
     email: 'sen76201@gmail.com',
     stars: 500,
     department: 'Tester',
+    job: 'Tester',
     status: 'Active',
     role: 'Admin'
   }
 ];
 function AccountConfiguration() {
   const { setBreadcrumb } = useBreadcrumb();
+  const { showLoading, closeLoading } = useLoading();
   const panelRef = useRef();
   const filterPanelRef = useRef();
   const { t } = useTranslation();
+
+  const tabItems = [
+    {
+      label: t('Configuration_Account_WorkingUser'),
+      key: '1'
+    },
+    {
+      label: t('Configuration_Account_DeletedUser'),
+      key: '2'
+    }
+  ];
+
   useEffect(() => {
     setBreadcrumb([
       { icon: <SettingOutlined />, text: `${t('configuration')}` },
@@ -63,8 +80,16 @@ function AccountConfiguration() {
     console.log('data refresed');
   };
 
+  const onTabChanged = (e: A) => {
+    showLoading();
+    refreshList();
+    console.log(e);
+    closeLoading();
+  };
+
   return (
     <div className={styles.accountconfiguration}>
+      <Tabs items={tabItems} size="large" onChange={onTabChanged} />
       <DataTable data={accountList} openPanel={openPanel} openFilterPanel={openFilterPanel} />
       <Panel refreshList={refreshList} ref={panelRef} />
       <FilterPanel refreshList={refreshList} ref={filterPanelRef} />

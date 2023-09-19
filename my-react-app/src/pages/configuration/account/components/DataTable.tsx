@@ -7,7 +7,9 @@ import {
   DeleteOutlined,
   EditOutlined,
   ExclamationCircleFilled,
+  ExportOutlined,
   FilterOutlined,
+  ImportOutlined,
   ManOutlined,
   PlusOutlined,
   SmileOutlined,
@@ -169,7 +171,7 @@ function DataTable(props: IProps) {
         const activeChange = async (value: boolean) => {
           if (!value) {
             confirm({
-              content: `Are you sure you wish to deactivate ${record.fullName} value?`,
+              content: `Are you sure you wish to deactivate ${record.fullName}?`,
               title: 'Confirm',
               onOk: async () => {
                 await apiHandle(value);
@@ -224,7 +226,7 @@ function DataTable(props: IProps) {
             </Tooltip>
             <Tooltip
               placement="bottom"
-              title={<div className={styles.customTooltip}>{t('delete')}</div>}
+              title={<div className={styles.customTooltip}>{t('Common_Delete')}</div>}
               color="#ffffff"
               arrow={true}
             >
@@ -302,7 +304,7 @@ function DataTable(props: IProps) {
       <>
         <div className={styles.tableHeaderLeft}>
           <Button type="text" onClick={() => props.openPanel()} icon={<PlusOutlined />}>
-            {t('add new')}
+            {t('Common_AddNew')}
           </Button>
           <Button
             onClick={() => setIsOpenModal(true)}
@@ -311,7 +313,13 @@ function DataTable(props: IProps) {
             icon={<DeleteOutlined />}
             disabled={selectedItem.length === 0}
           >
-            {t('delete selected')}
+            {t('Common_DeleteSelected')}
+          </Button>
+          <Button type="text" onClick={() => props.openPanel()} icon={<ExportOutlined />}>
+            {t('export excel')}
+          </Button>
+          <Button type="text" onClick={() => props.openPanel()} icon={<ImportOutlined />}>
+            {t('import excel')}
           </Button>
         </div>
         <div className={styles.tableHeaderRight}>
@@ -376,7 +384,7 @@ function DataTable(props: IProps) {
           <div className="actionBtnBottom">
             <Button onClick={onCancelModal}>Cancel</Button>
             <Button type="primary" disabled={value === 0} onClick={confirmDelete}>
-              Delete
+              {t('Common_Delete')}
             </Button>
           </div>
         </div>

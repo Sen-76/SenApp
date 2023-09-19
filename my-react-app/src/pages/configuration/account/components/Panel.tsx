@@ -70,13 +70,13 @@ function Panel(props: IProps, ref: A) {
   };
 
   const formRule = {
-    fullName: [{ required: true, message: t('this field is required.') }],
-    email: [{ required: true, message: t('this field is required.') }],
-    phone: [{ required: true, message: t('this field is required.') }],
-    dob: [{ required: true, message: t('this field is required.') }],
-    username: [{ required: true, message: t('this field is required.') }],
-    password: [{ required: true, message: t('this field is required.') }],
-    role: [{ required: true, message: t('this field is required.') }]
+    fullName: [{ required: true, message: t('Common_Require_Field') }],
+    email: [{ required: true, message: t('Common_Require_Field') }],
+    phone: [{ required: true, message: t('Common_Require_Field') }],
+    dob: [{ required: true, message: t('Common_Require_Field') }],
+    username: [{ required: true, message: t('Common_Require_Field') }],
+    password: [{ required: true, message: t('Common_Require_Field') }],
+    role: [{ required: true, message: t('Common_Require_Field') }]
   };
 
   return (
@@ -98,12 +98,10 @@ function Panel(props: IProps, ref: A) {
           current={step}
           items={[
             {
-              title: 'General Info',
-              description: 'general information'
+              title: 'General Info'
             },
             {
-              title: 'System Info',
-              description: 'system information'
+              title: 'System Info'
             }
           ]}
         />
@@ -111,10 +109,10 @@ function Panel(props: IProps, ref: A) {
           <>
             <Form form={generalForm} onFinish={onFinish} layout="vertical" className={styles.panelform}>
               <Form.Item name="fullName" label={t('name')} rules={formRule.fullName}>
-                <Input />
+                <Input maxLength={250} showCount />
               </Form.Item>
               <Form.Item name="email" label={t('email')} rules={formRule.email}>
-                <Input />
+                <Input maxLength={250} showCount />
               </Form.Item>
               <Form.Item name="phone" label={t('phone')} rules={formRule.phone}>
                 <Input />
@@ -132,7 +130,10 @@ function Panel(props: IProps, ref: A) {
           <>
             <Form form={systemForm} onFinish={onFinish} layout="vertical" className={styles.panelform}>
               <Form.Item name="username" label={t('username')} rules={formRule.username}>
-                <Input />
+                <Input maxLength={250} showCount />
+              </Form.Item>
+              <Form.Item name="job" label={t('job')}>
+                <Input maxLength={250} showCount />
               </Form.Item>
               <Form.Item name="department" label={t('department')}>
                 <Select options={DepartmentOptions} />

@@ -44,10 +44,10 @@ function Panel(props: IProps, ref: A) {
   };
 
   const formRule = {
-    title: [{ required: true, message: t('this field is required.') }],
-    fileSize: [{ required: true, message: t('this field is required.') }, { validator: fileSizeCustomRule }],
-    fileAccept: [{ required: true, message: t('this field is required.') }],
-    numberOfFile: [{ required: true, message: t('this field is required.') }]
+    title: [{ required: true, message: t('Common_Require_Field') }],
+    fileSize: [{ required: true, message: t('Common_Require_Field') }, { validator: fileSizeCustomRule }],
+    fileAccept: [{ required: true, message: t('Common_Require_Field') }],
+    numberOfFile: [{ required: true, message: t('Common_Require_Field') }]
   };
 
   return (
@@ -65,7 +65,7 @@ function Panel(props: IProps, ref: A) {
       >
         <Form form={form} onFinish={onFinish} layout="vertical" className={styles.panelform}>
           <Form.Item name="title" label={t('title')} rules={formRule.title}>
-            <Input />
+            <Input maxLength={250} showCount />
           </Form.Item>
           <Form.Item name="fileSize" label={`${t('file size')} (MB)`} rules={formRule.fileSize}>
             <Input />

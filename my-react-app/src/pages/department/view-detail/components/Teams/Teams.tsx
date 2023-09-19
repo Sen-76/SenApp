@@ -1,6 +1,7 @@
 import { useRef } from 'react';
 import DataTable from './components/DataTable';
 import DetailPanel from './components/DetailPanel';
+import Panel from './components/Panel';
 
 const draftTeams = [
   {
@@ -18,7 +19,12 @@ const draftTeams = [
   }
 ];
 function Teams() {
+  const panelRef = useRef();
   const detailPanelRef = useRef();
+
+  const openPanel = (data: A) => {
+    (panelRef.current as A).openDrawer(data);
+  };
 
   const openDetailPanel = (data: A) => {
     (detailPanelRef.current as A).openDrawer(data);
@@ -26,8 +32,9 @@ function Teams() {
 
   return (
     <>
-      <DataTable data={draftTeams} openPanel={openDetailPanel} />
+      <DataTable data={draftTeams} openPanel={openPanel} openDetailPanel={openDetailPanel} />
       <DetailPanel refreshList={() => console.log('ok')} ref={detailPanelRef} />
+      <Panel refreshList={() => console.log('ok')} ref={panelRef} />
     </>
   );
 }

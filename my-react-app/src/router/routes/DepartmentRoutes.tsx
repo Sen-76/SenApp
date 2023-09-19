@@ -13,7 +13,7 @@ const routes: IRouter.IRoute<'/department'>[] = [
     meta: { role: [ERole.Admin], pageTitle: 'Departments' }
   },
   {
-    path: '/department/department-detail/:id',
+    path: '/department/department-detail/:name/:id',
     name: 'departmentDetail',
     exact: true,
     element: DepartmentDetai,

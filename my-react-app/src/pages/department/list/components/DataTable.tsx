@@ -5,6 +5,7 @@ import { useState } from 'react';
 import { ColumnsType, TablePaginationConfig } from 'antd/es/table';
 import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
+import dayjs from 'dayjs';
 
 interface IProps {
   data: A[];
@@ -39,9 +40,26 @@ function DataTable(props: IProps) {
       }
     },
     {
+      title: 'Modified On',
+      dataIndex: 'modifiedOn',
+      key: 'modifiedOn',
+      width: 150,
+      render: (_, record) => {
+        return <div style={{ minWidth: 90 }}>{dayjs(record.updatedDate).format('DD MMM YYYY HH:mm')}</div>;
+      }
+    },
+    {
+      title: 'Modified By',
+      dataIndex: 'modifiedBy',
+      width: 120,
+      key: 'modifiedBy',
+      render: (_, record) => record.modifiedBy
+    },
+    {
       title: t('action'),
       dataIndex: 'action',
       key: 'action',
+      className: 'actionCollumn',
       fixed: 'right',
       width: 130,
       render: (_, record) => {
@@ -64,7 +82,7 @@ function DataTable(props: IProps) {
               color="#ffffff"
               arrow={true}
             >
-              <Link to={`/department/department-detail/${record.id}`}>
+              <Link to={`/department/department-detail/${record.title}/${record.id}`}>
                 <Button type="text" icon={<InfoCircleOutlined />} />
               </Link>
             </Tooltip>
@@ -96,7 +114,7 @@ function DataTable(props: IProps) {
       <>
         <div className={styles.tableHeaderLeft}>
           <Button type="text" onClick={() => props.openPanel()} icon={<PlusOutlined />}>
-            {t('add new')}
+            {t('Common_AddNew')}
           </Button>
         </div>
         <div className={styles.tableHeaderRight}>

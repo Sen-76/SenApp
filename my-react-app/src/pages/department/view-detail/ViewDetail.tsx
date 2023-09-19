@@ -3,36 +3,41 @@ import { GroupOutlined } from '@ant-design/icons';
 import { Tabs } from 'antd';
 import { useEffect } from 'react';
 import styles from './ViewDetail.module.scss';
+import Search from 'antd/es/input/Search';
+import { useTranslation } from 'react-i18next';
+import { useLocation } from 'react-router';
 
 //components
 import Members from './components/Members/Members';
 import Teams from './components/Teams/Teams';
 import Tasks from './components/Tasks';
-import Search from 'antd/es/input/Search';
-import { useTranslation } from 'react-i18next';
 
 function ViewDetail() {
   const { setBreadcrumb } = useBreadcrumb();
   const { t } = useTranslation();
+  const location = useLocation();
 
   useEffect(() => {
-    setBreadcrumb([{ path: '/', icon: <GroupOutlined />, text: t('department') }, { text: t('detail') }]);
+    setBreadcrumb([
+      { path: '/department', icon: <GroupOutlined />, text: t('department') },
+      { text: decodeURIComponent(location.pathname.split('/')[location.pathname.split('/').length - 2]) }
+    ]);
   }, [t]);
 
   const tabItems = [
     {
+      key: '1', // Unique key
       label: t('members'),
-      key: '1',
       children: <Members />
     },
     {
+      key: '2', // Unique key
       label: t('teams'),
-      key: '2',
       children: <Teams />
     },
     {
+      key: '3', // Unique key
       label: t('projects'),
-      key: '3',
       children: <Tasks />
     }
   ];

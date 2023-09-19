@@ -2,6 +2,7 @@ import { CloseOutlined } from '@ant-design/icons';
 import { Button, Drawer, Form, Input } from 'antd';
 import { forwardRef, useImperativeHandle, useState } from 'react';
 import styles from '../Department.module.scss';
+import { useTranslation } from 'react-i18next';
 
 interface IProps {
   refreshList: () => void;
@@ -9,7 +10,7 @@ interface IProps {
 function Panel(props: IProps, ref: A) {
   const [open, setOpen] = useState<boolean>(false);
   const [isEdit, setIsEdit] = useState<boolean>(false);
-  const [editData, setEditData] = useState<A>();
+  const { t } = useTranslation();
   const [form] = Form.useForm();
   const { TextArea } = Input;
 
@@ -22,7 +23,6 @@ function Panel(props: IProps, ref: A) {
     setIsEdit(false);
     if (data) {
       setIsEdit(true);
-      setEditData(data);
       form.setFieldsValue(data);
     }
   };
@@ -33,6 +33,10 @@ function Panel(props: IProps, ref: A) {
 
   const onFinish = (val: A) => {
     console.log(val);
+  };
+
+  const formRule = {
+    title: [{ required: true, message: t('Common_Require_Field') }]
   };
 
   return (
@@ -49,11 +53,11 @@ function Panel(props: IProps, ref: A) {
         destroyOnClose={true}
       >
         <Form form={form} onFinish={onFinish} layout="vertical" className={styles.panelform}>
-          <Form.Item name="title" label="Title">
-            <Input />
+          <Form.Item name="title" label="Title" rules={formRule.title}>
+            <Input maxLength={250} showCount />
           </Form.Item>
           <Form.Item name="description" label="Description">
-            <TextArea />
+            <TextArea maxLength={1000} showCount />
           </Form.Item>
           <div className="actionBtnBottom">
             <Button onClick={closeDrawer}>Cancel</Button>

@@ -105,7 +105,7 @@ function DataTable(props: IProps) {
       <>
         <div className={styles.tableHeaderLeft}>
           <Button type="text" onClick={() => props.openPanel()} icon={<PlusOutlined />}>
-            {t('add new')}
+            {t('Common_AddNew')}
           </Button>
         </div>
         <div className={styles.tableHeaderRight}>

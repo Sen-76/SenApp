@@ -1,18 +1,34 @@
-import { CloseOutlined, ExclamationCircleFilled, LogoutOutlined, SmileOutlined } from '@ant-design/icons';
-import { Avatar, Button, Col, Drawer, Modal, Row, Table, Tooltip, notification } from 'antd';
+import { CloseOutlined, PlusOutlined, SmileOutlined } from '@ant-design/icons';
+import { Avatar, Button, Drawer, Table, Tooltip } from 'antd';
 import { forwardRef, useImperativeHandle, useState } from 'react';
-import styles from '../Teams.module.scss';
+import styles from '../Member.module.scss';
 import { ColumnsType } from 'antd/es/table';
 import Paragraph from 'antd/es/typography/Paragraph';
 import { useTranslation } from 'react-i18next';
+import Search from 'antd/es/input/Search';
+import { TablePaginationConfig, TableRowSelection } from 'antd/es/table/interface';
 
 interface IProps {
   refreshList: () => void;
 }
-function DetailPanel(props: IProps, ref: A) {
+const draftMembers = [
+  {
+    id: 1,
+    name: 'Sen',
+    job: 'Developer',
+    gender: 'Male',
+    photoUrl: 'https://top10tphcm.com/wp-content/uploads/2023/02/hinh-anh-meo.jpeg'
+  }
+];
+function Panel(props: IProps, ref: A) {
   const [open, setOpen] = useState<boolean>(false);
-  const [data, setData] = useState<A>({});
-  const { confirm } = Modal;
+  const [selectedItem, setSelectedItem] = useState<A[]>([]);
+  const [pagination, setPagination] = useState<TablePaginationConfig>({
+    current: 1,
+    pageSize: 10,
+    total: 20,
+    simple: false
+  });
   const { t } = useTranslation();
 
   useImperativeHandle(ref, () => ({
@@ -22,7 +38,6 @@ function DetailPanel(props: IProps, ref: A) {
   const openDrawer = (data?: A) => {
     setOpen(true);
     console.log(data);
-    setData(data);
   };
 
   const closeDrawer = () => {
@@ -74,31 +89,18 @@ function DetailPanel(props: IProps, ref: A) {
       width: 50,
       render: (_, record) => {
         const kickoutCLick = () => {
-          confirm({
-            title: t('Common_Kick'),
-            icon: <ExclamationCircleFilled />,
-            content: 'Do you wanna kick this user out of this group?',
-            onOk() {
-              notification.open({
-                message: 'Delete thử thôi chứ k xóa đc đâu :")',
-                type: 'success'
-              });
-            },
-            onCancel() {
-              console.log('Cancel');
-            }
-          });
+          console.log('assigned');
         };
 
         return (
           <div>
             <Tooltip
               placement="bottom"
-              title={<div className={styles.customTooltip}>{t('Common_Kick')}</div>}
+              title={<div className={styles.customTooltip}>{t('Common_Assign')}</div>}
               color="#ffffff"
               arrow={true}
             >
-              <Button type="text" onClick={kickoutCLick} icon={<LogoutOutlined />} />
+              <Button type="text" onClick={kickoutCLick} icon={<PlusOutlined />} />
             </Tooltip>
           </div>
         );
@@ -106,10 +108,49 @@ function DetailPanel(props: IProps, ref: A) {
     }
   ];
 
+  const onSearch = (val: A) => {
+    console.log(val);
+  };
+
+  const TableHeader = () => {
+    return (
+      <>
+        <div className={styles.tableHeaderLeft}>
+          <Button
+            type="text"
+            onClick={() => console.log(selectedItem)}
+            icon={<PlusOutlined />}
+            disabled={selectedItem.length === 0}
+          >
+            {t('Common_Assign')}
+          </Button>
+        </div>
+        <div className={styles.tableHeaderRight}>
+          <Search placeholder="Search Name" allowClear onSearch={onSearch} style={{ width: 250 }} />
+        </div>
+      </>
+    );
+  };
+
+  const rowSelection: TableRowSelection<A> = {
+    onChange: (selectedRowKeys, selectedRows) => {
+      console.log(`selectedRowKeys: ${selectedRowKeys}`, 'selectedRows: ', selectedRows);
+      setSelectedItem(selectedRows);
+    },
+    onSelect: (record, selected, selectedRows) => {
+      console.log(selected, selectedRows, record);
+      setSelectedItem(selectedRows);
+    },
+    onSelectAll: (selected, selectedRows, changeRows) => {
+      console.log(selected, selectedRows, changeRows);
+      setSelectedItem(selectedRows);
+    }
+  };
+
   return (
     <>
       <Drawer
-        title="User Details"
+        title={t('Common_AssignMember')}
         placement="right"
         open={open}
         extra={<CloseOutlined onClick={closeDrawer} />}
@@ -119,21 +160,12 @@ function DetailPanel(props: IProps, ref: A) {
         width={520}
         destroyOnClose={true}
       >
-        <Row>
-          <Col span={12}>Name</Col>
-          <Col span={12}>{data.name}</Col>
-        </Row>
-        <Row>
-          <Col span={12}>job</Col>
-          <Col span={12}>{data.job}</Col>
-        </Row>
-        <Row>
-          <Col span={12}>Member</Col>
-        </Row>
         <Table
           columns={columns}
-          dataSource={data.members}
-          pagination={false}
+          pagination={pagination}
+          dataSource={draftMembers}
+          rowSelection={{ ...rowSelection }}
+          title={() => TableHeader()}
           locale={{
             emptyText: (
               <>
@@ -147,4 +179,4 @@ function DetailPanel(props: IProps, ref: A) {
   );
 }
 
-export default forwardRef(DetailPanel);
+export default forwardRef(Panel);

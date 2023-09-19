@@ -36,7 +36,7 @@ function Panel(props: IProps, ref: A) {
   };
 
   const formRule = {
-    title: [{ required: true, message: t('this field is required.') }]
+    title: [{ required: true, message: t('Common_Require_Field') }]
   };
 
   return (

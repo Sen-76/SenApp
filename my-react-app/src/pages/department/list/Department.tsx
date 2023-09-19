@@ -11,12 +11,16 @@ const draftDepartment = [
   {
     id: 1,
     title: 'Test 1',
-    description: 'Nan'
+    description: 'Nan',
+    updatedDate: '2012/12/12 12:12:12',
+    modifiedBy: 'Sen'
   },
   {
     id: 2,
     title: 'Test 2',
-    description: 'Nan'
+    description: 'Nan',
+    updatedDate: '2012/12/12 12:12:12',
+    modifiedBy: 'Sen'
   }
 ];
 function Department() {

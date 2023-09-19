@@ -1,17 +1,27 @@
-import { ExclamationCircleFilled, LogoutOutlined, SmileOutlined, SolutionOutlined } from '@ant-design/icons';
+import {
+  DeleteOutlined,
+  ExclamationCircleFilled,
+  PlusOutlined,
+  SmileOutlined,
+  SolutionOutlined
+} from '@ant-design/icons';
 import { Avatar, Button, Modal, Table, TablePaginationConfig, Tooltip, notification } from 'antd';
 import { ColumnsType } from 'antd/es/table';
 import { useState } from 'react';
 import styles from '../Teams.module.scss';
 import { useTranslation } from 'react-i18next';
 import Paragraph from 'antd/es/typography/Paragraph';
+import Search from 'antd/es/input/Search';
+import { TableRowSelection } from 'antd/es/table/interface';
 
 interface IProps {
   data: A[];
   openPanel: (data?: A) => void;
+  openDetailPanel: (data?: A) => void;
 }
 function DataTable(props: IProps) {
   const [loading, setLoading] = useState<boolean>(false);
+  const [selectedItem, setSelectedItem] = useState<A[]>([]);
   const { confirm } = Modal;
   const { t } = useTranslation();
   const [pagination, setPagination] = useState<TablePaginationConfig>({
@@ -68,25 +78,7 @@ function DataTable(props: IProps) {
       width: 130,
       render: (_, record) => {
         const viewDetailCLick = () => {
-          props.openPanel(record);
-        };
-
-        const kickoutCLick = () => {
-          confirm({
-            title: 'Kick User',
-            icon: <ExclamationCircleFilled />,
-            content: 'Do you wanna kick this user out of this deparment?',
-            onOk() {
-              tableLoading();
-              notification.open({
-                message: 'Delete thử thôi chứ k xóa đc đâu :")',
-                type: 'success'
-              });
-            },
-            onCancel() {
-              console.log('Cancel');
-            }
-          });
+          props.openDetailPanel(record);
         };
 
         return (
@@ -101,11 +93,11 @@ function DataTable(props: IProps) {
             </Tooltip>
             <Tooltip
               placement="bottom"
-              title={<div className={styles.customTooltip}>{t('kick')}</div>}
+              title={<div className={styles.customTooltip}>{t('Common_Delete')}</div>}
               color="#ffffff"
               arrow={true}
             >
-              <Button type="text" onClick={kickoutCLick} icon={<LogoutOutlined />} />
+              <Button type="text" onClick={deleteTeam} icon={<DeleteOutlined />} />
             </Tooltip>
           </div>
         );
@@ -126,13 +118,76 @@ function DataTable(props: IProps) {
     }, 2000);
   };
 
+  const onSearch = (val: A) => {
+    console.log(val);
+  };
+
+  const rowSelection: TableRowSelection<A> = {
+    onChange: (selectedRowKeys, selectedRows) => {
+      console.log(`selectedRowKeys: ${selectedRowKeys}`, 'selectedRows: ', selectedRows);
+      setSelectedItem(selectedRows);
+    },
+    onSelect: (record, selected, selectedRows) => {
+      console.log(selected, selectedRows, record);
+      setSelectedItem(selectedRows);
+    },
+    onSelectAll: (selected, selectedRows, changeRows) => {
+      console.log(selected, selectedRows, changeRows);
+      setSelectedItem(selectedRows);
+    }
+  };
+
+  const deleteTeam = () => {
+    confirm({
+      content: `Are you sure you wish to delete those teams?`,
+      title: 'Confirm',
+      okText: t('Common_Delete'),
+      onOk() {
+        tableLoading();
+        notification.open({
+          message: 'Delete thử thôi chứ k xóa đc đâu :")',
+          type: 'success'
+        });
+      },
+      onCancel() {
+        console.log('Cancel');
+      }
+    });
+  };
+
+  const TableHeader = () => {
+    return (
+      <>
+        <div className={styles.tableHeaderLeft}>
+          <Button type="text" onClick={() => props.openPanel()} icon={<PlusOutlined />}>
+            {t('Common_AddNew')}
+          </Button>
+          <Button
+            onClick={deleteTeam}
+            loading={loading}
+            type="text"
+            icon={<DeleteOutlined />}
+            disabled={selectedItem.length === 0}
+          >
+            {t('Common_DeleteSelected')}
+          </Button>
+        </div>
+        <div className={styles.tableHeaderRight}>
+          <Search placeholder="Search Name" allowClear onSearch={onSearch} style={{ width: 250 }} />
+        </div>
+      </>
+    );
+  };
+
   return (
     <div className={styles.members}>
       <Table
+        rowSelection={{ ...rowSelection }}
         columns={columns}
         dataSource={props.data}
         pagination={pagination}
         scroll={{ x: 780 }}
+        title={() => TableHeader()}
         locale={{
           emptyText: (
             <>

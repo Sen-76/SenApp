@@ -1,17 +1,33 @@
-import { CloseOutlined, ExclamationCircleFilled, LogoutOutlined, SmileOutlined } from '@ant-design/icons';
-import { Avatar, Button, Col, Drawer, Modal, Row, Table, Tooltip, notification } from 'antd';
+import { CloseOutlined, ExclamationCircleFilled, LogoutOutlined, PlusOutlined, SmileOutlined } from '@ant-design/icons';
+import { Avatar, Button, Drawer, Form, Input, Modal, Table, Tooltip, notification } from 'antd';
 import { forwardRef, useImperativeHandle, useState } from 'react';
 import styles from '../Teams.module.scss';
 import { ColumnsType } from 'antd/es/table';
 import Paragraph from 'antd/es/typography/Paragraph';
 import { useTranslation } from 'react-i18next';
+import Search from 'antd/es/input/Search';
+import { TablePaginationConfig, TableRowSelection } from 'antd/es/table/interface';
 
 interface IProps {
   refreshList: () => void;
 }
-function DetailPanel(props: IProps, ref: A) {
+const draftMembers = [
+  {
+    id: 1,
+    name: 'Sen',
+    job: 'Developer',
+    gender: 'Male',
+    photoUrl: 'https://top10tphcm.com/wp-content/uploads/2023/02/hinh-anh-meo.jpeg'
+  }
+];
+function Panel(props: IProps, ref: A) {
   const [open, setOpen] = useState<boolean>(false);
-  const [data, setData] = useState<A>({});
+  const [pagination, setPagination] = useState<TablePaginationConfig>({
+    current: 1,
+    pageSize: 10,
+    total: 20,
+    simple: false
+  });
   const { confirm } = Modal;
   const { t } = useTranslation();
 
@@ -22,7 +38,6 @@ function DetailPanel(props: IProps, ref: A) {
   const openDrawer = (data?: A) => {
     setOpen(true);
     console.log(data);
-    setData(data);
   };
 
   const closeDrawer = () => {
@@ -106,10 +121,14 @@ function DetailPanel(props: IProps, ref: A) {
     }
   ];
 
+  const formRule = {
+    title: [{ required: true, message: t('Common_Require_Field') }]
+  };
+
   return (
     <>
       <Drawer
-        title="User Details"
+        title={t('Common_AddNew')}
         placement="right"
         open={open}
         extra={<CloseOutlined onClick={closeDrawer} />}
@@ -119,32 +138,37 @@ function DetailPanel(props: IProps, ref: A) {
         width={520}
         destroyOnClose={true}
       >
-        <Row>
-          <Col span={12}>Name</Col>
-          <Col span={12}>{data.name}</Col>
-        </Row>
-        <Row>
-          <Col span={12}>job</Col>
-          <Col span={12}>{data.job}</Col>
-        </Row>
-        <Row>
-          <Col span={12}>Member</Col>
-        </Row>
-        <Table
-          columns={columns}
-          dataSource={data.members}
-          pagination={false}
-          locale={{
-            emptyText: (
-              <>
-                <SmileOutlined style={{ marginRight: 5 }} /> {t('Common_NoMember')}
-              </>
-            )
-          }}
-        />
+        <Form layout="vertical">
+          <Form.Item name="title" label={t('title')} rules={formRule.title}>
+            <Input maxLength={250} showCount />
+          </Form.Item>
+          <Form.Item name="description" label={t('description')}>
+            <Input.TextArea maxLength={1000} showCount />
+          </Form.Item>
+          <Form.Item name="member" label={t('members')}>
+            <Table
+              columns={columns}
+              pagination={pagination}
+              dataSource={draftMembers}
+              locale={{
+                emptyText: (
+                  <>
+                    <SmileOutlined style={{ marginRight: 5 }} /> {t('Common_NoMember')}
+                  </>
+                )
+              }}
+            />
+          </Form.Item>
+          <div className="actionBtnBottom">
+            <Button onClick={closeDrawer}>Cancel</Button>
+            <Button type="primary" htmlType="submit">
+              Save
+            </Button>
+          </div>
+        </Form>
       </Drawer>
     </>
   );
 }
 
-export default forwardRef(DetailPanel);
+export default forwardRef(Panel);
