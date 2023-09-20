@@ -19,32 +19,4 @@
   .form {
     margin-bottom: 150px;
   }
-  //   .workItem {
-  //     padding-bottom: 10px;
-  //   }
-  //   .workItem + .workItem {
-  //     border-top: 1px solid rgba(247, 2, 2, 0.377);
-  //     padding-top: 10px;
-  //   }
-}
-:global {
-  .ant-picker {
-    width: 100%;
-  }
-  .ant-collapse-header {
-    border-radius: 0 !important;
-    border-bottom: 1px solid rgba(97, 84, 99, 0.404);
-    padding-bottom: 8px !important;
-  }
-  .ant-collapse-content-box {
-    padding-left: 10px !important;
-    padding-right: 10px !important;
-    background-color: rgba(214, 200, 184, 0.274);
-  }
-  .ant-form-item-label {
-    label {
-      font-size: 14px !important;
-      font-weight: 500;
-    }
-  }
 }

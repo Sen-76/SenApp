@@ -67,17 +67,20 @@ function DetailPanel(props: IProps, ref: A) {
       }
     },
     {
-      title: t('action'),
+      title: t('Common_Action'),
       dataIndex: 'action',
       key: 'action',
       fixed: 'right',
       width: 50,
       render: (_, record) => {
         const kickoutCLick = () => {
+          console.log(record);
           confirm({
             title: t('Common_Kick'),
             icon: <ExclamationCircleFilled />,
             content: 'Do you wanna kick this user out of this group?',
+            okText: t('Common_Kick'),
+            cancelText: t('Common_Cancel'),
             onOk() {
               notification.open({
                 message: 'Delete thử thôi chứ k xóa đc đâu :")',

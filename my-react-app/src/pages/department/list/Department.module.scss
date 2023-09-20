@@ -8,3 +8,11 @@
   line-height: 18px;
   padding: 9px 8px;
 }
+
+.drawer {
+  :global {
+    .ant-drawer-body {
+      padding-top: 0;
+    }
+  }
+}

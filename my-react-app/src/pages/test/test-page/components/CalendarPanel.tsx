@@ -28,6 +28,7 @@ import dayLocaleData from 'dayjs/plugin/localeData';
 import styles from '../TestPage.module.scss';
 import { EWorkType, IDataTable, WorkType } from '../TestPage.model';
 import { util } from '../../../../common/helpers/util';
+import { useTranslation } from 'react-i18next';
 
 dayjs.extend(dayLocaleData);
 
@@ -39,6 +40,7 @@ function CalendarPanel(props: IProps, ref: React.ForwardedRef<A>) {
   const [open, setOpen] = useState<boolean>(false);
   const [open2nd, setOpen2nd] = useState<boolean>(false);
   const [dataHehe, setDataHehe] = useState<IDataTable | undefined>();
+  const { t } = useTranslation();
   const { confirm } = Modal;
   const { RangePicker } = DatePicker;
   const { TextArea } = Input;
@@ -63,7 +65,7 @@ function CalendarPanel(props: IProps, ref: React.ForwardedRef<A>) {
             <Form.Item label="Work">
               <TextArea size="large" maxLength={500} style={{ height: 120, resize: 'none' }} showCount />
             </Form.Item>
-            <Button type="primary">Save</Button>
+            <Button type="primary">{t('Common_Save')}</Button>
           </Form>
         </Col>
       ),
@@ -151,7 +153,7 @@ function CalendarPanel(props: IProps, ref: React.ForwardedRef<A>) {
                     disabled={dayjs().isAfter(dayjs(x.startTime, 'HH:mm'))}
                   />
                 </Form.Item>
-                {!dayjs().isAfter(dayjs(x.startTime, 'HH:mm')) && <Button type="primary">Save</Button>}
+                {!dayjs().isAfter(dayjs(x.startTime, 'HH:mm')) && <Button type="primary">{t('Common_Save')}</Button>}
               </Form>
             </Col>
           ),
@@ -193,7 +195,7 @@ function CalendarPanel(props: IProps, ref: React.ForwardedRef<A>) {
       extra={<CloseOutlined onClick={closeDrawer} />}
       footer={
         <Row className={styles.btmDrawer}>
-          <Button onClick={closeDrawer}>Cancel</Button>
+          <Button onClick={closeDrawer}>{t('Common_Cancel')}</Button>
           <Button
             type="primary"
             onClick={open2ndDrawer}
@@ -257,9 +259,9 @@ function CalendarPanel(props: IProps, ref: React.ForwardedRef<A>) {
             Add more
           </Button>
           <Row className={styles.btmDrawer}>
-            <Button onClick={close2ndDrawer}>Cancel</Button>
+            <Button onClick={close2ndDrawer}>{t('Common_Cancel')}</Button>
             <Button type="primary" htmlType="submit">
-              Save
+              {t('Common_Save')}
             </Button>
           </Row>
         </Form>

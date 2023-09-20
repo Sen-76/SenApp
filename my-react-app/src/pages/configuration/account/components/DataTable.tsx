@@ -13,6 +13,8 @@ import {
   ManOutlined,
   PlusOutlined,
   SmileOutlined,
+  SolutionOutlined,
+  UndoOutlined,
   WomanOutlined
 } from '@ant-design/icons';
 import dayjs from 'dayjs';
@@ -26,9 +28,13 @@ interface IProps {
   data: A[];
   openPanel: (data?: A) => void;
   openFilterPanel: (data?: A) => void;
+  openDetailPanel: (data?: A) => void;
+  refreshList: () => void;
+  tabStatus: number;
+  loading: boolean;
 }
 function DataTable(props: IProps) {
-  const [loading, setLoading] = useState<boolean>(false);
+  const { loading } = props;
   const [selectedItem, setSelectedItem] = useState<A[]>([]);
   const [isModalOpen, setIsOpenModal] = useState<boolean>(false);
   const [choosenUser, setChoosenUser] = useState<A>();
@@ -46,7 +52,7 @@ function DataTable(props: IProps) {
 
   const columns: ColumnsType<A> = [
     {
-      title: `${t('name')}`,
+      title: t('name'),
       dataIndex: 'fullname',
       key: 'fullname',
       width: 150,
@@ -73,7 +79,7 @@ function DataTable(props: IProps) {
       }
     },
     {
-      title: `${t('email')}`,
+      title: t('email'),
       dataIndex: 'email',
       width: 150,
       key: 'email',
@@ -97,7 +103,7 @@ function DataTable(props: IProps) {
       }
     },
     {
-      title: `${t('phone')}`,
+      title: t('phone'),
       dataIndex: 'phone',
       width: 110,
       key: 'phone',
@@ -106,7 +112,7 @@ function DataTable(props: IProps) {
       }
     },
     {
-      title: `${t('date of birth')}`,
+      title: t('date of birth'),
       dataIndex: 'dob',
       width: 120,
       key: 'dob',
@@ -115,7 +121,7 @@ function DataTable(props: IProps) {
       }
     },
     {
-      title: `${t('gender')}`,
+      title: t('gender'),
       dataIndex: 'gender',
       width: 90,
       key: 'gender',
@@ -142,7 +148,7 @@ function DataTable(props: IProps) {
       }
     },
     {
-      title: `${t('role')}`,
+      title: t('role'),
       dataIndex: 'role',
       width: 100,
       key: 'role',
@@ -151,7 +157,7 @@ function DataTable(props: IProps) {
       }
     },
     {
-      title: `${t('status')}`,
+      title: t('Common_Status'),
       dataIndex: 'status',
       width: 110,
       key: 'status',
@@ -172,7 +178,9 @@ function DataTable(props: IProps) {
           if (!value) {
             confirm({
               content: `Are you sure you wish to deactivate ${record.fullName}?`,
-              title: 'Confirm',
+              title: t('Common_Confirm'),
+              okText: t('Common_Deactivate'),
+              cancelText: t('Common_Cancel'),
               onOk: async () => {
                 await apiHandle(value);
               }
@@ -187,7 +195,7 @@ function DataTable(props: IProps) {
               placement="bottom"
               title={
                 <div className={styles.customTooltip}>
-                  {record.status === EState.Activate.toString() ? t('activate') : t('inactivate')}
+                  {record.status === EState.Activate.toString() ? t('Common_Activate') : t('Common_Inactivate')}
                 </div>
               }
               color="#ffffff"
@@ -204,41 +212,61 @@ function DataTable(props: IProps) {
       }
     },
     {
-      title: `${t('action')}`,
+      title: t('Common_Action'),
       dataIndex: 'action',
       key: 'action',
       fixed: 'right',
       width: 140,
       className: 'actionCollumn',
       render: (_, record) => {
-        const editClick = () => {
-          props.openPanel(record);
-        };
         return (
           <div style={{ width: 100 }}>
-            <Tooltip
-              placement="bottom"
-              title={<div className={styles.customTooltip}>{t('edit')}</div>}
-              color="#ffffff"
-              arrow={true}
-            >
-              <Button type="text" onClick={editClick} icon={<EditOutlined />} />
-            </Tooltip>
-            <Tooltip
-              placement="bottom"
-              title={<div className={styles.customTooltip}>{t('Common_Delete')}</div>}
-              color="#ffffff"
-              arrow={true}
-            >
-              <Button
-                type="text"
-                onClick={() => {
-                  setIsOpenModal(true);
-                  setChoosenUser(record);
-                }}
-                icon={<DeleteOutlined />}
-              />
-            </Tooltip>
+            {props.tabStatus == 1 ? (
+              <>
+                <Tooltip
+                  placement="bottom"
+                  title={<div className={styles.customTooltip}>{t('Common_Edit')}</div>}
+                  color="#ffffff"
+                  arrow={true}
+                >
+                  <Button type="text" onClick={() => props.openPanel(record)} icon={<EditOutlined />} />
+                </Tooltip>
+                <Tooltip
+                  placement="bottom"
+                  title={<div className={styles.customTooltip}>{t('Common_Delete')}</div>}
+                  color="#ffffff"
+                  arrow={true}
+                >
+                  <Button
+                    type="text"
+                    onClick={() => {
+                      setIsOpenModal(true);
+                      setChoosenUser(record);
+                    }}
+                    icon={<DeleteOutlined />}
+                  />
+                </Tooltip>
+              </>
+            ) : (
+              <>
+                <Tooltip
+                  placement="bottom"
+                  title={<div className={styles.customTooltip}>{t('Common_ViewDetail')}</div>}
+                  color="#ffffff"
+                  arrow={true}
+                >
+                  <Button type="text" onClick={() => props.openDetailPanel(record)} icon={<SolutionOutlined />} />
+                </Tooltip>
+                <Tooltip
+                  placement="bottom"
+                  title={<div className={styles.customTooltip}>{t('Common_Restore')}</div>}
+                  color="#ffffff"
+                  arrow={true}
+                >
+                  <Button type="text" onClick={() => restoreUser(record)} icon={<UndoOutlined />} />
+                </Tooltip>
+              </>
+            )}
           </div>
         );
       }
@@ -249,39 +277,20 @@ function DataTable(props: IProps) {
     onChange: (selectedRowKeys, selectedRows) => {
       console.log(`selectedRowKeys: ${selectedRowKeys}`, 'selectedRows: ', selectedRows);
       setSelectedItem(selectedRows);
-    },
-    onSelect: (record, selected, selectedRows) => {
-      console.log(selected, selectedRows, record);
-      setSelectedItem(selectedRows);
-    },
-    onSelectAll: (selected, selectedRows, changeRows) => {
-      console.log(selected, selectedRows, changeRows);
-      setSelectedItem(selectedRows);
-    },
-    getCheckboxProps: (record: A) => ({
-      disabled: record.name === 'Disabled User',
-      name: record.name
-    })
+    }
   };
 
   const handleTableChange = (pagination: TablePaginationConfig) => {
     setPagination(pagination);
-    tableLoading();
-  };
-
-  const tableLoading = () => {
-    setLoading(true);
-    const timeout = setTimeout(() => {
-      setLoading(false);
-      clearTimeout(timeout);
-    }, 2000);
+    props.refreshList();
   };
 
   const onSearch = (val: A) => {
+    props.refreshList();
     console.log(val);
   };
 
-  const onChange = (e: RadioChangeEvent) => {
+  const onRadioChange = (e: RadioChangeEvent) => {
     setValue(Number(e.target.value));
   };
 
@@ -293,45 +302,75 @@ function DataTable(props: IProps) {
 
   const confirmDelete = () => {
     console.log(selectedItem);
+    setIsOpenModal(false);
+    props.refreshList();
     notification.open({
-      message: 'Delete thử thôi chứ k xóa đc đâu :")',
+      message: t('Common_DeleteSuccess'),
       type: 'success'
     });
+  };
+
+  const restoreUser = (user: A) => {
+    props.refreshList();
+    console.log(user);
+    notification.open({
+      message: t('Common_RestoreSuccess'),
+      type: 'success'
+    });
+  };
+
+  const exportExcel = () => {
+    notification.open({
+      message: t('Common_ExportSuccess'),
+      type: 'success'
+    });
+  };
+
+  const importExcel = () => {
+    notification.open({
+      message: t('Common_ImportSuccess'),
+      type: 'success'
+    });
+    props.refreshList();
   };
 
   const TableHeader = () => {
     return (
       <>
         <div className={styles.tableHeaderLeft}>
-          <Button type="text" onClick={() => props.openPanel()} icon={<PlusOutlined />}>
-            {t('Common_AddNew')}
-          </Button>
-          <Button
-            onClick={() => setIsOpenModal(true)}
-            loading={loading}
-            type="text"
-            icon={<DeleteOutlined />}
-            disabled={selectedItem.length === 0}
-          >
-            {t('Common_DeleteSelected')}
-          </Button>
-          <Button type="text" onClick={() => props.openPanel()} icon={<ExportOutlined />}>
-            {t('export excel')}
-          </Button>
-          <Button type="text" onClick={() => props.openPanel()} icon={<ImportOutlined />}>
-            {t('import excel')}
-          </Button>
+          {props.tabStatus == 1 && (
+            <>
+              <Button type="text" onClick={() => props.openPanel()} icon={<PlusOutlined />}>
+                {t('Common_AddNew')}
+              </Button>
+              <Button
+                onClick={() => setIsOpenModal(true)}
+                loading={loading}
+                type="text"
+                icon={<DeleteOutlined />}
+                disabled={selectedItem.length === 0}
+              >
+                {t('Common_DeleteSelected')}
+              </Button>
+              <Button type="text" onClick={exportExcel} icon={<ExportOutlined />}>
+                {t('Common_ExportExcel')}
+              </Button>
+              <Button type="text" onClick={importExcel} icon={<ImportOutlined />}>
+                {t('Common_ImportExcel')}
+              </Button>
+            </>
+          )}
         </div>
         <div className={styles.tableHeaderRight}>
           <Tooltip
             placement="bottom"
-            title={<div className={styles.customTooltip}>{t('filter')}</div>}
+            title={<div className={styles.customTooltip}>{t('Common_Filter')}</div>}
             color="#ffffff"
             arrow={true}
           >
             <Button type="text" onClick={() => props.openFilterPanel()} icon={<FilterOutlined />} />
           </Tooltip>
-          <Search placeholder={t('search by name')} allowClear onSearch={onSearch} style={{ width: 250 }} />
+          <Search placeholder={t('Common_SearchByName')} allowClear onSearch={onSearch} style={{ width: 250 }} />
         </div>
       </>
     );
@@ -360,7 +399,7 @@ function DataTable(props: IProps) {
         title={
           <>
             <ExclamationCircleFilled style={{ marginRight: 10, color: '#d0cf23', fontSize: 20 }} />
-            <span>Confirm Delete</span>
+            <span>{t('Common_ConfirmDelete')}</span>
           </>
         }
         open={isModalOpen}
@@ -370,19 +409,19 @@ function DataTable(props: IProps) {
         <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
           <div style={{ fontSize: 16, margin: '10px 0' }}>
             {choosenUser
-              ? t('do you wanna delete this user?').replaceAll('{0}', choosenUser.fullName)
-              : t('do you want to delete those users?')}
+              ? t('Configuration_Account_DeleteSingleUser_Text').replaceAll('{0}', choosenUser.fullName)
+              : t('Configuration_Account_DeleteUser_Text')}
           </div>
           <Radio.Group
-            onChange={onChange}
+            onChange={onRadioChange}
             style={{ display: 'flex', flexDirection: 'column', gap: 10, marginBottom: 60, marginLeft: 20 }}
             value={value}
           >
-            <Radio value={1}>{t('hard delete')}</Radio>
-            <Radio value={2}>{t('soft delete')}</Radio>
+            <Radio value={1}>{t('Common_HardDelete')}</Radio>
+            <Radio value={2}>{t('Common_SoftDelete')}</Radio>
           </Radio.Group>
           <div className="actionBtnBottom">
-            <Button onClick={onCancelModal}>Cancel</Button>
+            <Button onClick={onCancelModal}>{t('Common_Cancel')}</Button>
             <Button type="primary" disabled={value === 0} onClick={confirmDelete}>
               {t('Common_Delete')}
             </Button>

@@ -1,10 +1,4 @@
-import {
-  DeleteOutlined,
-  ExclamationCircleFilled,
-  PlusOutlined,
-  SmileOutlined,
-  SolutionOutlined
-} from '@ant-design/icons';
+import { DeleteOutlined, EditOutlined, PlusOutlined, SmileOutlined, SolutionOutlined } from '@ant-design/icons';
 import { Avatar, Button, Modal, Table, TablePaginationConfig, Tooltip, notification } from 'antd';
 import { ColumnsType } from 'antd/es/table';
 import { useState } from 'react';
@@ -18,9 +12,11 @@ interface IProps {
   data: A[];
   openPanel: (data?: A) => void;
   openDetailPanel: (data?: A) => void;
+  refreshList: () => void;
+  loading: boolean;
 }
 function DataTable(props: IProps) {
-  const [loading, setLoading] = useState<boolean>(false);
+  const { loading } = props;
   const [selectedItem, setSelectedItem] = useState<A[]>([]);
   const { confirm } = Modal;
   const { t } = useTranslation();
@@ -55,15 +51,15 @@ function DataTable(props: IProps) {
       render: (_, record) => {
         return (
           <Avatar.Group maxCount={2} maxStyle={{ color: '#f56a00', backgroundColor: '#fde3cf' }}>
-            {Array.from({ length: 5 }).map((_, i) => (
-              <Avatar key={i} src={record.photoUrl} />
+            {record.members.map((user: A) => (
+              <Avatar key={user.id} src={user.photoUrl} />
             ))}
           </Avatar.Group>
         );
       }
     },
     {
-      title: t('description'),
+      title: t('Common_Description'),
       dataIndex: 'job',
       key: 'job',
       render: (_, record) => {
@@ -71,25 +67,30 @@ function DataTable(props: IProps) {
       }
     },
     {
-      title: t('action'),
+      title: t('Common_Action'),
       dataIndex: 'action',
       key: 'action',
       fixed: 'right',
-      width: 130,
+      className: 'actionCollumn',
+      width: 200,
       render: (_, record) => {
-        const viewDetailCLick = () => {
-          props.openDetailPanel(record);
-        };
-
         return (
           <div>
             <Tooltip
               placement="bottom"
-              title={<div className={styles.customTooltip}>{t('view detail')}</div>}
+              title={<div className={styles.customTooltip}>{t('Common_ViewDetail')}</div>}
               color="#ffffff"
               arrow={true}
             >
-              <Button type="text" onClick={viewDetailCLick} icon={<SolutionOutlined />} />
+              <Button type="text" onClick={() => props.openDetailPanel(record)} icon={<SolutionOutlined />} />
+            </Tooltip>
+            <Tooltip
+              placement="bottom"
+              title={<div className={styles.customTooltip}>{t('Common_Edit')}</div>}
+              color="#ffffff"
+              arrow={true}
+            >
+              <Button type="text" onClick={() => props.openPanel(record)} icon={<EditOutlined />} />
             </Tooltip>
             <Tooltip
               placement="bottom"
@@ -97,7 +98,7 @@ function DataTable(props: IProps) {
               color="#ffffff"
               arrow={true}
             >
-              <Button type="text" onClick={deleteTeam} icon={<DeleteOutlined />} />
+              <Button type="text" onClick={() => deleteTeam(record)} icon={<DeleteOutlined />} />
             </Tooltip>
           </div>
         );
@@ -107,18 +108,11 @@ function DataTable(props: IProps) {
 
   const handleTableChange = (pagination: TablePaginationConfig) => {
     setPagination(pagination);
-    tableLoading();
-  };
-
-  const tableLoading = () => {
-    setLoading(true);
-    const timeout = setTimeout(() => {
-      setLoading(false);
-      clearTimeout(timeout);
-    }, 2000);
+    props.refreshList();
   };
 
   const onSearch = (val: A) => {
+    props.refreshList();
     console.log(val);
   };
 
@@ -126,26 +120,21 @@ function DataTable(props: IProps) {
     onChange: (selectedRowKeys, selectedRows) => {
       console.log(`selectedRowKeys: ${selectedRowKeys}`, 'selectedRows: ', selectedRows);
       setSelectedItem(selectedRows);
-    },
-    onSelect: (record, selected, selectedRows) => {
-      console.log(selected, selectedRows, record);
-      setSelectedItem(selectedRows);
-    },
-    onSelectAll: (selected, selectedRows, changeRows) => {
-      console.log(selected, selectedRows, changeRows);
-      setSelectedItem(selectedRows);
     }
   };
 
-  const deleteTeam = () => {
+  const deleteTeam = (user?: A) => {
     confirm({
-      content: `Are you sure you wish to delete those teams?`,
-      title: 'Confirm',
+      content: user.id
+        ? t('Department_Team_DeleteSingle_Remind_Text').replace('{0}', user.name)
+        : t('Department_Team_DeleteMultyple_Remind_Text'),
+      title: t('Common_Confirm'),
       okText: t('Common_Delete'),
+      cancelText: t('Common_Cancel'),
       onOk() {
-        tableLoading();
+        props.refreshList();
         notification.open({
-          message: 'Delete thử thôi chứ k xóa đc đâu :")',
+          message: t('Common_DeleteSuccess'),
           type: 'success'
         });
       },
@@ -162,18 +151,12 @@ function DataTable(props: IProps) {
           <Button type="text" onClick={() => props.openPanel()} icon={<PlusOutlined />}>
             {t('Common_AddNew')}
           </Button>
-          <Button
-            onClick={deleteTeam}
-            loading={loading}
-            type="text"
-            icon={<DeleteOutlined />}
-            disabled={selectedItem.length === 0}
-          >
+          <Button onClick={deleteTeam} type="text" icon={<DeleteOutlined />} disabled={selectedItem.length === 0}>
             {t('Common_DeleteSelected')}
           </Button>
         </div>
         <div className={styles.tableHeaderRight}>
-          <Search placeholder="Search Name" allowClear onSearch={onSearch} style={{ width: 250 }} />
+          <Search placeholder={t('Common_SearchByName')} allowClear onSearch={onSearch} style={{ width: 250 }} />
         </div>
       </>
     );
@@ -191,7 +174,7 @@ function DataTable(props: IProps) {
         locale={{
           emptyText: (
             <>
-              <SmileOutlined style={{ marginRight: 5 }} /> There are no records to display.
+              <SmileOutlined style={{ marginRight: 5 }} /> {t('Common_NoRecord')}
             </>
           )
         }}

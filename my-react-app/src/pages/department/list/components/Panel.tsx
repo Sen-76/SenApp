@@ -56,13 +56,13 @@ function Panel(props: IProps, ref: A) {
           <Form.Item name="title" label="Title" rules={formRule.title}>
             <Input maxLength={250} showCount />
           </Form.Item>
-          <Form.Item name="description" label="Description">
+          <Form.Item name="description" label={t('Common_Description')}>
             <TextArea maxLength={1000} showCount />
           </Form.Item>
           <div className="actionBtnBottom">
-            <Button onClick={closeDrawer}>Cancel</Button>
+            <Button onClick={closeDrawer}>{t('Common_Cancel')}</Button>
             <Button type="primary" htmlType="submit">
-              Save
+              {t('Common_Save')}
             </Button>
           </div>
         </Form>

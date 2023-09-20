@@ -89,19 +89,19 @@ function LeftNav() {
       key: 'configuration',
       children: [
         {
-          label: t('account configuration'),
+          label: t('Configuration_Account'),
           path: '/configuration/account-configuration',
           icon: renderIcon(ArrowRightOutlined),
           key: 'account-configuration'
         },
         {
-          label: t('file configuration'),
+          label: t('Configuration_File'),
           path: '/configuration/file-configuration',
           icon: renderIcon(ArrowRightOutlined),
           key: 'file-configuration'
         },
         {
-          label: t('email configuration'),
+          label: t('Configuration_Email'),
           path: '/configuration/email-configuration',
           icon: renderIcon(ArrowRightOutlined),
           key: 'email-configuration'

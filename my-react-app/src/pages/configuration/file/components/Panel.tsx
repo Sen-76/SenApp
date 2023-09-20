@@ -53,7 +53,7 @@ function Panel(props: IProps, ref: A) {
   return (
     <>
       <Drawer
-        title={isEdit ? t('edit file configuration') : t('create file configuration')}
+        title={isEdit ? t('Configuration_File_Edit') : t('Configuration_File_Create')}
         placement="right"
         open={open}
         extra={<CloseOutlined onClick={closeDrawer} />}
@@ -64,7 +64,7 @@ function Panel(props: IProps, ref: A) {
         destroyOnClose={true}
       >
         <Form form={form} onFinish={onFinish} layout="vertical" className={styles.panelform}>
-          <Form.Item name="title" label={t('title')} rules={formRule.title}>
+          <Form.Item name="title" label={t('Common_Title')} rules={formRule.title}>
             <Input maxLength={250} showCount />
           </Form.Item>
           <Form.Item name="fileSize" label={`${t('file size')} (MB)`} rules={formRule.fileSize}>
@@ -77,9 +77,9 @@ function Panel(props: IProps, ref: A) {
             <Select options={fileFolder} />
           </Form.Item>
           <div className="actionBtnBottom">
-            <Button onClick={closeDrawer}>{t('cancel')}</Button>
+            <Button onClick={closeDrawer}>{t('Common_Cancel')}</Button>
             <Button type="primary" htmlType="submit">
-              {t('confirm')}
+              {t('Common_Confirm')}
             </Button>
           </div>
         </Form>

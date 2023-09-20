@@ -23,7 +23,7 @@ function EmailConfiguration() {
   useEffect(() => {
     setBreadcrumb([
       { icon: <SettingOutlined />, text: `${t('configuration')}` },
-      { text: `${t('file configuration')}` }
+      { text: `${t('Configuration_File')}` }
     ]);
   }, [t]);
 

@@ -3,14 +3,13 @@ import { GroupOutlined } from '@ant-design/icons';
 import { Tabs } from 'antd';
 import { useEffect } from 'react';
 import styles from './ViewDetail.module.scss';
-import Search from 'antd/es/input/Search';
 import { useTranslation } from 'react-i18next';
 import { useLocation } from 'react-router';
 
 //components
 import Members from './components/Members/Members';
 import Teams from './components/Teams/Teams';
-import Tasks from './components/Tasks';
+import Project from './components/Projects/Project';
 
 function ViewDetail() {
   const { setBreadcrumb } = useBreadcrumb();
@@ -26,33 +25,25 @@ function ViewDetail() {
 
   const tabItems = [
     {
-      key: '1', // Unique key
+      key: '1',
       label: t('members'),
       children: <Members />
     },
     {
-      key: '2', // Unique key
+      key: '2',
       label: t('teams'),
       children: <Teams />
     },
     {
-      key: '3', // Unique key
+      key: '3',
       label: t('projects'),
-      children: <Tasks />
+      children: <Project />
     }
   ];
 
-  const onSearch = () => {
-    console.log('onSearch');
-  };
-
   return (
     <div className={styles.viewdetail}>
-      <Tabs
-        items={tabItems}
-        tabBarExtraContent={<Search placeholder={t('search')} allowClear onSearch={onSearch} style={{ width: 250 }} />}
-        size="large"
-      />
+      <Tabs items={tabItems} size="large" />
     </div>
   );
 }

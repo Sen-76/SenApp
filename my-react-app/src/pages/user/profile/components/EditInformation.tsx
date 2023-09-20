@@ -3,6 +3,7 @@ import styles from '../Profile.module.scss';
 import { useEffect } from 'react';
 import dayjs from 'dayjs';
 import EditAvatar from './EditAvatar';
+import { useTranslation } from 'react-i18next';
 
 const genderOptions = [
   {
@@ -31,6 +32,7 @@ interface IProps {
 function EditInformation(props: IProps) {
   const { draftUser, cancelEdit } = props;
   const [form] = Form.useForm();
+  const { t } = useTranslation();
 
   useEffect(() => {
     draftUser.dob = dayjs(draftUser.dob);
@@ -69,9 +71,9 @@ function EditInformation(props: IProps) {
           <Select options={departmentOptions} placeholder="Select a gender" />
         </Form.Item>
         <div>
-          <Button onClick={cancelEdit}>Cancel</Button>
+          <Button onClick={cancelEdit}>{t('Common_Cancel')}</Button>
           <Button type="primary" htmlType="submit">
-            Save
+            {t('Common_Save')}
           </Button>
         </div>
       </Form>

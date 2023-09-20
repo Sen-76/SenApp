@@ -42,7 +42,7 @@ function Panel(props: IProps, ref: A) {
   return (
     <>
       <Drawer
-        title={isEdit ? t('edit email configuration') : t('create email configuration')}
+        title={isEdit ? t('Configuration_Email_Edit') : t('Configuration_Email_Create')}
         placement="right"
         open={open}
         extra={<CloseOutlined onClick={closeDrawer} />}
@@ -53,16 +53,16 @@ function Panel(props: IProps, ref: A) {
         destroyOnClose={true}
       >
         <Form form={form} onFinish={onFinish} layout="vertical" className={styles.panelform}>
-          <Form.Item name="title" label={t('title')} rules={formRule.title}>
+          <Form.Item name="title" label={t('Common_Title')} rules={formRule.title}>
             <Input />
           </Form.Item>
-          <Form.Item name="description" label={t('description')}>
+          <Form.Item name="description" label={t('Common_Description')}>
             <Input.TextArea />
           </Form.Item>
           <div className="actionBtnBottom">
-            <Button onClick={closeDrawer}>{t('cancel')}</Button>
+            <Button onClick={closeDrawer}>{t('Common_Cancel')}</Button>
             <Button type="primary" htmlType="submit">
-              {t('confirm')}
+              {t('Common_Confirm')}
             </Button>
           </div>
         </Form>

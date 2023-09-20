@@ -26,7 +26,7 @@ function DataTable(props: IProps) {
   });
   const columns: ColumnsType<A> = [
     {
-      title: `${t('title')}`,
+      title: t('Common_Title'),
       dataIndex: 'title',
       width: 210,
       key: 'title',
@@ -35,7 +35,7 @@ function DataTable(props: IProps) {
       }
     },
     {
-      title: `${t('description')}`,
+      title: t('Common_Description'),
       dataIndex: 'description',
       width: 210,
       key: 'description',
@@ -90,7 +90,7 @@ function DataTable(props: IProps) {
       render: (_, record) => record.modifiedBy
     },
     {
-      title: `${t('status')}`,
+      title: t('Common_Status'),
       dataIndex: 'status',
       width: 100,
       key: 'status',
@@ -111,7 +111,9 @@ function DataTable(props: IProps) {
           if (!value) {
             confirm({
               content: `Are you sure you wish to deactivate ${record.fullName} value?`,
-              title: 'Confirm',
+              title: t('Common_Confirm'),
+              okText: t('Common_Deactivate'),
+              cancelText: t('Common_Cancel'),
               onOk: async () => {
                 await apiHandle(value);
               }
@@ -126,7 +128,7 @@ function DataTable(props: IProps) {
               placement="bottom"
               title={
                 <div className={styles.customTooltip}>
-                  {record.status === EState.Activate.toString() ? t('activate') : t('inactivate')}
+                  {record.status === EState.Activate.toString() ? t('Common_Activate') : t('Common_Inactivate')}
                 </div>
               }
               color="#ffffff"
@@ -143,7 +145,7 @@ function DataTable(props: IProps) {
       }
     },
     {
-      title: `${t('action')}`,
+      title: t('Common_Action'),
       dataIndex: 'action',
       key: 'action',
       fixed: 'right',
@@ -157,7 +159,7 @@ function DataTable(props: IProps) {
           <div>
             <Tooltip
               placement="bottom"
-              title={<div className={styles.customTooltip}>{t('edit')}</div>}
+              title={<div className={styles.customTooltip}>{t('Common_Edit')}</div>}
               color="#ffffff"
               arrow={true}
             >
@@ -195,7 +197,7 @@ function DataTable(props: IProps) {
           </Button>
         </div>
         <div className={styles.tableHeaderRight}>
-          <Search placeholder={t('search by title')} allowClear onSearch={onSearch} style={{ width: 250 }} />
+          <Search placeholder={t('Common_SearchByTitle')} allowClear onSearch={onSearch} style={{ width: 250 }} />
         </div>
       </>
     );

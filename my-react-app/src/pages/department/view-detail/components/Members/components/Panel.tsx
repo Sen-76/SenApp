@@ -14,7 +14,16 @@ interface IProps {
 const draftMembers = [
   {
     id: 1,
+    key: 1,
     name: 'Sen',
+    job: 'Developer',
+    gender: 'Male',
+    photoUrl: 'https://top10tphcm.com/wp-content/uploads/2023/02/hinh-anh-meo.jpeg'
+  },
+  {
+    id: 2,
+    key: 2,
+    name: 'Sen 2',
     job: 'Developer',
     gender: 'Male',
     photoUrl: 'https://top10tphcm.com/wp-content/uploads/2023/02/hinh-anh-meo.jpeg'
@@ -22,6 +31,7 @@ const draftMembers = [
 ];
 function Panel(props: IProps, ref: A) {
   const [open, setOpen] = useState<boolean>(false);
+  const [loading, setLoading] = useState<boolean>(false);
   const [selectedItem, setSelectedItem] = useState<A[]>([]);
   const [pagination, setPagination] = useState<TablePaginationConfig>({
     current: 1,
@@ -41,6 +51,8 @@ function Panel(props: IProps, ref: A) {
   };
 
   const closeDrawer = () => {
+    setSelectedItem([]);
+    props.refreshList();
     setOpen(false);
   };
 
@@ -82,16 +94,13 @@ function Panel(props: IProps, ref: A) {
       }
     },
     {
-      title: t('action'),
+      title: t('Common_Action'),
       dataIndex: 'action',
       key: 'action',
       fixed: 'right',
-      width: 50,
+      className: 'actionCollumn',
+      width: 150,
       render: (_, record) => {
-        const kickoutCLick = () => {
-          console.log('assigned');
-        };
-
         return (
           <div>
             <Tooltip
@@ -100,7 +109,7 @@ function Panel(props: IProps, ref: A) {
               color="#ffffff"
               arrow={true}
             >
-              <Button type="text" onClick={kickoutCLick} icon={<PlusOutlined />} />
+              <Button type="text" onClick={() => assignCLick(record)} icon={<PlusOutlined />} />
             </Tooltip>
           </div>
         );
@@ -108,23 +117,28 @@ function Panel(props: IProps, ref: A) {
     }
   ];
 
+  const handleTableChange = (pagination: TablePaginationConfig) => {
+    setPagination(pagination);
+  };
+
   const onSearch = (val: A) => {
     console.log(val);
+  };
+
+  const assignCLick = (user?: A) => {
+    console.log(user);
+    setSelectedItem([]);
+    setLoading(true);
+    const timeout = setTimeout(() => {
+      setLoading(false);
+      clearTimeout(timeout);
+    }, 2000);
   };
 
   const TableHeader = () => {
     return (
       <>
-        <div className={styles.tableHeaderLeft}>
-          <Button
-            type="text"
-            onClick={() => console.log(selectedItem)}
-            icon={<PlusOutlined />}
-            disabled={selectedItem.length === 0}
-          >
-            {t('Common_Assign')}
-          </Button>
-        </div>
+        <div className={styles.tableHeaderLeft}></div>
         <div className={styles.tableHeaderRight}>
           <Search placeholder="Search Name" allowClear onSearch={onSearch} style={{ width: 250 }} />
         </div>
@@ -135,14 +149,6 @@ function Panel(props: IProps, ref: A) {
   const rowSelection: TableRowSelection<A> = {
     onChange: (selectedRowKeys, selectedRows) => {
       console.log(`selectedRowKeys: ${selectedRowKeys}`, 'selectedRows: ', selectedRows);
-      setSelectedItem(selectedRows);
-    },
-    onSelect: (record, selected, selectedRows) => {
-      console.log(selected, selectedRows, record);
-      setSelectedItem(selectedRows);
-    },
-    onSelectAll: (selected, selectedRows, changeRows) => {
-      console.log(selected, selectedRows, changeRows);
       setSelectedItem(selectedRows);
     }
   };
@@ -166,6 +172,8 @@ function Panel(props: IProps, ref: A) {
           dataSource={draftMembers}
           rowSelection={{ ...rowSelection }}
           title={() => TableHeader()}
+          loading={loading}
+          onChange={handleTableChange}
           locale={{
             emptyText: (
               <>
@@ -174,6 +182,12 @@ function Panel(props: IProps, ref: A) {
             )
           }}
         />
+        <div className="actionBtnBottom">
+          <Button onClick={closeDrawer}>{t('Common_Cancel')}</Button>
+          <Button type="primary" onClick={assignCLick} disabled={selectedItem.length === 0}>
+            {t('Common_Assign')}
+          </Button>
+        </div>
       </Drawer>
     </>
   );

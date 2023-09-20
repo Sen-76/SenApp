@@ -1,5 +1,5 @@
 import { CloseOutlined } from '@ant-design/icons';
-import { Button, DatePicker, Drawer, Form, Input, Select, Steps } from 'antd';
+import { Button, DatePicker, Drawer, Form, Input, Select, Steps, notification } from 'antd';
 import { forwardRef, useImperativeHandle, useState } from 'react';
 import styles from '../AccountConfiguration.module.scss';
 import dayjs from 'dayjs';
@@ -42,18 +42,29 @@ function Panel(props: IProps, ref: A) {
     systemForm.resetFields();
   };
 
-  const onFinish = (val: A) => {
-    console.log(val);
-  };
-
   const onConfirm = async () => {
     try {
       const generalCheck = await generalForm.validateFields();
       setEditData(generalForm.getFieldsValue());
       generalCheck && setStep(1);
       const systemCheck = await systemForm.validateFields();
-      if (generalCheck && systemCheck) {
+      if (step == 1 && generalCheck && systemCheck) {
         console.log({ ...editData, ...systemForm.getFieldsValue() });
+        if (isEdit) {
+          notification.open({
+            message: t('Common_UpdateSuccess'),
+            type: 'success'
+          });
+          closeDrawer();
+          props.refreshList();
+        } else {
+          notification.open({
+            message: t('Common_CreateSuccess'),
+            type: 'success'
+          });
+          closeDrawer();
+          props.refreshList();
+        }
       }
     } catch {
       console.log('');
@@ -96,18 +107,11 @@ function Panel(props: IProps, ref: A) {
           style={{ width: '70%', margin: 'auto', marginBottom: 20 }}
           onChange={onStepChange}
           current={step}
-          items={[
-            {
-              title: 'General Info'
-            },
-            {
-              title: 'System Info'
-            }
-          ]}
+          items={[{ title: 'General Info' }, { title: 'System Info' }]}
         />
         {step === 0 && (
           <>
-            <Form form={generalForm} onFinish={onFinish} layout="vertical" className={styles.panelform}>
+            <Form form={generalForm} layout="vertical" className={styles.panelform}>
               <Form.Item name="fullName" label={t('name')} rules={formRule.fullName}>
                 <Input maxLength={250} showCount />
               </Form.Item>
@@ -128,7 +132,7 @@ function Panel(props: IProps, ref: A) {
         )}
         {step === 1 && (
           <>
-            <Form form={systemForm} onFinish={onFinish} layout="vertical" className={styles.panelform}>
+            <Form form={systemForm} layout="vertical" className={styles.panelform}>
               <Form.Item name="username" label={t('username')} rules={formRule.username}>
                 <Input maxLength={250} showCount />
               </Form.Item>
@@ -148,9 +152,9 @@ function Panel(props: IProps, ref: A) {
           </>
         )}
         <div className="actionBtnBottom">
-          <Button onClick={closeDrawer}>{t('cancel')}</Button>
+          <Button onClick={closeDrawer}>{t('Common_Cancel')}</Button>
           <Button type="primary" onClick={onConfirm}>
-            {step === 1 ? t('confirm') : t('next')}
+            {step === 1 ? t('Common_Confirm') : t('Common_Next')}
           </Button>
         </div>
       </Drawer>

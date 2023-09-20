@@ -17,6 +17,7 @@ button + button {
   padding: 10px;
   background-color: #ffffff;
   border-top: 1px solid rgba(206, 190, 190, 0.356);
+  z-index: 10;
 }
 .actionCollumn {
   display: flex;

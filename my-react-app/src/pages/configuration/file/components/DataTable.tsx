@@ -21,7 +21,7 @@ function DataTable(props: IProps) {
   });
   const columns: ColumnsType<A> = [
     {
-      title: `${t('title')}`,
+      title: t('Common_Title'),
       dataIndex: 'title',
       width: 110,
       key: 'title',
@@ -39,7 +39,7 @@ function DataTable(props: IProps) {
       }
     },
     {
-      title: `${t('file accept')}`,
+      title: t('file accept'),
       dataIndex: 'enableFileExtension',
       width: 110,
       key: 'fileSize',
@@ -48,7 +48,7 @@ function DataTable(props: IProps) {
       }
     },
     {
-      title: `${t('file type')}`,
+      title: t('file type'),
       dataIndex: 'fileOfFoder',
       width: 110,
       key: 'fileSize',
@@ -57,7 +57,7 @@ function DataTable(props: IProps) {
       }
     },
     {
-      title: `${t('action')}`,
+      title: t('Common_Action'),
       dataIndex: 'action',
       key: 'action',
       fixed: 'right',
@@ -71,7 +71,7 @@ function DataTable(props: IProps) {
           <div>
             <Tooltip
               placement="bottom"
-              title={<div className={styles.customTooltip}>{t('edit')}</div>}
+              title={<div className={styles.customTooltip}>{t('Common_Edit')}</div>}
               color="#ffffff"
               arrow={true}
             >
@@ -109,7 +109,7 @@ function DataTable(props: IProps) {
           </Button>
         </div>
         <div className={styles.tableHeaderRight}>
-          <Search placeholder={t('search by title')} allowClear onSearch={onSearch} style={{ width: 250 }} />
+          <Search placeholder={t('Common_SearchByTitle')} allowClear onSearch={onSearch} style={{ width: 250 }} />
         </div>
       </>
     );

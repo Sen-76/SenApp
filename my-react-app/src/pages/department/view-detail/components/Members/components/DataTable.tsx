@@ -1,9 +1,10 @@
 import {
-  ExclamationCircleFilled,
   LogoutOutlined,
+  ManOutlined,
   PlusOutlined,
   SmileOutlined,
-  SolutionOutlined
+  SolutionOutlined,
+  WomanOutlined
 } from '@ant-design/icons';
 import { Avatar, Button, Modal, Table, TablePaginationConfig, Tooltip, notification } from 'antd';
 import { ColumnsType } from 'antd/es/table';
@@ -18,9 +19,11 @@ interface IProps {
   data: A[];
   openPanel: (data?: A) => void;
   openDetailPanel: (data?: A) => void;
+  refreshList: () => void;
+  loading: boolean;
 }
 function DataTable(props: IProps) {
-  const [loading, setLoading] = useState<boolean>(false);
+  const { loading } = props;
   const [selectedItem, setSelectedItem] = useState<A[]>([]);
   const { confirm } = Modal;
   const { t } = useTranslation();
@@ -63,7 +66,25 @@ function DataTable(props: IProps) {
       dataIndex: 'gender',
       key: 'gender',
       render: (_, record) => {
-        return record.gender;
+        return record.gender === 'Male' ? (
+          <Tooltip
+            placement="bottom"
+            title={<div className={styles.customTooltip}>{t('man')}</div>}
+            color="#ffffff"
+            arrow={true}
+          >
+            <ManOutlined />
+          </Tooltip>
+        ) : (
+          <Tooltip
+            placement="bottom"
+            title={<div className={styles.customTooltip}>{t('woman')}</div>}
+            color="#ffffff"
+            arrow={true}
+          >
+            <WomanOutlined />
+          </Tooltip>
+        );
       }
     },
     {
@@ -75,7 +96,7 @@ function DataTable(props: IProps) {
       }
     },
     {
-      title: t('action'),
+      title: t('Common_Action'),
       dataIndex: 'action',
       key: 'action',
       className: 'actionCollumn',
@@ -90,7 +111,7 @@ function DataTable(props: IProps) {
           <div>
             <Tooltip
               placement="bottom"
-              title={<div className={styles.customTooltip}>{t('view detail')}</div>}
+              title={<div className={styles.customTooltip}>{t('Common_ViewDetail')}</div>}
               color="#ffffff"
               arrow={true}
             >
@@ -102,7 +123,7 @@ function DataTable(props: IProps) {
               color="#ffffff"
               arrow={true}
             >
-              <Button type="text" onClick={kickoutMembers} icon={<LogoutOutlined />} />
+              <Button type="text" onClick={() => kickoutMembers(record)} icon={<LogoutOutlined />} />
             </Tooltip>
           </div>
         );
@@ -112,30 +133,26 @@ function DataTable(props: IProps) {
 
   const handleTableChange = (pagination: TablePaginationConfig) => {
     setPagination(pagination);
-    tableLoading();
-  };
-
-  const tableLoading = () => {
-    setLoading(true);
-    const timeout = setTimeout(() => {
-      setLoading(false);
-      clearTimeout(timeout);
-    }, 2000);
+    props.refreshList();
   };
 
   const onSearch = (val: A) => {
     console.log(val);
+    props.refreshList();
   };
 
-  const kickoutMembers = () => {
+  const kickoutMembers = (user?: A) => {
     confirm({
-      content: `Are you sure you wish to kickout those members?`,
-      title: 'Confirm',
+      content: user.id
+        ? t('Department_Member_KickDepartmentSingle_Remind_Text').replace('{0}', user.name)
+        : t('Department_Member_KickDepartmentMultiple_Remind_Text'),
+      title: t('Common_Confirm'),
       okText: t('Common_Kick'),
+      cancelText: t('Common_Cancel'),
       onOk() {
-        tableLoading();
+        props.refreshList();
         notification.open({
-          message: 'Delete thử thôi chứ k xóa đc đâu :")',
+          message: t('Common_KickSuccess'),
           type: 'success'
         });
       },
@@ -163,7 +180,7 @@ function DataTable(props: IProps) {
           </Button>
         </div>
         <div className={styles.tableHeaderRight}>
-          <Search placeholder="Search Name" allowClear onSearch={onSearch} style={{ width: 250 }} />
+          <Search placeholder={t('Common_SearchByName')} allowClear onSearch={onSearch} style={{ width: 250 }} />
         </div>
       </>
     );
@@ -172,14 +189,6 @@ function DataTable(props: IProps) {
   const rowSelection: TableRowSelection<A> = {
     onChange: (selectedRowKeys, selectedRows) => {
       console.log(`selectedRowKeys: ${selectedRowKeys}`, 'selectedRows: ', selectedRows);
-      setSelectedItem(selectedRows);
-    },
-    onSelect: (record, selected, selectedRows) => {
-      console.log(selected, selectedRows, record);
-      setSelectedItem(selectedRows);
-    },
-    onSelectAll: (selected, selectedRows, changeRows) => {
-      console.log(selected, selectedRows, changeRows);
       setSelectedItem(selectedRows);
     }
   };

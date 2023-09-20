@@ -1,5 +1,5 @@
 import { CloseOutlined } from '@ant-design/icons';
-import { Button, Checkbox, Col, Collapse, CollapseProps, Drawer, Form, Input, Row, Typography } from 'antd';
+import { Button, Checkbox, Col, Collapse, CollapseProps, Drawer, Form, Row, Typography } from 'antd';
 import { forwardRef, useImperativeHandle, useState } from 'react';
 import styles from '../AccountConfiguration.module.scss';
 import { DepartmentOptions, GenderOptions, RoleOptions, StatusOptions } from '../AccountConfiguration.Model';
@@ -78,10 +78,10 @@ function FilterPanel(props: IProps, ref: A) {
       </Form.Item>
     );
     const item = [
-      { key: 'department', label: 'Department', children: DepartmentElement },
-      { key: 'gender', label: 'Gender', children: GenderElement },
-      { key: 'status', label: 'Status', children: StatusElement },
-      { key: 'role', label: 'Role', children: RoleElement }
+      { key: 'department', label: t('department'), children: DepartmentElement },
+      { key: 'gender', label: t('gender'), children: GenderElement },
+      { key: 'status', label: t('Common_Status'), children: StatusElement },
+      { key: 'role', label: t('role'), children: RoleElement }
     ];
     setItems(item);
   };
@@ -98,16 +98,23 @@ function FilterPanel(props: IProps, ref: A) {
 
   const closeDrawer = () => {
     setOpen(false);
+    resetForm();
+  };
+
+  const resetForm = () => {
+    form.resetFields();
   };
 
   const onFinish = (val: A) => {
     console.log(val);
+    closeDrawer();
+    props.refreshList();
   };
 
   return (
     <>
       <Drawer
-        title={t('filter')}
+        title={t('Common_Filter')}
         placement="right"
         open={open}
         extra={<CloseOutlined onClick={closeDrawer} />}
@@ -128,10 +135,10 @@ function FilterPanel(props: IProps, ref: A) {
             collapsible="icon"
           />
           <div className="actionBtnBottom">
-            <Button onClick={closeDrawer}>Cancel</Button>
-            <Button onClick={closeDrawer}>Reset</Button>
+            <Button onClick={closeDrawer}>{t('Common_Cancel')}</Button>
+            <Button onClick={resetForm}>{t('Common_Reset')}</Button>
             <Button type="primary" htmlType="submit">
-              Confirm
+              {t('Common_Confirm')}
             </Button>
           </div>
         </Form>

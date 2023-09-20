@@ -1,15 +1,16 @@
 import { useBreadcrumb } from '../../../components/breadcrum/Breadcrum';
 import { SettingOutlined } from '@ant-design/icons';
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import styles from './AccountConfiguration.module.scss';
 import { useTranslation } from 'react-i18next';
 import { Tabs } from 'antd';
+import { useLoading } from '../../../common/context/useLoading';
 
 //components
 import DataTable from './components/DataTable';
 import Panel from './components/Panel';
 import FilterPanel from './components/FilterPanel';
-import { useLoading } from '../../../common/context/useLoading';
+import DetailPanel from './components/DetailPanel';
 
 const accountList = [
   {
@@ -46,8 +47,11 @@ const accountList = [
 function AccountConfiguration() {
   const { setBreadcrumb } = useBreadcrumb();
   const { showLoading, closeLoading } = useLoading();
+  const [tabStatus, setTabStatus] = useState<number>(1);
+  const [loading, setLoading] = useState<boolean>(false);
   const panelRef = useRef();
   const filterPanelRef = useRef();
+  const detailPanelRef = useRef();
   const { t } = useTranslation();
 
   const tabItems = [
@@ -62,37 +66,55 @@ function AccountConfiguration() {
   ];
 
   useEffect(() => {
+    getAccountsList();
     setBreadcrumb([
       { icon: <SettingOutlined />, text: `${t('configuration')}` },
-      { text: `${t('account configuration')}` }
+      { text: `${t('Configuration_Account')}` }
     ]);
   }, [t]);
 
+  const getAccountsList = () => {
+    showLoading();
+    setLoading(true);
+    const timeout = setTimeout(() => {
+      closeLoading();
+      setLoading(false);
+      clearTimeout(timeout);
+    }, 2000);
+  };
+
   const openPanel = (data?: A) => {
     (panelRef.current as A).openDrawer(data);
+  };
+
+  const openDetailPanel = (data?: A) => {
+    (detailPanelRef.current as A).openDrawer(data);
   };
 
   const openFilterPanel = (data?: A) => {
     (filterPanelRef.current as A).openDrawer(data);
   };
 
-  const refreshList = () => {
-    console.log('data refresed');
-  };
-
   const onTabChanged = (e: A) => {
-    showLoading();
-    refreshList();
-    console.log(e);
-    closeLoading();
+    setTabStatus(e);
+    getAccountsList();
   };
 
   return (
     <div className={styles.accountconfiguration}>
       <Tabs items={tabItems} size="large" onChange={onTabChanged} />
-      <DataTable data={accountList} openPanel={openPanel} openFilterPanel={openFilterPanel} />
-      <Panel refreshList={refreshList} ref={panelRef} />
-      <FilterPanel refreshList={refreshList} ref={filterPanelRef} />
+      <DataTable
+        data={accountList}
+        openPanel={openPanel}
+        openFilterPanel={openFilterPanel}
+        openDetailPanel={openDetailPanel}
+        tabStatus={tabStatus}
+        refreshList={getAccountsList}
+        loading={loading}
+      />
+      <Panel refreshList={getAccountsList} ref={panelRef} />
+      <FilterPanel refreshList={getAccountsList} ref={filterPanelRef} />
+      <DetailPanel refreshList={getAccountsList} ref={detailPanelRef} />
     </div>
   );
 }

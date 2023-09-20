@@ -24,17 +24,19 @@ function DataTable(props: IProps) {
 
   const columns: ColumnsType<A> = [
     {
-      title: t('title'),
+      title: t('Common_Title'),
       dataIndex: 'title',
       key: 'title',
+      width: 200,
       render: (_, record) => {
         return record.title;
       }
     },
     {
-      title: t('description'),
+      title: t('Common_Description'),
       dataIndex: 'description',
       key: 'description',
+      width: 300,
       render: (_, record) => {
         return record.description;
       }
@@ -43,7 +45,7 @@ function DataTable(props: IProps) {
       title: 'Modified On',
       dataIndex: 'modifiedOn',
       key: 'modifiedOn',
-      width: 150,
+      width: 200,
       render: (_, record) => {
         return <div style={{ minWidth: 90 }}>{dayjs(record.updatedDate).format('DD MMM YYYY HH:mm')}</div>;
       }
@@ -51,12 +53,12 @@ function DataTable(props: IProps) {
     {
       title: 'Modified By',
       dataIndex: 'modifiedBy',
-      width: 120,
+      width: 200,
       key: 'modifiedBy',
       render: (_, record) => record.modifiedBy
     },
     {
-      title: t('action'),
+      title: t('Common_Action'),
       dataIndex: 'action',
       key: 'action',
       className: 'actionCollumn',
@@ -70,7 +72,7 @@ function DataTable(props: IProps) {
           <div>
             <Tooltip
               placement="bottom"
-              title={<div className={styles.customTooltip}>{t('edit')}</div>}
+              title={<div className={styles.customTooltip}>{t('Common_Edit')}</div>}
               color="#ffffff"
               arrow={true}
             >
@@ -78,7 +80,7 @@ function DataTable(props: IProps) {
             </Tooltip>
             <Tooltip
               placement="bottom"
-              title={<div className={styles.customTooltip}>{t('view detail')}</div>}
+              title={<div className={styles.customTooltip}>{t('Common_ViewDetail')}</div>}
               color="#ffffff"
               arrow={true}
             >
