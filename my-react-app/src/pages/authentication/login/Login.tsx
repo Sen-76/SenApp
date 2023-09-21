@@ -1,6 +1,8 @@
-import { Button, Checkbox, Form, Input } from 'antd';
+import { Button, Checkbox, Form, Input, Row } from 'antd';
 import styles from './Login.module.scss';
 import React from 'react';
+import { UserOutlined } from '@ant-design/icons';
+import { Link } from 'react-router-dom';
 
 type FieldType = {
   username?: string;
@@ -13,20 +15,19 @@ function Login() {
     console.log('Success:', values);
   };
 
-  const onFinishFailed = (errorInfo: A) => {
-    console.log('Failed:', errorInfo);
-  };
-
   return (
     <div className={styles.login}>
       <Form
         initialValues={{ remember: true }}
         onFinish={onFinish}
-        onFinishFailed={onFinishFailed}
         autoComplete="off"
         className={styles.form}
         layout="vertical"
       >
+        <div className={styles.loginIcon}>
+          <UserOutlined />
+          <label>Login</label>
+        </div>
         <Form.Item<FieldType>
           label="Username"
           name="username"
@@ -43,9 +44,12 @@ function Login() {
           <Input.Password />
         </Form.Item>
 
-        <Form.Item<FieldType> name="remember" valuePropName="checked">
-          <Checkbox>Remember me</Checkbox>
-        </Form.Item>
+        <Row>
+          <Form.Item<FieldType> name="remember" valuePropName="checked">
+            <Checkbox>Remember me</Checkbox>
+          </Form.Item>
+          <Link to="/forgot">Forgot password?</Link>
+        </Row>
 
         <Form.Item>
           <Button type="primary" htmlType="submit">

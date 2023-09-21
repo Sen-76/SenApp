@@ -2,11 +2,11 @@ import axios from 'axios';
 
 const instance = axios.create({
   timeout: 600000,
-  baseURL: 'https://api.example.com',
-  headers: {
-    Authorization: 'Bearer YOUR_ACCESS_TOKEN',
-    'Content-Type': 'application/json'
-  }
+  baseURL: 'http://localhost:3001/api/v1'
+  // headers: {
+  //   Authorization: 'Bearer YOUR_ACCESS_TOKEN',
+  //   'Content-Type': 'application/json'
+  // }
 });
 
 // Request Interceptor

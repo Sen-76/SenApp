@@ -5,6 +5,7 @@ import styles from '../AccountConfiguration.module.scss';
 import dayjs from 'dayjs';
 import { GenderOptions, DepartmentOptions, RoleOptions } from '../AccountConfiguration.Model';
 import { useTranslation } from 'react-i18next';
+import { service } from '../../../../services/apis';
 
 interface IProps {
   refreshList: () => void;
@@ -58,6 +59,17 @@ function Panel(props: IProps, ref: A) {
           closeDrawer();
           props.refreshList();
         } else {
+          const test = await service.accountService.addAccount({
+            ...editData,
+            ...systemForm.getFieldsValue(),
+            userStar: 0,
+            password: 'DMTuanAnhKhongChoNhapPasswordNhe',
+            status: 0,
+            userRole: null,
+            userTeam: null,
+            userDepartment: null
+          });
+          console.log(test);
           notification.open({
             message: t('Common_CreateSuccess'),
             type: 'success'
@@ -67,7 +79,7 @@ function Panel(props: IProps, ref: A) {
         }
       }
     } catch {
-      console.log('');
+      console.log('co bug r');
     }
   };
 
@@ -82,12 +94,12 @@ function Panel(props: IProps, ref: A) {
 
   const formRule = {
     fullName: [{ required: true, message: t('Common_Require_Field') }],
-    email: [{ required: true, message: t('Common_Require_Field') }],
-    phone: [{ required: true, message: t('Common_Require_Field') }],
+    userEmail: [{ required: true, message: t('Common_Require_Field') }],
+    userPhone: [{ required: true, message: t('Common_Require_Field') }],
     dob: [{ required: true, message: t('Common_Require_Field') }],
-    username: [{ required: true, message: t('Common_Require_Field') }],
+    userName: [{ required: true, message: t('Common_Require_Field') }],
     password: [{ required: true, message: t('Common_Require_Field') }],
-    role: [{ required: true, message: t('Common_Require_Field') }]
+    userRole: [{ required: true, message: t('Common_Require_Field') }]
   };
 
   return (
@@ -115,10 +127,10 @@ function Panel(props: IProps, ref: A) {
               <Form.Item name="fullName" label={t('name')} rules={formRule.fullName}>
                 <Input maxLength={250} showCount />
               </Form.Item>
-              <Form.Item name="email" label={t('email')} rules={formRule.email}>
+              <Form.Item name="userEmail" label={t('email')} rules={formRule.userEmail}>
                 <Input maxLength={250} showCount />
               </Form.Item>
-              <Form.Item name="phone" label={t('phone')} rules={formRule.phone}>
+              <Form.Item name="userPhone" label={t('phone')} rules={formRule.userPhone}>
                 <Input />
               </Form.Item>
               <Form.Item name="dob" label={t('date of birth')} rules={formRule.dob}>
@@ -133,19 +145,19 @@ function Panel(props: IProps, ref: A) {
         {step === 1 && (
           <>
             <Form form={systemForm} layout="vertical" className={styles.panelform}>
-              <Form.Item name="username" label={t('username')} rules={formRule.username}>
+              <Form.Item name="userName" label={t('username')} rules={formRule.userName}>
                 <Input maxLength={250} showCount />
               </Form.Item>
-              <Form.Item name="job" label={t('job')}>
+              <Form.Item name="jobTitle" label={t('job')}>
                 <Input maxLength={250} showCount />
               </Form.Item>
-              <Form.Item name="department" label={t('department')}>
+              <Form.Item name="userDepartment" label={t('department')}>
                 <Select options={DepartmentOptions} />
               </Form.Item>
-              <Form.Item name="team" label={t('team')}>
+              <Form.Item name="userTeam" label={t('team')}>
                 <Select options={DepartmentOptions} />
               </Form.Item>
-              <Form.Item name="role" label={t('role')} rules={formRule.role}>
+              <Form.Item name="userRole" label={t('role')} rules={formRule.userRole}>
                 <Select options={RoleOptions} />
               </Form.Item>
             </Form>

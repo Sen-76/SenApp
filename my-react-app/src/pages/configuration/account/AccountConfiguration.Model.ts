@@ -1,11 +1,15 @@
 export const GenderOptions = [
   {
     label: 'Male',
-    value: 'Male'
+    value: 0
   },
   {
     label: 'Female',
-    value: 'Female'
+    value: '1'
+  },
+  {
+    label: 'Other',
+    value: 2
   }
 ];
 export const DepartmentOptions = [
@@ -33,14 +37,14 @@ export const RoleOptions = [
 export const StatusOptions = [
   {
     label: 'Active',
-    value: 'Active'
+    value: 0
   },
   {
     label: 'Inactive',
-    value: 'Inactive'
+    value: 1
   }
 ];
 export enum EState {
-  Activate = 'Active',
-  DeActivate = 'Deactive'
+  Activate = 0,
+  DeActivate = 1
 }

@@ -73,7 +73,7 @@ function AccountConfiguration() {
     ]);
   }, [t]);
 
-  const getAccountsList = () => {
+  const getAccountsList = async () => {
     showLoading();
     setLoading(true);
     const timeout = setTimeout(() => {

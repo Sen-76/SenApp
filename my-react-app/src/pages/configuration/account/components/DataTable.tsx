@@ -387,7 +387,7 @@ function DataTable(props: IProps) {
         locale={{
           emptyText: (
             <>
-              <SmileOutlined style={{ marginRight: 5 }} /> There are no records to display.
+              <SmileOutlined style={{ marginRight: 5 }} /> {t('Common_NoRecord')}
             </>
           )
         }}

@@ -74,7 +74,7 @@ function DataTable(props: IProps) {
       }
     },
     {
-      title: 'Modified On',
+      title: t('Common_ModifiedOn'),
       dataIndex: 'modifiedOn',
       key: 'modifiedOn',
       width: 150,
@@ -83,7 +83,7 @@ function DataTable(props: IProps) {
       }
     },
     {
-      title: 'Modified By',
+      title: t('Common_ModifiedBy'),
       dataIndex: 'modifiedBy',
       width: 120,
       key: 'modifiedBy',
@@ -213,7 +213,7 @@ function DataTable(props: IProps) {
         locale={{
           emptyText: (
             <>
-              <SmileOutlined style={{ marginRight: 5 }} /> There are no records to display.
+              <SmileOutlined style={{ marginRight: 5 }} /> {t('Common_NoRecord')}
             </>
           )
         }}

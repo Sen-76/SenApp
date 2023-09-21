@@ -4,6 +4,7 @@ import styles from './UserAvatar.module.scss';
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
+import { useLoginManager } from '../../../utils/login-manager';
 
 const draftUser = {
   photoUrl: 'https://top10tphcm.com/wp-content/uploads/2023/02/hinh-anh-meo.jpeg',
@@ -15,9 +16,7 @@ const draftUser = {
 
 function UserAvatar() {
   const { t } = useTranslation();
-  const loginOut = () => {
-    console.log('logout');
-  };
+  const { loginOut } = useLoginManager();
 
   const menuStyle = {
     boxShadow: 'none'
