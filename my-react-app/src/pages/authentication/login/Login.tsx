@@ -1,8 +1,9 @@
 import { Button, Checkbox, Form, Input, Row } from 'antd';
 import styles from './Login.module.scss';
 import React from 'react';
-import { UserOutlined } from '@ant-design/icons';
+import { LockOutlined, UserOutlined } from '@ant-design/icons';
 import { Link } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 
 type FieldType = {
   username?: string;
@@ -11,6 +12,8 @@ type FieldType = {
 };
 
 function Login() {
+  const { t } = useTranslation();
+
   const onFinish = (values: A) => {
     console.log('Success:', values);
   };
@@ -26,14 +29,14 @@ function Login() {
       >
         <div className={styles.loginIcon}>
           <UserOutlined />
-          <label>Login</label>
+          <label>{t('Common_Login')}</label>
         </div>
         <Form.Item<FieldType>
           label="Username"
           name="username"
           rules={[{ required: true, message: 'Please input your username!' }]}
         >
-          <Input />
+          <Input size="large" prefix={<UserOutlined style={{ marginRight: 5 }} />} />
         </Form.Item>
 
         <Form.Item<FieldType>
@@ -41,21 +44,21 @@ function Login() {
           name="password"
           rules={[{ required: true, message: 'Please input your password!' }]}
         >
-          <Input.Password />
+          <Input.Password size="large" prefix={<LockOutlined style={{ marginRight: 5 }} />} />
         </Form.Item>
 
         <Row>
           <Form.Item<FieldType> name="remember" valuePropName="checked">
             <div className={styles.refo}>
-              <Checkbox>Remember me</Checkbox>
-              <Link to="/forgot">Forgot password?</Link>
+              <Checkbox>{t('Common_Login_RememberMe')}</Checkbox>
+              <Link to="/forgot">{t('Common_Login_ForgotPassword')}</Link>
             </div>
           </Form.Item>
         </Row>
 
         <Form.Item>
           <Button type="primary" htmlType="submit">
-            Login
+            {t('Common_Login')}
           </Button>
         </Form.Item>
       </Form>
