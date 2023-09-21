@@ -28,7 +28,7 @@ function DataTable(props: IProps) {
 
   const columns: ColumnsType<A> = [
     {
-      title: t('title'),
+      title: t('Common_Title'),
       dataIndex: 'title',
       key: 'title',
       render: (_, record) => {
@@ -53,7 +53,7 @@ function DataTable(props: IProps) {
       }
     },
     {
-      title: t('description'),
+      title: t('Common_Description'),
       dataIndex: 'description',
       key: 'description',
       render: (_, record) => {
@@ -84,7 +84,7 @@ function DataTable(props: IProps) {
               color="#ffffff"
               arrow={true}
             >
-              <Button type="text" onClick={() => console.log('view detail')} icon={<SolutionOutlined />} />
+              <Button type="text" onClick={() => console.log(record)} icon={<SolutionOutlined />} />
             </Tooltip>
           </div>
         );
