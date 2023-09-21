@@ -28,5 +28,18 @@
         width: 100% !important;
       }
     }
+    :global {
+      .ant-form-item {
+        width: 100%;
+      }
+    }
+    .refo {
+      display: flex;
+      justify-content: space-between;
+      font-size: 16px;
+      span {
+        font-size: 16px;
+      }
+    }
   }
 }

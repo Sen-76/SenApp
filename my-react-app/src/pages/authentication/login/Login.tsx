@@ -46,9 +46,11 @@ function Login() {
 
         <Row>
           <Form.Item<FieldType> name="remember" valuePropName="checked">
-            <Checkbox>Remember me</Checkbox>
+            <div className={styles.refo}>
+              <Checkbox>Remember me</Checkbox>
+              <Link to="/forgot">Forgot password?</Link>
+            </div>
           </Form.Item>
-          <Link to="/forgot">Forgot password?</Link>
         </Row>
 
         <Form.Item>
