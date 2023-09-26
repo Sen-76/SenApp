@@ -53,7 +53,7 @@ const draftTeams = [
     ]
   },
   {
-    id: 1,
+    id: 2,
     name: 'Team hope less',
     description: 'N/A',
     members: []

@@ -1,6 +1,6 @@
 import {
   AlignLeftOutlined,
-  BarsOutlined,
+  AppstoreOutlined,
   CalendarOutlined,
   CarryOutOutlined,
   FlagOutlined,
@@ -38,7 +38,7 @@ const Overview = () => {
   const { pieChartData, barChartData } = useGetData();
   const { setBreadcrumb } = useBreadcrumb();
   useEffect(() => {
-    setBreadcrumb([{ path: '/', icon: <BarsOutlined />, text: 'Overview' }]);
+    setBreadcrumb([{ path: '/', icon: <AppstoreOutlined />, text: 'Overview' }]);
   }, []);
   return (
     <div className={styles.overview}>
@@ -83,12 +83,25 @@ const Overview = () => {
       <Row className={styles.contentOverview}>
         <Col className={styles.left}>
           <div className={styles.draft}>
-            <BarChart xAxisData={barChartData.values} xAxisLabel={barChartData.labels} />
+            <div className={styles.header}>Bar chart</div>
+            <div className={styles.chartWrap}>
+              <BarChart xAxisData={barChartData.values} xAxisLabel={barChartData.labels} />
+            </div>
           </div>
-          <div className={styles.draftHalf}>
-            <PieChart data={pieChartData} />
+          <div className={styles.draftWrap}>
+            <div className={styles.draftHalf}>
+              <div className={styles.header}>Pie chart</div>
+              <div className={styles.chartWrap}>
+                <PieChart data={pieChartData} />
+              </div>
+            </div>
+            <div className={styles.draftHalf}>
+              <div className={styles.header}>Pie chart</div>
+              <div className={styles.chartWrap}>
+                <PieChart data={pieChartData} />
+              </div>
+            </div>
           </div>
-          <div className={styles.draftHalf}></div>
           <div className={styles.draft}></div>
         </Col>
         <Col className={styles.right}>
@@ -96,7 +109,7 @@ const Overview = () => {
             className={styles.callendar}
             fullscreen={false}
             headerRender={({ value }) => (
-              <div className={styles.callenderHeader}>
+              <div className={styles.header}>
                 <div>
                   <CalendarOutlined /> {monthNamesAbbreviated[value.month()]} - {value.year()}
                 </div>
@@ -108,7 +121,7 @@ const Overview = () => {
             size="large"
             className={styles.todoList}
             header={
-              <div className={styles.todoHeader}>
+              <div className={styles.header}>
                 <div>
                   <CarryOutOutlined /> Todo List
                 </div>
@@ -126,7 +139,7 @@ const Overview = () => {
             )}
           />
           <div className={styles.timeLine}>
-            <div className={styles.timeLineHeader}>
+            <div className={styles.header}>
               <div>
                 <AlignLeftOutlined /> Recently Activity
               </div>

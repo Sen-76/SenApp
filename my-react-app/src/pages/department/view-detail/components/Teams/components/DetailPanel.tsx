@@ -1,5 +1,5 @@
-import { CloseOutlined, ExclamationCircleFilled, LogoutOutlined, SmileOutlined } from '@ant-design/icons';
-import { Avatar, Button, Col, Drawer, Modal, Row, Table, Tooltip, notification } from 'antd';
+import { CloseOutlined, SmileOutlined } from '@ant-design/icons';
+import { Avatar, Col, Drawer, Row, Table, Tooltip } from 'antd';
 import { forwardRef, useImperativeHandle, useState } from 'react';
 import styles from '../Teams.module.scss';
 import { ColumnsType } from 'antd/es/table';
@@ -12,7 +12,6 @@ interface IProps {
 function DetailPanel(props: IProps, ref: A) {
   const [open, setOpen] = useState<boolean>(false);
   const [data, setData] = useState<A>({});
-  const { confirm } = Modal;
   const { t } = useTranslation();
 
   useImperativeHandle(ref, () => ({
@@ -64,47 +63,6 @@ function DetailPanel(props: IProps, ref: A) {
       width: 250,
       render: (_, record) => {
         return record.job;
-      }
-    },
-    {
-      title: t('Common_Action'),
-      dataIndex: 'action',
-      key: 'action',
-      fixed: 'right',
-      width: 50,
-      render: (_, record) => {
-        const kickoutCLick = () => {
-          console.log(record);
-          confirm({
-            title: t('Common_Kick'),
-            icon: <ExclamationCircleFilled />,
-            content: 'Do you wanna kick this user out of this group?',
-            okText: t('Common_Kick'),
-            cancelText: t('Common_Cancel'),
-            onOk() {
-              notification.open({
-                message: 'Delete thử thôi chứ k xóa đc đâu :")',
-                type: 'success'
-              });
-            },
-            onCancel() {
-              console.log('Cancel');
-            }
-          });
-        };
-
-        return (
-          <div>
-            <Tooltip
-              placement="bottom"
-              title={<div className={styles.customTooltip}>{t('Common_Kick')}</div>}
-              color="#ffffff"
-              arrow={true}
-            >
-              <Button type="text" onClick={kickoutCLick} icon={<LogoutOutlined />} />
-            </Tooltip>
-          </div>
-        );
       }
     }
   ];

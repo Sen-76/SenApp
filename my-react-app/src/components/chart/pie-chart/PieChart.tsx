@@ -1,9 +1,10 @@
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState, useCallback } from 'react';
 import { echarts } from '../echartInstall';
 // Models
 import { EChartsType } from 'echarts/core';
 import styles from './PieChart.module.scss';
 import { PieChartProps } from './PieChart.model';
+import { Empty } from 'antd';
 
 const generateOption = (data: PieChartProps['data']) => {
   return {
@@ -18,7 +19,7 @@ const generateOption = (data: PieChartProps['data']) => {
       // top: 'middle',
       // right: '40px',
       //orient: 'vertical'
-      bottom: '20px',
+      bottom: '5px',
       left: 'center',
       orient: 'horizontal'
     },
@@ -54,18 +55,73 @@ const generateOption = (data: PieChartProps['data']) => {
 
 const PieChart = (props: PieChartProps) => {
   const { data } = props;
+  // const { type } = useDevice();
   const chartInstance = useRef<EChartsType>();
-  const chartRef = useRef(null);
 
-  useEffect(() => {
-    chartInstance.current = echarts.init(chartRef.current);
-  }, []);
+  const [isEmpty, setIsEmpty] = useState(true);
 
   useEffect(() => {
     chartInstance.current?.setOption(generateOption(data));
+    const isEmptyResult = data.filter((item) => !!item.value).length === 0;
+    setIsEmpty(isEmptyResult);
+    if (isEmptyResult) {
+      chartInstance.current = undefined;
+    }
   }, [data]);
 
-  return <div ref={chartRef} className={styles.pieChart}></div>;
+  const [hoverLabel, setHoverLabel] = useState('');
+  const chartCanvaseRef = useCallback(
+    (ref: A) => {
+      if (!ref) return;
+      if (chartInstance.current) return;
+      chartInstance.current = echarts.init(ref, null, {
+        height: '370px'
+      });
+      chartInstance.current?.setOption(generateOption(data));
+      // chartInstance.current.on('click', (params) => {
+      //   if (onClick) {
+      //     const { name, dataIndex, value } = params;
+      //     onClick({
+      //       name,
+      //       dataIndex,
+      //       value: value as number
+      //     });
+      //   }
+      // });
+      chartInstance.current.on('mouseover', (params) => {
+        setHoverLabel(params.name);
+      });
+      chartInstance.current.on('mouseout', () => {
+        setHoverLabel('');
+      });
+    },
+    [props]
+  );
+
+  const resizeChart = () => {
+    chartInstance.current?.resize();
+  };
+  useEffect(() => {
+    window.addEventListener('resize', resizeChart);
+    return () => {
+      window.removeEventListener('resize', resizeChart);
+    };
+  }, []);
+
+  return (
+    <div className={styles.pieChart}>
+      {isEmpty ? (
+        <div className="empty-box">
+          <Empty />
+        </div>
+      ) : (
+        <div className="pie-chart-box">
+          <div className="hover-label">{hoverLabel}</div>
+          <div ref={chartCanvaseRef} className="pie-chart-canvas"></div>
+        </div>
+      )}
+    </div>
+  );
 };
 
 export default PieChart;

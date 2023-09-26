@@ -18,3 +18,8 @@
   line-height: 18px;
   padding: 9px 8px;
 }
+:global {
+  .ant-col {
+    margin-bottom: 10px;
+  }
+}

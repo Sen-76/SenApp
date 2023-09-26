@@ -25,17 +25,17 @@ function ViewDetail() {
 
   const tabItems = [
     {
-      key: '1',
+      key: 'members',
       label: t('members'),
       children: <Members />
     },
     {
-      key: '2',
+      key: 'teams',
       label: t('teams'),
       children: <Teams />
     },
     {
-      key: '3',
+      key: 'projects',
       label: t('projects'),
       children: <Project />
     }

@@ -1,12 +1,12 @@
 import { Menu, MenuProps } from 'antd';
 import React, { useState, useEffect } from 'react';
 import {
-  BarsOutlined,
   ArrowRightOutlined,
   BulbOutlined,
   HddOutlined,
   SettingOutlined,
-  GroupOutlined
+  GroupOutlined,
+  AppstoreOutlined
 } from '@ant-design/icons';
 import styles from './LeftNav.module.scss';
 import { useNavigate, useLocation } from 'react-router';
@@ -27,7 +27,12 @@ const renderIcon = (icon: A) => {
   });
 };
 
-function LeftNav() {
+interface IProps {
+  collapse?: boolean;
+  onMenuClick?: (key: string) => void;
+}
+
+function LeftNav(props: IProps) {
   const [selectedKey, setSelectedKey] = useState<string[]>(['overview']);
   const navigate = useNavigate();
   const location = useLocation();
@@ -37,7 +42,7 @@ function LeftNav() {
     {
       label: t('overview'),
       path: '/',
-      icon: renderIcon(BarsOutlined),
+      icon: renderIcon(AppstoreOutlined),
       key: 'overview'
     },
     {
@@ -122,6 +127,7 @@ function LeftNav() {
       setSelectedKey([info.key]);
       const path = findItemNodeByKeyOrPath('key', info.key)?.path;
       path && navigate(path);
+      props?.onMenuClick?.(info.key);
     }
   };
 
@@ -143,8 +149,9 @@ function LeftNav() {
 
   return (
     <Menu
-      className={styles.leftNav}
+      className={`${styles.leftNav} ${props.collapse && styles.expandLeftNav}`}
       selectedKeys={selectedKey}
+      inlineCollapsed={props.collapse}
       inlineIndent={12}
       mode="inline"
       items={items as MenuItem[]}

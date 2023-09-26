@@ -61,10 +61,12 @@ td {
 }
 .ant-select-multiple {
   .ant-select-selector {
+    padding: 2.5px 0;
     .ant-select-selection-item {
-      height: 35px !important;
+      min-height: 35px !important;
       margin: auto;
       line-height: 32.5px;
+      margin: 2.5px 0;
       margin-left: 5px;
     }
   }

@@ -7,7 +7,7 @@ import { Empty } from 'antd';
 import styles from './BarChart.module.scss';
 
 const generateOption: GenerateOptionFuc = (option) => {
-  const { xAxisLabel, xAxisData, customConfig = {} } = option;
+  const { xAxisLabel, xAxisData } = option;
   return {
     tooltip: {
       trigger: 'axis',
@@ -56,7 +56,7 @@ const generateOption: GenerateOptionFuc = (option) => {
       }
     },
     // Bar background, color string array
-    color: ['#6AC1A6'],
+    color: ['#b95ca0'],
     series: [
       {
         type: 'bar',
@@ -76,25 +76,45 @@ const generateOption: GenerateOptionFuc = (option) => {
 };
 const BarChart = (props: BarChartProps) => {
   const { xAxisLabel, xAxisData, customConfig, onClick } = props;
-  const [isEmpty, setIsEmpty] = useState(true);
+
   const chartInstance = useRef<EChartsType>();
-  const chartRef = useRef(null);
+  const [isEmpty, setIsEmpty] = useState(true);
 
   useEffect(() => {
     chartInstance.current?.setOption(generateOption({ xAxisLabel, xAxisData, customConfig }));
-    setIsEmpty(xAxisData.filter((item) => !!item).length === 0);
+    const isEmptyResult = xAxisData.filter((item) => !!item).length === 0;
+    setIsEmpty(isEmptyResult);
+    if (isEmptyResult) {
+      chartInstance.current = undefined;
+    }
   }, [xAxisData]);
+
+  // useEffect(() => {
+  //   const resizeFunc = () => {
+  //     chartInstance.current?.resize();
+  //   };
+  //   window.addEventListener('resize', resizeFunc);
+  //   return () => {
+  //     window.removeEventListener('resize', resizeFunc);
+  //   };
+  // }, []);
 
   const chartCanvaseRef = useCallback(
     (ref: A) => {
       if (!ref) return;
       if (chartInstance.current) return;
-      const calculateWidth = xAxisData.length * 150;
+      const config: A = {
+        height: '356px'
+      };
       const boxWidth = ref?.parentElement?.clientWidth ?? 0;
-      const chartWidth = calculateWidth < boxWidth ? boxWidth : calculateWidth;
-      chartInstance.current = echarts.init(ref, null, {
-        width: chartWidth + 'px'
-      });
+      const displayNum = 5;
+      const itemMinWidth = 120;
+      const itemWidth = boxWidth ? (boxWidth as number) / displayNum : itemMinWidth;
+      const calculateWidth = xAxisData.length * (itemWidth < itemMinWidth ? itemMinWidth : itemWidth);
+      if (calculateWidth >= boxWidth) {
+        config.width = calculateWidth + 'px';
+      }
+      chartInstance.current = echarts.init(ref, null, config);
       chartInstance.current.on('click', (params) => {
         if (onClick) {
           const { name, dataIndex, value } = params;
@@ -106,7 +126,6 @@ const BarChart = (props: BarChartProps) => {
         }
       });
       chartInstance.current?.setOption(generateOption({ xAxisLabel, xAxisData, customConfig }));
-      chartRef.current = ref;
     },
     [props]
   );
@@ -118,8 +137,8 @@ const BarChart = (props: BarChartProps) => {
           <Empty />
         </div>
       ) : (
-        <div className={styles.barChartBox}>
-          <div ref={chartCanvaseRef} className={styles.canvas}></div>
+        <div className="hcis-scrollbar bar-chart-box">
+          <div ref={chartCanvaseRef} className="bar-chart-canvas"></div>
         </div>
       )}
     </div>

@@ -68,35 +68,16 @@ function DataTable(props: IProps) {
       dataIndex: 'progress',
       key: 'progress',
       render: (_, record) => {
-        const percent = ((record.progress ?? 0) / (record.totalBedCount ?? 0)) * 100;
-        const fraction = `${record.progress ?? 0} / ${record.totalBedCount ?? 0}`;
-        const stokeColor = record.progress === record.totalBedCount ? '#B10000' : '#0C7D8F';
-        return (
-          <Progress
-            className={styles.progress}
-            style={{ width: 100 }}
-            percent={percent}
-            format={() => fraction}
-            strokeColor={stokeColor}
-          />
-        );
+        return <Progress className={styles.progress} style={{ width: 100 }} percent={record.progress} />;
       }
     },
     {
-      title: 'Modified On',
-      dataIndex: 'modifiedOn',
-      key: 'modifiedOn',
-      width: 150,
+      title: t('team'),
+      dataIndex: 'team',
+      key: 'team',
       render: (_, record) => {
-        return <div style={{ minWidth: 90 }}>{dayjs(record.updatedDate).format('DD MMM YYYY')}</div>;
+        return record.team.name;
       }
-    },
-    {
-      title: 'Modified By',
-      dataIndex: 'modifiedBy',
-      width: 120,
-      key: 'modifiedBy',
-      render: (_, record) => record.modifiedBy
     },
     {
       title: t('Common_Action'),

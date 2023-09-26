@@ -6,6 +6,7 @@ import dayjs from 'dayjs';
 import { GenderOptions, DepartmentOptions, RoleOptions } from '../AccountConfiguration.Model';
 import { useTranslation } from 'react-i18next';
 import { service } from '../../../../services/apis';
+import { Rule } from 'antd/es/form';
 
 interface IProps {
   refreshList: () => void;
@@ -59,7 +60,7 @@ function Panel(props: IProps, ref: A) {
           closeDrawer();
           props.refreshList();
         } else {
-          const test = await service.accountService.addAccount({
+          await service.accountService.addAccount({
             ...editData,
             ...systemForm.getFieldsValue(),
             userStar: 0,
@@ -69,7 +70,6 @@ function Panel(props: IProps, ref: A) {
             userTeam: null,
             userDepartment: null
           });
-          console.log(test);
           notification.open({
             message: t('Common_CreateSuccess'),
             type: 'success'
@@ -94,8 +94,17 @@ function Panel(props: IProps, ref: A) {
 
   const formRule = {
     fullName: [{ required: true, message: t('Common_Require_Field') }],
-    userEmail: [{ required: true, message: t('Common_Require_Field') }],
-    userPhone: [{ required: true, message: t('Common_Require_Field') }],
+    userEmail: [
+      { required: true, message: t('Common_Require_Field') },
+      { type: 'email', message: t('Invalid_Email_Format') }
+    ] as Rule[],
+    userPhone: [
+      { required: true, message: t('Common_Require_Field') },
+      {
+        pattern: /^(?:\+84|0)(?:\d{9,10})$/,
+        message: 'Invalid phone number format (e.g., 1234567890)'
+      }
+    ] as Rule[],
     dob: [{ required: true, message: t('Common_Require_Field') }],
     userName: [{ required: true, message: t('Common_Require_Field') }],
     password: [{ required: true, message: t('Common_Require_Field') }],
