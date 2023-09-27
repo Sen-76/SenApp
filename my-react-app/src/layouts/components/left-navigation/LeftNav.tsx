@@ -5,8 +5,8 @@ import {
   BulbOutlined,
   HddOutlined,
   SettingOutlined,
-  GroupOutlined,
-  AppstoreOutlined
+  AppstoreOutlined,
+  SnippetsOutlined
 } from '@ant-design/icons';
 import styles from './LeftNav.module.scss';
 import { useNavigate, useLocation } from 'react-router';
@@ -40,15 +40,21 @@ function LeftNav(props: IProps) {
 
   const items: CustomMenuItem[] = [
     {
-      label: t('overview'),
+      label: t('dashboard'),
       path: '/',
       icon: renderIcon(AppstoreOutlined),
-      key: 'overview'
+      key: 'dashboard'
+    },
+    {
+      label: t('tasks'),
+      path: '/tasks',
+      icon: renderIcon(SnippetsOutlined),
+      key: 'tasks'
     },
     {
       label: t('test'),
       icon: renderIcon(BulbOutlined),
-      key: 'dormmanagement',
+      key: 'test',
       children: [
         {
           label: t('test page'),
@@ -77,28 +83,35 @@ function LeftNav(props: IProps) {
       ]
     },
     {
+      label: t('management'),
+      icon: renderIcon(BulbOutlined),
+      key: 'management',
+      children: [
+        {
+          label: t('Manage_Department'),
+          path: '/management/department-management',
+          icon: renderIcon(ArrowRightOutlined),
+          key: 'department'
+        },
+        {
+          label: t('Manage_Account'),
+          path: '/management/account-management',
+          icon: renderIcon(ArrowRightOutlined),
+          key: 'account-configuration'
+        }
+      ]
+    },
+    {
       label: 'Kanban',
       path: '/kanban',
       icon: renderIcon(HddOutlined),
       key: 'kanban'
     },
     {
-      label: t('department'),
-      path: '/department',
-      icon: renderIcon(GroupOutlined),
-      key: 'department'
-    },
-    {
       label: t('configuration'),
       icon: renderIcon(SettingOutlined),
       key: 'configuration',
       children: [
-        {
-          label: t('Configuration_Account'),
-          path: '/configuration/account-configuration',
-          icon: renderIcon(ArrowRightOutlined),
-          key: 'account-configuration'
-        },
         {
           label: t('Configuration_File'),
           path: '/configuration/file-configuration',

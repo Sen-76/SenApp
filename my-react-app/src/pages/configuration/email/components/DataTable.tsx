@@ -220,6 +220,7 @@ function DataTable(props: IProps) {
         loading={loading}
         onChange={handleTableChange}
         title={() => TableHeader()}
+        rowKey={(record) => record.id}
       />
     </>
   );

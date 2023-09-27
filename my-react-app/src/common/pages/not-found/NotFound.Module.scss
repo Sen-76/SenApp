@@ -33,14 +33,14 @@ $s40: 2.5rem;
   margin: 16px 8px 24px;
 }
 
-@include media-breakpoint-down(md) {
-  .backgroundImage {
-    width: 100%;
-    min-height: 100px;
-  }
-}
-@include media-breakpoint-down(sm) {
-  .container {
-    margin: 0 10%;
-  }
-}
+// @include media-breakpoint-down(md) {
+//   .backgroundImage {
+//     width: 100%;
+//     min-height: 100px;
+//   }
+// }
+// @include media-breakpoint-down(sm) {
+//   .container {
+//     margin: 0 10%;
+//   }
+// }

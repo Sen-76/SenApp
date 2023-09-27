@@ -10,7 +10,7 @@ function Layout() {
   const { items } = useBreadcrumb();
   return (
     <>
-      <Watermark content="Sen's Page">
+      <Watermark content="MKT Project Management System">
         <AdminLayout breadcrumbItems={items}>
           <Outlet></Outlet>
         </AdminLayout>

@@ -1,7 +1,9 @@
 :global {
-  .ant-menu-sub .ant-menu-title-content,
-  svg {
-    color: #000 !important;
+  .ant-menu {
+    .ant-menu-sub .ant-menu-title-content,
+    svg {
+      color: #000 !important;
+    }
   }
 }
 .siteLayout {

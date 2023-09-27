@@ -1,17 +1,21 @@
-import { useState } from 'react';
-import { EditOutlined, PlusOutlined, SmileOutlined } from '@ant-design/icons';
-import { Button, Table, Tooltip } from 'antd';
+import { SmileOutlined, SolutionOutlined } from '@ant-design/icons';
+import { Button, Progress, Table, Tooltip } from 'antd';
 import { ColumnsType, TablePaginationConfig } from 'antd/es/table';
+import styles from '../Project.module.scss';
 import { useTranslation } from 'react-i18next';
-import styles from '../FileConfiguration.module.scss';
+import Paragraph from 'antd/es/typography/Paragraph';
+import { useState } from 'react';
+import { Link } from 'react-router-dom';
+import dayjs from 'dayjs';
 import Search from 'antd/es/input/Search';
 
 interface IProps {
   data: A[];
-  openPanel: (data?: A) => void;
+  refreshList: () => void;
+  loading: boolean;
 }
 function DataTable(props: IProps) {
-  const [loading, setLoading] = useState<boolean>(false);
+  const { loading } = props;
   const { t } = useTranslation();
   const [pagination, setPagination] = useState<TablePaginationConfig>({
     current: 1,
@@ -19,63 +23,81 @@ function DataTable(props: IProps) {
     total: 20,
     simple: false
   });
+
+  const handleTableChange = (pagination: TablePaginationConfig) => {
+    setPagination(pagination);
+    props.refreshList();
+  };
+
   const columns: ColumnsType<A> = [
     {
       title: t('Common_Title'),
       dataIndex: 'title',
-      width: 110,
       key: 'title',
       render: (_, record) => {
-        return record.title;
+        return (
+          <Tooltip
+            placement="bottom"
+            title={<div className={styles.customTooltip}>{record.name}</div>}
+            color="#ffffff"
+            arrow={true}
+          >
+            <div style={{ display: 'flex', alignItems: 'center', minWidth: 250 }}>
+              <Paragraph
+                className={styles.paragraph}
+                ellipsis={{ rows: 3, expandable: false }}
+                style={{ maxWidth: 150, minWidth: 30 }}
+              >
+                {record.title}
+              </Paragraph>
+            </div>
+          </Tooltip>
+        );
       }
     },
     {
-      title: `${t('file size')} (MB)`,
-      dataIndex: 'fileSize',
-      width: 130,
-      key: 'fileSize',
+      title: t('Common_Description'),
+      dataIndex: 'description',
+      key: 'description',
       render: (_, record) => {
-        return record.fileSize;
+        return record.description;
       }
     },
     {
-      title: t('file accept'),
-      dataIndex: 'enableFileExtension',
-      width: 110,
-      key: 'fileSize',
+      title: t('Project_Progress'),
+      dataIndex: 'progress',
+      key: 'progress',
       render: (_, record) => {
-        return record.fileAccept.join(', ');
+        return <Progress className={styles.progress} style={{ width: 100 }} percent={record.progress} />;
       }
     },
     {
-      title: t('file type'),
-      dataIndex: 'fileOfFoder',
-      width: 110,
-      key: 'fileSize',
+      title: t('team'),
+      dataIndex: 'team',
+      key: 'team',
       render: (_, record) => {
-        return record.numberOfFile ? 'Multiple' : 'Single';
+        return record.team.name;
       }
     },
     {
       title: t('Common_Action'),
       dataIndex: 'action',
       key: 'action',
-      fixed: 'right',
       className: 'actionCollumn',
-      width: 80,
+      fixed: 'right',
+      width: 130,
       render: (_, record) => {
-        const editClick = () => {
-          props.openPanel(record);
-        };
         return (
           <div>
             <Tooltip
               placement="bottom"
-              title={<div className={styles.customTooltip}>{t('Common_Edit')}</div>}
+              title={<div className={styles.customTooltip}>{t('Common_ViewDetail')}</div>}
               color="#ffffff"
               arrow={true}
             >
-              <Button type="text" onClick={editClick} icon={<EditOutlined />} />
+              <Link to={`/${record}`}>
+                <Button type="text" icon={<SolutionOutlined />} />
+              </Link>
             </Tooltip>
           </div>
         );
@@ -83,31 +105,15 @@ function DataTable(props: IProps) {
     }
   ];
 
-  const handleTableChange = (pagination: TablePaginationConfig) => {
-    setPagination(pagination);
-    tableLoading();
-  };
-
-  const tableLoading = () => {
-    setLoading(true);
-    const timeout = setTimeout(() => {
-      setLoading(false);
-      clearTimeout(timeout);
-    }, 2000);
-  };
-
   const onSearch = (val: A) => {
     console.log(val);
+    props.refreshList();
   };
 
   const TableHeader = () => {
     return (
       <>
-        <div className={styles.tableHeaderLeft}>
-          <Button type="text" onClick={() => props.openPanel()} icon={<PlusOutlined />}>
-            {t('Common_AddNew')}
-          </Button>
-        </div>
+        <div className={styles.tableHeaderLeft}></div>
         <div className={styles.tableHeaderRight}>
           <Search placeholder={t('Common_SearchByTitle')} allowClear onSearch={onSearch} style={{ width: 250 }} />
         </div>

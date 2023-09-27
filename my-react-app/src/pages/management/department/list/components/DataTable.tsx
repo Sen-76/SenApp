@@ -1,10 +1,11 @@
+import { EditOutlined, InfoCircleOutlined, PlusOutlined, SmileOutlined } from '@ant-design/icons';
+import { Button, Input, Table, Tooltip } from 'antd';
+import styles from '../Department.module.scss';
 import { useState } from 'react';
-import { EditOutlined, PlusOutlined, SmileOutlined } from '@ant-design/icons';
-import { Button, Table, Tooltip } from 'antd';
 import { ColumnsType, TablePaginationConfig } from 'antd/es/table';
+import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import styles from '../FileConfiguration.module.scss';
-import Search from 'antd/es/input/Search';
+import dayjs from 'dayjs';
 
 interface IProps {
   data: A[];
@@ -12,6 +13,7 @@ interface IProps {
 }
 function DataTable(props: IProps) {
   const [loading, setLoading] = useState<boolean>(false);
+  const { Search } = Input;
   const { t } = useTranslation();
   const [pagination, setPagination] = useState<TablePaginationConfig>({
     current: 1,
@@ -19,50 +21,49 @@ function DataTable(props: IProps) {
     total: 20,
     simple: false
   });
+
   const columns: ColumnsType<A> = [
     {
       title: t('Common_Title'),
       dataIndex: 'title',
-      width: 110,
       key: 'title',
+      width: 200,
       render: (_, record) => {
         return record.title;
       }
     },
     {
-      title: `${t('file size')} (MB)`,
-      dataIndex: 'fileSize',
-      width: 130,
-      key: 'fileSize',
+      title: t('Common_Description'),
+      dataIndex: 'description',
+      key: 'description',
+      width: 300,
       render: (_, record) => {
-        return record.fileSize;
+        return record.description;
       }
     },
     {
-      title: t('file accept'),
-      dataIndex: 'enableFileExtension',
-      width: 110,
-      key: 'fileSize',
+      title: t('Common_ModifiedOn'),
+      dataIndex: 'modifiedOn',
+      key: 'modifiedOn',
+      width: 200,
       render: (_, record) => {
-        return record.fileAccept.join(', ');
+        return <div style={{ minWidth: 90 }}>{dayjs(record.updatedDate).format('DD MMM YYYY HH:mm')}</div>;
       }
     },
     {
-      title: t('file type'),
-      dataIndex: 'fileOfFoder',
-      width: 110,
-      key: 'fileSize',
-      render: (_, record) => {
-        return record.numberOfFile ? 'Multiple' : 'Single';
-      }
+      title: t('Common_ModifiedBy'),
+      dataIndex: 'modifiedBy',
+      width: 200,
+      key: 'modifiedBy',
+      render: (_, record) => record.modifiedBy
     },
     {
       title: t('Common_Action'),
       dataIndex: 'action',
       key: 'action',
-      fixed: 'right',
       className: 'actionCollumn',
-      width: 80,
+      fixed: 'right',
+      width: 130,
       render: (_, record) => {
         const editClick = () => {
           props.openPanel(record);
@@ -76,6 +77,16 @@ function DataTable(props: IProps) {
               arrow={true}
             >
               <Button type="text" onClick={editClick} icon={<EditOutlined />} />
+            </Tooltip>
+            <Tooltip
+              placement="bottom"
+              title={<div className={styles.customTooltip}>{t('Common_ViewDetail')}</div>}
+              color="#ffffff"
+              arrow={true}
+            >
+              <Link to={`/management/department-management/department-detail/${record.title}/${record.id}`}>
+                <Button type="text" icon={<InfoCircleOutlined />} />
+              </Link>
             </Tooltip>
           </div>
         );
@@ -109,7 +120,7 @@ function DataTable(props: IProps) {
           </Button>
         </div>
         <div className={styles.tableHeaderRight}>
-          <Search placeholder={t('Common_SearchByTitle')} allowClear onSearch={onSearch} style={{ width: 250 }} />
+          <Search placeholder="Search Name" allowClear onSearch={onSearch} style={{ width: 250 }} />
         </div>
       </>
     );

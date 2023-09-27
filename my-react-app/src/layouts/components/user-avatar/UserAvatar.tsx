@@ -5,6 +5,7 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { useLoginManager } from '../../../common/helpers/login-manager';
+import { util } from '@/common/helpers/util';
 
 const draftUser = {
   photoUrl: 'https://top10tphcm.com/wp-content/uploads/2023/02/hinh-anh-meo.jpeg',
@@ -61,8 +62,12 @@ function UserAvatar() {
             }}
           >
             <div className={styles.avatarHeader}>
-              <Avatar size={50} src={draftUser.photoUrl} style={{ marginRight: '16px' }}>
-                {draftUser.userName.split('')[0]}
+              <Avatar
+                size={50}
+                src={draftUser.photoUrl}
+                style={{ marginRight: '16px', backgroundColor: util.randomColor() }}
+              >
+                {draftUser.userName.charAt(0)}
               </Avatar>
               <div className="avatar-header-content">
                 <div className="avatar-header-name">{draftUser.userName}</div>
@@ -74,8 +79,8 @@ function UserAvatar() {
           </div>
         )}
       >
-        <Avatar size={40} src={draftUser.photoUrl} style={{ cursor: 'pointer' }}>
-          {draftUser.userName.split('')[0]}
+        <Avatar size={40} src={draftUser.photoUrl} style={{ cursor: 'pointer', backgroundColor: util.randomColor() }}>
+          {draftUser.userName.charAt(0)}
         </Avatar>
       </Dropdown>
     </>

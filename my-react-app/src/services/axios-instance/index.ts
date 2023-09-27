@@ -24,11 +24,9 @@ instance.interceptors.request.use(
 // Response Interceptor
 instance.interceptors.response.use(
   (response) => {
-    // Do something with the successful response.
     return response;
   },
   (error) => {
-    // Handle errors globally (e.g., show an error message).
     return Promise.reject(error);
   }
 );

@@ -3,6 +3,7 @@ import { LoadingOutlined, PlusOutlined } from '@ant-design/icons';
 import { Avatar, message, Upload } from 'antd';
 import type { UploadChangeParam } from 'antd/es/upload';
 import type { RcFile, UploadFile, UploadProps } from 'antd/es/upload/interface';
+import { util } from '@/common/helpers/util';
 
 const getBase64 = (img: RcFile, callback: (url: string) => void) => {
   const reader = new FileReader();
@@ -62,8 +63,11 @@ const EditAvatar = (props: IProps) => {
         onChange={handleChange}
       >
         {imageUrl ? (
-          <Avatar src={imageUrl ?? imageLink} style={{ width: '100%', height: '100%' }}>
-            {name?.split('')[0] ?? 'N/A'}
+          <Avatar
+            src={imageUrl ?? imageLink}
+            style={{ width: '100%', height: '100%', backgroundColor: util.randomColor() }}
+          >
+            {name?.charAt(0) ?? 'N/A'}
           </Avatar>
         ) : (
           uploadButton

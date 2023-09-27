@@ -49,7 +49,7 @@ function Task(props: IProps) {
         <span>Tasks</span>
         <Link to="./">View all</Link>
       </Row>
-      <Table columns={columns} dataSource={task} rowKey={(record) => record.id ?? new Date().getTime()} />
+      <Table columns={columns} dataSource={task} rowKey={(record) => record.id} />
     </>
   );
 }

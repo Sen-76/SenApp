@@ -54,7 +54,7 @@ function Login() {
           <Form.Item name="remember" valuePropName="checked">
             <div className={styles.refo}>
               <Checkbox>{t('Common_Login_RememberMe')}</Checkbox>
-              <Link to="/forgot">{t('Common_Login_ForgotPassword')}</Link>
+              <Link to="/forgot">{t('Common_Login_ForgotPassword')} ?</Link>
             </div>
           </Form.Item>
         </Row>
