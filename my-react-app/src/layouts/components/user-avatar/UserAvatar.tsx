@@ -1,5 +1,5 @@
 import { Avatar, Divider, Dropdown, MenuProps } from 'antd';
-import { ImportOutlined, UserOutlined } from '@ant-design/icons';
+import { ImportOutlined, RedoOutlined, UserOutlined } from '@ant-design/icons';
 import styles from './UserAvatar.module.scss';
 import React from 'react';
 import { Link } from 'react-router-dom';
@@ -36,12 +36,21 @@ function UserAvatar() {
       },
       {
         label: (
+          <Link to="/" className={styles.avatarDropdownItem}>
+            <RedoOutlined />
+            <div className="dropdown-item-text">{t('change password')}</div>
+          </Link>
+        ),
+        key: '2'
+      },
+      {
+        label: (
           <div onClick={loginOut} className={styles.avatarDropdownItem}>
             <ImportOutlined />
             <div className="dropdown-item-text">{t('sign out')}</div>
           </div>
         ),
-        key: '2'
+        key: '3'
       }
     ];
     return items;
@@ -51,7 +60,8 @@ function UserAvatar() {
       <Dropdown
         menu={{ items: dropdownItem() }}
         trigger={['click']}
-        placement="bottom"
+        placement="bottomRight"
+        arrow
         dropdownRender={(menu) => (
           <div
             style={{

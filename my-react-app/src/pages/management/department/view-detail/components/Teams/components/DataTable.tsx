@@ -35,11 +35,7 @@ function DataTable(props: IProps) {
       key: 'name',
       render: (_, record) => {
         return (
-          <Paragraph
-            className={styles.paragraph}
-            ellipsis={{ rows: 3, expandable: false }}
-            style={{ maxWidth: 150, minWidth: 30 }}
-          >
+          <Paragraph ellipsis={{ rows: 3, expandable: false }} style={{ maxWidth: 150, minWidth: 30 }}>
             {record.name}
           </Paragraph>
         );
@@ -84,28 +80,13 @@ function DataTable(props: IProps) {
       render: (_, record) => {
         return (
           <div>
-            <Tooltip
-              placement="bottom"
-              title={<div className={styles.customTooltip}>{t('Common_ViewDetail')}</div>}
-              color="#ffffff"
-              arrow={true}
-            >
+            <Tooltip placement="bottom" title={t('Common_ViewDetail')} color="#ffffff" arrow={true}>
               <Button type="text" onClick={() => props.openDetailPanel(record)} icon={<SolutionOutlined />} />
             </Tooltip>
-            <Tooltip
-              placement="bottom"
-              title={<div className={styles.customTooltip}>{t('Common_Edit')}</div>}
-              color="#ffffff"
-              arrow={true}
-            >
+            <Tooltip placement="bottom" title={t('Common_Edit')} color="#ffffff" arrow={true}>
               <Button type="text" onClick={() => props.openPanel(record)} icon={<EditOutlined />} />
             </Tooltip>
-            <Tooltip
-              placement="bottom"
-              title={<div className={styles.customTooltip}>{t('Common_Delete')}</div>}
-              color="#ffffff"
-              arrow={true}
-            >
+            <Tooltip placement="bottom" title={t('Common_Delete')} color="#ffffff" arrow={true}>
               <Button type="text" onClick={() => deleteTeam(record)} icon={<DeleteOutlined />} />
             </Tooltip>
           </div>

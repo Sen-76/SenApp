@@ -21,17 +21,32 @@ declare namespace Account {
   }
   export interface IAccountCreateModel {
     userEmail: string;
-    password: string;
     userName: string;
     fullName: string;
     userPhone: string;
     dob: Date;
     gender: number;
-    userStar: number;
-    status: number;
     jobTitle: string;
     userDepartment?: string;
     userTeam?: string;
     userRole?: string;
+  }
+  export interface IAccountUpdateModel {
+    id: string;
+    userName: string;
+    fullName: string;
+    userPhone: string;
+    dob: Date;
+    gender: 0;
+    userRole: string;
+    userStar: 0;
+    userDepartment: string;
+    teamId: string;
+    status: 0;
+    jobTitle: string;
+  }
+  export interface IAccountDeleteModel {
+    isHardDelete: boolean;
+    id: string[];
   }
 }

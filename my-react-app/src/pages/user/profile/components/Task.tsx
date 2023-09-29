@@ -3,12 +3,14 @@ import styles from '../Profile.module.scss';
 import { ColumnsType } from 'antd/es/table';
 import { Link } from 'react-router-dom';
 import dayjs from 'dayjs';
+import { useTranslation } from 'react-i18next';
 
 interface IProps {
   task: A[];
 }
 function Task(props: IProps) {
   const { task } = props;
+  const { t } = useTranslation();
   const columns: ColumnsType<A> = [
     {
       title: 'Task name',
@@ -46,10 +48,12 @@ function Task(props: IProps) {
   return (
     <>
       <Row className={styles.header}>
-        <span>Tasks</span>
-        <Link to="./">View all</Link>
+        <span>{t('tasks')}</span>
+        <Link to="./">{t('Common_ViewAll')}</Link>
       </Row>
-      <Table columns={columns} dataSource={task} rowKey={(record) => record.id} />
+      <div className={styles.body}>
+        <Table columns={columns} dataSource={task} rowKey={(record) => record.id} scroll={{ x: 430 }} />
+      </div>
     </>
   );
 }

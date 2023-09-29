@@ -5,13 +5,12 @@
   word-break: break-word;
 }
 .leftNav {
-  height: 100%;
+  height: calc(100% - 64px);
   background-color: #ffffff;
   color: #222222;
   font-size: 16px;
   font-weight: 600;
   padding: 10px;
-  padding-top: 64px;
   :global {
     li,
     .ant-menu-submenu-title {
@@ -32,14 +31,31 @@
       .ant-menu-submenu-arrow {
         color: #3b3737 !important;
       }
-      &.ant-menu-item-selected {
-        background-color: rgba(188, 216, 111, 0.386);
-      }
     }
     .ant-menu-sub {
       li {
         padding-right: 24px;
       }
+    }
+  }
+}
+:global {
+  .ant-menu-item-selected {
+    background-color: #1677ffce !important; 
+  }
+  .ant-menu-item,
+  .ant-menu-submenu-title {
+    &:hover {
+      background-color: #1677ffce !important;
+    }
+    &:active {
+      background-color: #1677ffce !important;
+    }
+  }
+  .ant-menu {
+    .ant-menu-sub .ant-menu-title-content,
+    svg {
+      color: #222222 !important;
     }
   }
 }

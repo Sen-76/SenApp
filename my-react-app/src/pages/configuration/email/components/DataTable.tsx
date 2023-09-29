@@ -45,7 +45,7 @@ function DataTable(props: IProps) {
           <Tooltip
             placement="bottom"
             title={
-              <div className={styles.customTooltip}>
+              <div>
                 {record.description
                   ? record.description.split('{/n}').map((line: A, index: number) => (
                       <React.Fragment key={index}>
@@ -59,7 +59,7 @@ function DataTable(props: IProps) {
             color="#ffffff"
             arrow={true}
           >
-            <Paragraph className={styles.paragraph} ellipsis={{ rows: 3, expandable: false }}>
+            <Paragraph ellipsis={{ rows: 3, expandable: false }}>
               {record.description
                 ? record.description.split('{/n}').map((line: A, index: number) => (
                     <React.Fragment key={index}>
@@ -126,11 +126,7 @@ function DataTable(props: IProps) {
           <div>
             <Tooltip
               placement="bottom"
-              title={
-                <div className={styles.customTooltip}>
-                  {record.status === EState.Activate.toString() ? t('Common_Activate') : t('Common_Inactivate')}
-                </div>
-              }
+              title={record.status === EState.Activate.toString() ? t('Common_Activate') : t('Common_Inactivate')}
               color="#ffffff"
               arrow={true}
             >
@@ -157,12 +153,7 @@ function DataTable(props: IProps) {
         };
         return (
           <div>
-            <Tooltip
-              placement="bottom"
-              title={<div className={styles.customTooltip}>{t('Common_Edit')}</div>}
-              color="#ffffff"
-              arrow={true}
-            >
+            <Tooltip placement="bottom" title={t('Common_Edit')} color="#ffffff" arrow={true}>
               <Button type="text" onClick={editClick} icon={<EditOutlined />} />
             </Tooltip>
           </div>

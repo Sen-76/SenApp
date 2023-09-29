@@ -56,7 +56,7 @@ const generateOption: GenerateOptionFuc = (option) => {
       }
     },
     // Bar background, color string array
-    color: ['#b95ca0'],
+    color: ['#1677ff'],
     series: [
       {
         type: 'bar',

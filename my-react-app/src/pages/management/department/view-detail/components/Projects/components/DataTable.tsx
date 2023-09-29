@@ -36,18 +36,9 @@ function DataTable(props: IProps) {
       key: 'title',
       render: (_, record) => {
         return (
-          <Tooltip
-            placement="bottom"
-            title={<div className={styles.customTooltip}>{record.name}</div>}
-            color="#ffffff"
-            arrow={true}
-          >
+          <Tooltip placement="bottom" title={record.name} color="#ffffff" arrow={true}>
             <div style={{ display: 'flex', alignItems: 'center', minWidth: 250 }}>
-              <Paragraph
-                className={styles.paragraph}
-                ellipsis={{ rows: 3, expandable: false }}
-                style={{ maxWidth: 150, minWidth: 30 }}
-              >
+              <Paragraph ellipsis={{ rows: 3, expandable: false }} style={{ maxWidth: 150, minWidth: 30 }}>
                 {record.title}
               </Paragraph>
             </div>
@@ -89,12 +80,7 @@ function DataTable(props: IProps) {
       render: (_, record) => {
         return (
           <div>
-            <Tooltip
-              placement="bottom"
-              title={<div className={styles.customTooltip}>{t('Common_ViewDetail')}</div>}
-              color="#ffffff"
-              arrow={true}
-            >
+            <Tooltip placement="bottom" title={t('Common_ViewDetail')} color="#ffffff" arrow={true}>
               <Link to={`/${record}`}>
                 <Button type="text" icon={<SolutionOutlined />} />
               </Link>

@@ -6,7 +6,8 @@ import {
   HddOutlined,
   SettingOutlined,
   AppstoreOutlined,
-  SnippetsOutlined
+  SnippetsOutlined,
+  BookOutlined
 } from '@ant-design/icons';
 import styles from './LeftNav.module.scss';
 import { useNavigate, useLocation } from 'react-router';
@@ -46,10 +47,41 @@ function LeftNav(props: IProps) {
       key: 'dashboard'
     },
     {
+      label: t('projects'),
+      path: '/projects',
+      icon: renderIcon(BookOutlined),
+      key: 'projects'
+    },
+    {
       label: t('tasks'),
       path: '/tasks',
       icon: renderIcon(SnippetsOutlined),
       key: 'tasks'
+    },
+    {
+      label: 'OKRs',
+      icon: renderIcon(BulbOutlined),
+      key: 'okrs',
+      children: [
+        {
+          label: t('goals'),
+          path: '/okrs/goals',
+          icon: renderIcon(ArrowRightOutlined),
+          key: 'goals'
+        },
+        {
+          label: t('reviews'),
+          path: '/okrs/reviews',
+          icon: renderIcon(ArrowRightOutlined),
+          key: 'reviews'
+        },
+        {
+          label: t('feedbacks'),
+          path: '/okrs/feedbacks',
+          icon: renderIcon(ArrowRightOutlined),
+          key: 'feedbacks'
+        }
+      ]
     },
     {
       label: t('test'),
@@ -123,6 +155,12 @@ function LeftNav(props: IProps) {
           path: '/configuration/email-configuration',
           icon: renderIcon(ArrowRightOutlined),
           key: 'email-configuration'
+        },
+        {
+          label: `SMTP ${t('Configuration')}`,
+          path: '/configuration/smtp-configuration',
+          icon: renderIcon(ArrowRightOutlined),
+          key: 'smtp-configuration'
         }
       ]
     }

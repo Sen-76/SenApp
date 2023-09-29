@@ -24,6 +24,7 @@ import { Link } from 'react-router-dom';
 import Paragraph from 'antd/es/typography/Paragraph';
 import { useTranslation } from 'react-i18next';
 import { util } from '@/common/helpers/util';
+import { service } from '@/services/apis';
 
 interface IProps {
   data: A[];
@@ -47,36 +48,21 @@ function DataTable(props: IProps) {
   const { t } = useTranslation();
   const { confirm } = Modal;
   const { Search } = Input;
-  const [pagination, setPagination] = useState<TablePaginationConfig>({
-    current: param.pageNumber,
-    pageSize: param.pageSize,
-    total: 20,
-    simple: false
-  });
 
   const columns: ColumnsType<A> = [
     {
       title: t('name'),
       dataIndex: 'fullName',
       key: 'fullName',
-      width: 150,
+      width: 200,
       render: (_, record) => {
         return (
-          <Tooltip
-            placement="bottom"
-            title={<div className={styles.customTooltip}>{record.fullName}</div>}
-            color="#ffffff"
-            arrow={true}
-          >
+          <Tooltip placement="bottom" title={record.fullName} color="#ffffff" arrow={true}>
             <div style={{ display: 'flex', alignItems: 'center', minWidth: 250 }}>
               <Avatar size={40} src={record.photoUrl} style={{ marginRight: 10, backgroundColor: util.randomColor() }}>
                 {record.fullName.charAt(0)}
               </Avatar>
-              <Paragraph
-                className={styles.paragraph}
-                ellipsis={{ rows: 3, expandable: false }}
-                style={{ maxWidth: 150, minWidth: 30 }}
-              >
+              <Paragraph ellipsis={{ rows: 3, expandable: false }} style={{ maxWidth: 150, minWidth: 30 }}>
                 {record.fullName}
               </Paragraph>
             </div>
@@ -87,21 +73,12 @@ function DataTable(props: IProps) {
     {
       title: t('email'),
       dataIndex: 'email',
-      width: 150,
+      width: 200,
       key: 'email',
       render: (_, record) => {
         return (
-          <Tooltip
-            placement="bottom"
-            title={<div className={styles.customTooltip}>{record.userEmail}</div>}
-            color="#ffffff"
-            arrow={true}
-          >
-            <Paragraph
-              className={styles.paragraph}
-              ellipsis={{ rows: 3, expandable: false }}
-              style={{ maxWidth: 150, minWidth: 100 }}
-            >
+          <Tooltip placement="bottom" title={record.userEmail} color="#ffffff" arrow={true}>
+            <Paragraph ellipsis={{ rows: 3, expandable: false }} style={{ maxWidth: 150, minWidth: 100 }}>
               <Link to={`mailto:${record.userEmail}`}>{record.userEmail}</Link>
             </Paragraph>
           </Tooltip>
@@ -133,21 +110,11 @@ function DataTable(props: IProps) {
       key: 'gender',
       render: (_, record) => {
         return record.gender === EGender.Male ? (
-          <Tooltip
-            placement="bottom"
-            title={<div className={styles.customTooltip}>{t('man')}</div>}
-            color="#ffffff"
-            arrow={true}
-          >
+          <Tooltip placement="bottom" title={t('man')} color="#ffffff" arrow={true}>
             <ManOutlined />
           </Tooltip>
         ) : (
-          <Tooltip
-            placement="bottom"
-            title={<div className={styles.customTooltip}>{t('woman')}</div>}
-            color="#ffffff"
-            arrow={true}
-          >
+          <Tooltip placement="bottom" title={t('woman')} color="#ffffff" arrow={true}>
             <WomanOutlined />
           </Tooltip>
         );
@@ -199,11 +166,7 @@ function DataTable(props: IProps) {
           <div>
             <Tooltip
               placement="bottom"
-              title={
-                <div className={styles.customTooltip}>
-                  {record.status === EState.Activate ? t('Common_Activate') : t('Common_Inactivate')}
-                </div>
-              }
+              title={record.status === EState.Activate ? t('Common_Activate') : t('Common_Inactivate')}
               color="#ffffff"
               arrow={true}
             >
@@ -218,27 +181,17 @@ function DataTable(props: IProps) {
       dataIndex: 'action',
       key: 'action',
       fixed: 'right',
-      width: 140,
+      width: 130,
       className: 'actionCollumn',
       render: (_, record) => {
         return (
           <div style={{ width: 100 }}>
             {tabStatus == EState.Activate ? (
               <>
-                <Tooltip
-                  placement="bottom"
-                  title={<div className={styles.customTooltip}>{t('Common_Edit')}</div>}
-                  color="#ffffff"
-                  arrow={true}
-                >
+                <Tooltip placement="bottom" title={t('Common_Edit')} color="#ffffff" arrow={true}>
                   <Button type="text" onClick={() => props.openPanel(record)} icon={<EditOutlined />} />
                 </Tooltip>
-                <Tooltip
-                  placement="bottom"
-                  title={<div className={styles.customTooltip}>{t('Common_Delete')}</div>}
-                  color="#ffffff"
-                  arrow={true}
-                >
+                <Tooltip placement="bottom" title={t('Common_Delete')} color="#ffffff" arrow={true}>
                   <Button
                     type="text"
                     onClick={() => {
@@ -252,20 +205,10 @@ function DataTable(props: IProps) {
               </>
             ) : (
               <>
-                <Tooltip
-                  placement="bottom"
-                  title={<div className={styles.customTooltip}>{t('Common_ViewDetail')}</div>}
-                  color="#ffffff"
-                  arrow={true}
-                >
+                <Tooltip placement="bottom" title={t('Common_ViewDetail')} color="#ffffff" arrow={true}>
                   <Button type="text" onClick={() => props.openDetailPanel(record)} icon={<SolutionOutlined />} />
                 </Tooltip>
-                <Tooltip
-                  placement="bottom"
-                  title={<div className={styles.customTooltip}>{t('Common_Restore')}</div>}
-                  color="#ffffff"
-                  arrow={true}
-                >
+                <Tooltip placement="bottom" title={t('Common_Restore')} color="#ffffff" arrow={true}>
                   <Button type="text" onClick={() => restoreUser(record)} icon={<UndoOutlined />} />
                 </Tooltip>
               </>
@@ -284,7 +227,6 @@ function DataTable(props: IProps) {
 
   const handleTableChange = (pagination: TablePaginationConfig) => {
     props.setPage(pagination.current ?? 1);
-    setPagination(pagination);
   };
 
   const onSearch = (val: A) => {
@@ -301,10 +243,15 @@ function DataTable(props: IProps) {
     setValue(EDeleteState.None);
   };
 
-  const confirmDelete = () => {
+  const confirmDelete = async () => {
     setIsOpenModal(false);
+    await service.accountService.deleteAccount({
+      isHardDelete: value === EDeleteState.HardDelete,
+      id: selectedItem.map((x) => x.id)
+    });
     setValue(EDeleteState.None);
     props.refreshList();
+    setSelectedItem([]);
     notification.open({
       message: t('Common_DeleteSuccess'),
       type: 'success'
@@ -363,12 +310,7 @@ function DataTable(props: IProps) {
           )}
         </div>
         <div className={styles.tableHeaderRight}>
-          <Tooltip
-            placement="bottom"
-            title={<div className={styles.customTooltip}>{t('Common_Filter')}</div>}
-            color="#ffffff"
-            arrow={true}
-          >
+          <Tooltip placement="bottom" title={t('Common_Filter')} color="#ffffff" arrow={true}>
             <Button type="text" onClick={() => props.openFilterPanel(param.filter)} icon={<FilterOutlined />} />
           </Tooltip>
           <Search placeholder={t('Common_SearchByName')} allowClear onSearch={onSearch} style={{ width: 250 }} />
@@ -383,7 +325,12 @@ function DataTable(props: IProps) {
         columns={columns}
         rowSelection={{ ...rowSelection }}
         dataSource={props.data}
-        pagination={pagination}
+        pagination={{
+          current: param.pageInfor!.pageNumber,
+          pageSize: param.pageInfor!.pageSize,
+          total: param.pageInfor!.totalItems,
+          simple: false
+        }}
         scroll={{ x: 780 }}
         locale={{
           emptyText: (

@@ -3,10 +3,13 @@ import { IBreadcrumb, SiteBreadcrumb } from '../components/breadcrum/Breadcrum';
 import UserAvatar from './components/user-avatar/UserAvatar';
 import styles from './AdminLayout.module.scss';
 import LeftNav from './components/left-navigation/LeftNav';
-import { BarsOutlined, BellOutlined, CalendarOutlined, TranslationOutlined } from '@ant-design/icons';
+import { BarsOutlined, CalendarOutlined, TranslationOutlined } from '@ant-design/icons';
 import { useTranslation } from 'react-i18next';
 import i18next from 'i18next';
 import { useState } from 'react';
+import logo from '@/assets/logo.png';
+import logoLarge from '@/assets/logoLarge.png';
+import Notification from './components/notification/Notification';
 
 export interface IProps {
   children?: React.ReactNode;
@@ -39,6 +42,13 @@ function AdminLayout(props: IProps) {
     <>
       <Layout className={styles.siteLayout}>
         <div className={`${styles.lefNav} ${expandLeftNav && styles.expandLeftNav}`}>
+          <div className={styles.logoWrap}>
+            {expandLeftNav ? (
+              <img src={logo} alt="Logo" width="60" height="35" />
+            ) : (
+              <img src={logoLarge} alt="Logo" width="200" height="35" />
+            )}
+          </div>
           <LeftNav collapse={expandLeftNav}></LeftNav>
         </div>
         <Layout style={{ paddingLeft: expandLeftNav ? '80px' : '250px' }}>
@@ -51,17 +61,15 @@ function AdminLayout(props: IProps) {
                   <SiteBreadcrumb items={props.breadcrumbItems}></SiteBreadcrumb>
                 </div>
                 <div className={styles.rightHeader}>
-                  <Dropdown menu={{ items }} placement="bottom" trigger={['click']}>
-                    {/* <Tooltip placement="bottom" title={`${t('language')}`} arrow={true}> */}
-                    <TranslationOutlined />
-                    {/* </Tooltip> */}
+                  <Dropdown menu={{ items }} placement="bottomRight" trigger={['click']}>
+                    <Tooltip color="#ffffff" placement="bottom" title={`${t('language')}`} arrow={true}>
+                      <TranslationOutlined />
+                    </Tooltip>
                   </Dropdown>
-                  <Tooltip placement="bottom" title={`${t('calendar')}`} arrow={true}>
+                  <Tooltip color="#ffffff" placement="bottom" title={`${t('calendar')}`} arrow={true}>
                     <CalendarOutlined />
                   </Tooltip>
-                  <Tooltip placement="bottom" title={`${t('notification')}`} arrow={true}>
-                    <BellOutlined />
-                  </Tooltip>
+                  <Notification />
                   <UserAvatar />
                 </div>
               </Row>
@@ -81,6 +89,9 @@ function AdminLayout(props: IProps) {
         open={mobileNav}
         className={styles.mobileLeftNav}
       >
+        <div className={styles.logoWrap}>
+          <img src={logoLarge} alt="Logo" width="200" height="35" />
+        </div>
         <LeftNav onMenuClick={() => setmobileNav(false)} />
       </Drawer>
     </>

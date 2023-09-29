@@ -69,7 +69,6 @@ const PieChart = (props: PieChartProps) => {
     }
   }, [data]);
 
-  const [hoverLabel, setHoverLabel] = useState('');
   const chartCanvaseRef = useCallback(
     (ref: A) => {
       if (!ref) return;
@@ -87,13 +86,7 @@ const PieChart = (props: PieChartProps) => {
       //       value: value as number
       //     });
       //   }
-      // });
-      chartInstance.current.on('mouseover', (params) => {
-        setHoverLabel(params.name);
-      });
-      chartInstance.current.on('mouseout', () => {
-        setHoverLabel('');
-      });
+      // })
     },
     [props]
   );
@@ -116,7 +109,6 @@ const PieChart = (props: PieChartProps) => {
         </div>
       ) : (
         <div className="pie-chart-box">
-          <div className="hover-label">{hoverLabel}</div>
           <div ref={chartCanvaseRef} className="pie-chart-canvas"></div>
         </div>
       )}

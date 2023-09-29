@@ -6,14 +6,15 @@ import {
   FlagOutlined,
   SmileOutlined
 } from '@ant-design/icons';
-import { useBreadcrumb } from '../../components/breadcrum/Breadcrum';
+import { useBreadcrumb } from '@/components/breadcrum/Breadcrum';
 import { useEffect } from 'react';
 import { Calendar, Checkbox, Col, List, Progress, Row, Timeline } from 'antd';
 import styles from './Overview.module.scss';
 import { Link } from 'react-router-dom';
-import PieChart from '../../components/chart/pie-chart/PieChart';
-import BarChart from '../../components/chart/bar-chart/BarChart';
+import PieChart from '@/components/chart/pie-chart/PieChart';
+import BarChart from '@/components/chart/bar-chart/BarChart';
 import useGetData from './useGetData';
+import { useTranslation } from 'react-i18next';
 
 const Overview = () => {
   const monthNamesAbbreviated = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
@@ -37,6 +38,7 @@ const Overview = () => {
   ];
   const { pieChartData, barChartData } = useGetData();
   const { setBreadcrumb } = useBreadcrumb();
+  const { t } = useTranslation();
   useEffect(() => {
     setBreadcrumb([{ path: '/', icon: <AppstoreOutlined />, text: 'Overview' }]);
   }, []);
@@ -125,7 +127,7 @@ const Overview = () => {
                 <div>
                   <CarryOutOutlined /> Todo List
                 </div>
-                <Link to={'./'}>View all</Link>
+                <Link to={'./'}>{t('Common_ViewAll')}</Link>
               </div>
             }
             dataSource={data}
@@ -143,7 +145,7 @@ const Overview = () => {
               <div>
                 <AlignLeftOutlined /> Recently Activity
               </div>
-              <Link to={'./'}>View all</Link>
+              <Link to={'./'}>{t('Common_ViewAll')}</Link>
             </div>
             <Timeline
               className={styles.timeContent}

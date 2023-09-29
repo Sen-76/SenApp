@@ -70,20 +70,10 @@ function DataTable(props: IProps) {
         };
         return (
           <div>
-            <Tooltip
-              placement="bottom"
-              title={<div className={styles.customTooltip}>{t('Common_Edit')}</div>}
-              color="#ffffff"
-              arrow={true}
-            >
+            <Tooltip placement="bottom" title={t('Common_Edit')} color="#ffffff" arrow={true}>
               <Button type="text" onClick={editClick} icon={<EditOutlined />} />
             </Tooltip>
-            <Tooltip
-              placement="bottom"
-              title={<div className={styles.customTooltip}>{t('Common_ViewDetail')}</div>}
-              color="#ffffff"
-              arrow={true}
-            >
+            <Tooltip placement="bottom" title={t('Common_ViewDetail')} color="#ffffff" arrow={true}>
               <Link to={`/management/department-management/department-detail/${record.title}/${record.id}`}>
                 <Button type="text" icon={<InfoCircleOutlined />} />
               </Link>

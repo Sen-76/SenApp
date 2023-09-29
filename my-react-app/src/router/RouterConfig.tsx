@@ -7,9 +7,10 @@ import User from './routes/UserRoutes';
 import Configuration from './routes/ConfigurationRoutes';
 import Management from './routes/ManagementRoutes';
 import Task from './routes/TaskRoutes';
+import Okrs from './routes/OkrsRoutes';
+import Projects from './routes/ProjectRoutes';
 
 const NotFound = lazy(() => import('../common/pages/not-found/NotFound'));
-
 const AppLayout = lazy(() => import('../AppLayout'));
 const LoginPage = lazy(() => import('../pages/authentication/login/Login'));
 const ForgotPage = lazy(() => import('../pages/authentication/forgot/Forgot'));
@@ -22,7 +23,17 @@ export const routers: IRouter.IRoute[] = [
     element: AppLayout,
     name: 'layout',
     meta: { role: [ERole.Admin], pageTitle: 'layout' },
-    children: [...Overview, ...TestRoutes, ...Kanban, ...User, ...Configuration, ...Management, ...Task]
+    children: [
+      ...Overview,
+      ...TestRoutes,
+      ...Kanban,
+      ...User,
+      ...Configuration,
+      ...Management,
+      ...Task,
+      ...Okrs,
+      ...Projects
+    ]
   },
   { path: '/404', name: '404page', element: NotFound, meta: { pageTitle: '404' } },
   { path: '*', name: '404', element: NotFound, meta: { pageTitle: '404' } }

@@ -1,3 +1,4 @@
+import { Modal } from 'antd';
 import axios from 'axios';
 
 const instance = axios.create({
@@ -13,7 +14,6 @@ const instance = axios.create({
 // Request Interceptor
 instance.interceptors.request.use(
   (config) => {
-    // Add loading spinner or perform other tasks before the request is sent.
     return config;
   },
   (error) => {
@@ -24,6 +24,13 @@ instance.interceptors.request.use(
 // Response Interceptor
 instance.interceptors.response.use(
   (response) => {
+    console.log(response);
+    if (response.status === 422) {
+      Modal.error({
+        title: 'Api failure',
+        content: 'Something wrong. Please check api again!'
+      });
+    }
     return response;
   },
   (error) => {

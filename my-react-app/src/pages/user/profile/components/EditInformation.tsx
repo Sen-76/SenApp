@@ -15,16 +15,6 @@ const genderOptions = [
     value: 'Female'
   }
 ];
-const departmentOptions = [
-  {
-    label: 'Tester',
-    value: 'Tester'
-  },
-  {
-    label: 'Development',
-    value: 'Development'
-  }
-];
 interface IProps {
   draftUser: A;
   cancelEdit: () => void;
@@ -48,35 +38,34 @@ function EditInformation(props: IProps) {
       <Row className={styles.header}>
         <span>Information</span>
       </Row>
-      <div style={{ marginBottom: 10 }}>
-        <EditAvatar imageLink={draftUser.photoUrl} name={draftUser.name} />
-      </div>
-      <Form layout="vertical" form={form} onFinish={onFinish}>
-        <Form.Item label="Full name" name="fullName">
-          <Input></Input>
-        </Form.Item>
-        <Form.Item label="Email" name="email">
-          <Input></Input>
-        </Form.Item>
-        <Form.Item label="Phone" name="phone">
-          <Input></Input>
-        </Form.Item>
-        <Form.Item label="Date of Birth" name="dob">
-          <DatePicker />
-        </Form.Item>
-        <Form.Item label="Gender" name="gender">
-          <Select options={genderOptions} placeholder="Select a gender" />
-        </Form.Item>
-        <Form.Item label="Department" name="department">
-          <Select options={departmentOptions} placeholder="Select a gender" />
-        </Form.Item>
-        <div>
-          <Button onClick={cancelEdit}>{t('Common_Cancel')}</Button>
-          <Button type="primary" htmlType="submit">
-            {t('Common_Save')}
-          </Button>
+      <div className={styles.body}>
+        <div style={{ marginBottom: 10 }}>
+          <EditAvatar imageLink={draftUser.photoUrl} name={draftUser.name} />
         </div>
-      </Form>
+        <Form layout="vertical" form={form} onFinish={onFinish}>
+          <Form.Item label={t('fullName')} name="fullName">
+            <Input></Input>
+          </Form.Item>
+          <Form.Item label={t('phone')} name="phone">
+            <Input></Input>
+          </Form.Item>
+          <Form.Item label={t('date of birth')} name="dob">
+            <DatePicker />
+          </Form.Item>
+          <Form.Item label={t('gender')} name="gender">
+            <Select options={genderOptions} placeholder="Select a gender" />
+          </Form.Item>
+          <Form.Item label={t('job')} name="job">
+            <Input></Input>
+          </Form.Item>
+          <div className="actionBtnBottom">
+            <Button onClick={cancelEdit}>{t('Common_Cancel')}</Button>
+            <Button type="primary" htmlType="submit">
+              {t('Common_Save')}
+            </Button>
+          </div>
+        </Form>
+      </div>
     </div>
   );
 }

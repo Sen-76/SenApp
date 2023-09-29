@@ -45,7 +45,7 @@ const EditAvatar = (props: IProps) => {
   };
 
   const uploadButton = (
-    <div>
+    <div style={{ position: 'absolute' }}>
       {loading ? <LoadingOutlined /> : <PlusOutlined />}
       <div style={{ marginTop: 8 }}>Upload</div>
     </div>
@@ -63,12 +63,14 @@ const EditAvatar = (props: IProps) => {
         onChange={handleChange}
       >
         {imageUrl ? (
-          <Avatar
-            src={imageUrl ?? imageLink}
-            style={{ width: '100%', height: '100%', backgroundColor: util.randomColor() }}
-          >
-            {name?.charAt(0) ?? 'N/A'}
-          </Avatar>
+          <>
+            <Avatar
+              src={imageUrl ?? imageLink}
+              style={{ width: '100%', height: '100%', backgroundColor: util.randomColor(), position: 'absolute' }}
+            >
+              {name?.charAt(0) ?? 'N/A'}
+            </Avatar>
+          </>
         ) : (
           uploadButton
         )}

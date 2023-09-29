@@ -37,21 +37,12 @@ function DetailPanel(props: IProps, ref: A) {
       width: 250,
       render: (_, record) => {
         return (
-          <Tooltip
-            placement="bottom"
-            title={<div className={styles.customTooltip}>{record.name}</div>}
-            color="#ffffff"
-            arrow={true}
-          >
+          <Tooltip placement="bottom" title={record.name} color="#ffffff" arrow={true}>
             <div style={{ display: 'flex', alignItems: 'center' }}>
               <Avatar size={40} src={record.photoUrl} style={{ marginRight: 10, backgroundColor: util.randomColor() }}>
                 {record.fullName.charAt(0)}
               </Avatar>
-              <Paragraph
-                className={styles.paragraph}
-                ellipsis={{ rows: 3, expandable: false }}
-                style={{ maxWidth: 150, minWidth: 30 }}
-              >
+              <Paragraph ellipsis={{ rows: 3, expandable: false }} style={{ maxWidth: 150, minWidth: 30 }}>
                 {record.name}
               </Paragraph>
             </div>

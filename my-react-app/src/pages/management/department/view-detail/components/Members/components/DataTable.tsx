@@ -42,21 +42,12 @@ function DataTable(props: IProps) {
       key: 'name',
       render: (_, record) => {
         return (
-          <Tooltip
-            placement="bottom"
-            title={<div className={styles.customTooltip}>{record.name}</div>}
-            color="#ffffff"
-            arrow={true}
-          >
+          <Tooltip placement="bottom" title={record.name} color="#ffffff" arrow={true}>
             <div style={{ display: 'flex', alignItems: 'center', minWidth: 250 }}>
               <Avatar size={40} src={record.photoUrl} style={{ marginRight: 10, backgroundColor: util.randomColor() }}>
                 {record.fullName.charAt(0)}
               </Avatar>
-              <Paragraph
-                className={styles.paragraph}
-                ellipsis={{ rows: 3, expandable: false }}
-                style={{ maxWidth: 150, minWidth: 30 }}
-              >
+              <Paragraph ellipsis={{ rows: 3, expandable: false }} style={{ maxWidth: 150, minWidth: 30 }}>
                 {record.name}
               </Paragraph>
             </div>
@@ -70,21 +61,11 @@ function DataTable(props: IProps) {
       key: 'gender',
       render: (_, record) => {
         return record.gender === 'Male' ? (
-          <Tooltip
-            placement="bottom"
-            title={<div className={styles.customTooltip}>{t('man')}</div>}
-            color="#ffffff"
-            arrow={true}
-          >
+          <Tooltip placement="bottom" title={t('man')} color="#ffffff" arrow={true}>
             <ManOutlined />
           </Tooltip>
         ) : (
-          <Tooltip
-            placement="bottom"
-            title={<div className={styles.customTooltip}>{t('woman')}</div>}
-            color="#ffffff"
-            arrow={true}
-          >
+          <Tooltip placement="bottom" title={t('woman')} color="#ffffff" arrow={true}>
             <WomanOutlined />
           </Tooltip>
         );
@@ -112,20 +93,10 @@ function DataTable(props: IProps) {
 
         return (
           <div>
-            <Tooltip
-              placement="bottom"
-              title={<div className={styles.customTooltip}>{t('Common_ViewDetail')}</div>}
-              color="#ffffff"
-              arrow={true}
-            >
+            <Tooltip placement="bottom" title={t('Common_ViewDetail')} color="#ffffff" arrow={true}>
               <Button type="text" onClick={viewDetailCLick} icon={<SolutionOutlined />} />
             </Tooltip>
-            <Tooltip
-              placement="bottom"
-              title={<div className={styles.customTooltip}>{t('Common_Kick')}</div>}
-              color="#ffffff"
-              arrow={true}
-            >
+            <Tooltip placement="bottom" title={t('Common_Kick')} color="#ffffff" arrow={true}>
               <Button type="text" onClick={() => kickoutMembers(record)} icon={<LogoutOutlined />} />
             </Tooltip>
           </div>

@@ -7,6 +7,7 @@ import { GenderOptions, DepartmentOptions, RoleOptions } from '../AccountManagem
 import { useTranslation } from 'react-i18next';
 import { service } from '../../../../services/apis';
 import { Rule } from 'antd/es/form';
+import { useLoading } from '@/common/context/useLoading';
 
 interface IProps {
   refreshList: () => void;
@@ -14,6 +15,8 @@ interface IProps {
 function Panel(props: IProps, ref: A) {
   const [open, setOpen] = useState<boolean>(false);
   const [isEdit, setIsEdit] = useState<boolean>(false);
+  const { showLoading, closeLoading } = useLoading();
+  const [customAlert, setCustomAlert] = useState<A>([]);
   const [step, setStep] = useState<number>(0);
   const [editData, setEditData] = useState<A>();
   const { t } = useTranslation();
@@ -47,25 +50,28 @@ function Panel(props: IProps, ref: A) {
   const onConfirm = async () => {
     try {
       const generalCheck = await generalForm.validateFields();
-      setEditData(generalForm.getFieldsValue());
+      setEditData({ ...editData, ...generalForm.getFieldsValue() });
       generalCheck && setStep(1);
       const systemCheck = await systemForm.validateFields();
       if (step == 1 && generalCheck && systemCheck) {
-        console.log({ ...generalForm.getFieldsValue(), ...systemForm.getFieldsValue() });
+        showLoading();
         if (isEdit) {
+          await service.accountService.updateAccount({
+            ...editData,
+            ...systemForm.getFieldsValue(),
+            userRole: null,
+            userTeam: null,
+            userDepartment: null,
+            dob: dayjs(generalForm.getFieldValue('dob')).format('YYYY-MM-DD')
+          });
           notification.open({
             message: t('Common_UpdateSuccess'),
             type: 'success'
           });
-          closeDrawer();
-          props.refreshList();
         } else {
           await service.accountService.addAccount({
             ...editData,
             ...systemForm.getFieldsValue(),
-            userStar: 0,
-            password: 'DMTuanAnhKhongChoNhapPasswordNhe',
-            status: 0,
             userRole: null,
             userTeam: null,
             userDepartment: null,
@@ -75,12 +81,18 @@ function Panel(props: IProps, ref: A) {
             message: t('Common_CreateSuccess'),
             type: 'success'
           });
-          closeDrawer();
-          props.refreshList();
         }
+        closeDrawer();
+        props.refreshList();
       }
-    } catch {
-      console.log('co bug r');
+    } catch (e: A) {
+      if (e.response.data.status === 422) {
+        const errors: A = e.response.data.errors;
+        setCustomAlert(errors);
+        systemForm.validateFields();
+      }
+    } finally {
+      closeLoading();
     }
   };
 
@@ -93,11 +105,18 @@ function Panel(props: IProps, ref: A) {
     }
   };
 
+  const checkDuplicateUsername = () => {
+    if (customAlert.userName) {
+      return Promise.reject('Trùng tên rồi');
+    }
+    return Promise.resolve();
+  };
+
   const formRule = {
     fullName: [{ required: true, message: t('Common_Require_Field') }],
     userEmail: [
       { required: true, message: t('Common_Require_Field') },
-      { type: 'email', message: t('Invalid_Email_Format') }
+      { type: 'email', message: t('Manage_Account_Invalid_Email_Format') }
     ] as Rule[],
     userPhone: [
       { required: true, message: t('Common_Require_Field') },
@@ -107,7 +126,7 @@ function Panel(props: IProps, ref: A) {
       }
     ] as Rule[],
     dob: [{ required: true, message: t('Common_Require_Field') }],
-    userName: [{ required: true, message: t('Common_Require_Field') }],
+    userName: [{ required: true, message: t('Common_Require_Field') }, { validator: checkDuplicateUsername }],
     password: [{ required: true, message: t('Common_Require_Field') }],
     userRole: [{ required: true, message: t('Common_Require_Field') }]
   };

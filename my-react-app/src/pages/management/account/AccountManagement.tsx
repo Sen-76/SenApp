@@ -5,21 +5,26 @@ import styles from './AccountManagement.module.scss';
 import { useTranslation } from 'react-i18next';
 import { Tabs } from 'antd';
 import { useLoading } from '@/common/context/useLoading';
+import { service } from '@/services/apis';
+import { EState } from './AccountManagement.Model';
 
 //components
 import DataTable from './components/DataTable';
 import Panel from './components/Panel';
 import FilterPanel from './components/FilterPanel';
 import DetailPanel from './components/DetailPanel';
-import { service } from '@/services/apis';
-import { EState } from './AccountManagement.Model';
 
 function AccountManagement() {
   const initDataGrid: Common.IDataGrid = {
-    pageSize: 10,
-    pageNumber: 1,
-    searchValue: '',
-    searchColumn: ['UserName'],
+    pageInfor: {
+      pageSize: 10,
+      pageNumber: 1,
+      totalItems: 0
+    },
+    searchInfor: {
+      searchValue: '',
+      searchColumn: ['FullName']
+    },
     filter: [{ key: 'Status', value: [EState.Activate] }]
   };
   const { setBreadcrumb } = useBreadcrumb();
@@ -40,7 +45,7 @@ function AccountManagement() {
     },
     {
       label: t('Manage_Account_DeletedUser'),
-      key: EState.DeActivate.toString()
+      key: EState.Deleted.toString()
     }
   ];
 
@@ -54,7 +59,14 @@ function AccountManagement() {
       showLoading();
       setLoading(true);
       const result = await service.accountService.getAccount(draftParam ?? param);
-      console.log(result);
+      setParam({
+        ...param,
+        pageInfor: {
+          pageSize: result.prameter.pageSize,
+          pageNumber: result.prameter.pageNumber,
+          totalItems: result.prameter.totalItems
+        }
+      });
       setAccountList(result.data);
       closeLoading();
       setLoading(false);
@@ -82,8 +94,9 @@ function AccountManagement() {
       if (statusIndex !== -1) {
         draftGrid.filter.splice(statusIndex, 1);
       }
-      draftGrid.filter?.push({ key: 'Status', value: [e] });
+      draftGrid.filter?.push({ key: 'Status', value: [Number(e)] });
     }
+    draftGrid.pageInfor!.pageNumber = 1;
     setParam(draftGrid);
     setTabStatus(e);
     getAccountsList(draftGrid);
@@ -91,14 +104,19 @@ function AccountManagement() {
 
   const onSearch = (value: string) => {
     const draftGrid = { ...param };
-    draftGrid.searchValue = value;
+    if (draftGrid.searchInfor) {
+      draftGrid.searchInfor.searchValue = value;
+    }
+    draftGrid.pageInfor!.pageNumber = 1;
     setParam(draftGrid);
     getAccountsList(draftGrid);
   };
 
   const setPage = (val: number) => {
     const draftGrid = { ...param };
-    draftGrid.pageNumber = val;
+    if (draftGrid.pageInfor) {
+      draftGrid.pageInfor.pageNumber = val;
+    }
     setParam(draftGrid);
     getAccountsList(draftGrid);
   };
@@ -120,7 +138,7 @@ function AccountManagement() {
       />
       <Panel refreshList={getAccountsList} ref={panelRef} />
       <FilterPanel refreshList={getAccountsList} ref={filterPanelRef} />
-      <DetailPanel refreshList={getAccountsList} ref={detailPanelRef} />
+      <DetailPanel refreshList={getAccountsList} ref={detailPanelRef} openPanel={openPanel} />
     </div>
   );
 }

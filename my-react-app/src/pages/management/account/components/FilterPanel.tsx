@@ -2,7 +2,7 @@ import { CloseOutlined } from '@ant-design/icons';
 import { Button, Checkbox, Col, Collapse, CollapseProps, Drawer, Form, Row, Typography } from 'antd';
 import { forwardRef, useImperativeHandle, useState } from 'react';
 import styles from '../AccountManagement.module.scss';
-import { DepartmentOptions, GenderOptions, RoleOptions, StatusOptions } from '../AccountManagement.Model';
+import { DepartmentOptions, GenderOptions, RoleOptions } from '../AccountManagement.Model';
 import { useTranslation } from 'react-i18next';
 
 interface IProps {
@@ -62,25 +62,9 @@ function FilterPanel(props: IProps, ref: A) {
         </Checkbox.Group>
       </Form.Item>
     );
-    const StatusElement = (
-      <Form.Item name="status">
-        <Checkbox.Group>
-          <Row>
-            {StatusOptions.map((item: A) => (
-              <Col span={12} key={item.value} className={styles.col}>
-                <Checkbox value={item.value}>
-                  <Paragraph ellipsis={{ rows: 4, expandable: false }}>{item.label}</Paragraph>
-                </Checkbox>
-              </Col>
-            ))}
-          </Row>
-        </Checkbox.Group>
-      </Form.Item>
-    );
     const item = [
       { key: 'department', label: t('department'), children: DepartmentElement },
       { key: 'gender', label: t('gender'), children: GenderElement },
-      { key: 'status', label: t('Common_Status'), children: StatusElement },
       { key: 'role', label: t('role'), children: RoleElement }
     ];
     setItems(item);

@@ -69,12 +69,7 @@ function DataTable(props: IProps) {
         };
         return (
           <div>
-            <Tooltip
-              placement="bottom"
-              title={<div className={styles.customTooltip}>{t('Common_Edit')}</div>}
-              color="#ffffff"
-              arrow={true}
-            >
+            <Tooltip placement="bottom" title={t('Common_Edit')} color="#ffffff" arrow={true}>
               <Button type="text" onClick={editClick} icon={<EditOutlined />} />
             </Tooltip>
           </div>

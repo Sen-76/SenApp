@@ -1,6 +1,8 @@
 export enum EState {
   Activate = 0,
-  DeActivate = 1
+  DeActivate = 1,
+  Blocked = 2,
+  Deleted = 3
 }
 export enum EDeleteState {
   None = 0,
@@ -13,17 +15,6 @@ export enum EGender {
   Female = 1,
   Other = 2
 }
-
-export const StatusOptions = [
-  {
-    label: 'Active',
-    value: EState.Activate
-  },
-  {
-    label: 'Inactive',
-    value: EState.DeActivate
-  }
-];
 
 export const GenderOptions = [
   {
