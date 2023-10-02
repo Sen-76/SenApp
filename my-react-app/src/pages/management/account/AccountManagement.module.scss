@@ -15,9 +15,11 @@
 .detailPanel {
   :global {
     .ant-drawer-body {
-      display: flex;
-      flex-direction: column;
-      gap: 10px;
+      form {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+      }
     }
   }
   .title {

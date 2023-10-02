@@ -47,8 +47,8 @@ function DataTable(props: IProps) {
               <Avatar size={40} src={record.photoUrl} style={{ marginRight: 10, backgroundColor: util.randomColor() }}>
                 {record.fullName.charAt(0)}
               </Avatar>
-              <Paragraph ellipsis={{ rows: 3, expandable: false }} style={{ maxWidth: 150, minWidth: 30 }}>
-                {record.name}
+              <Paragraph ellipsis={{ rows: 1, expandable: false }} style={{ maxWidth: 150, minWidth: 30 }}>
+                {record.fullName}
               </Paragraph>
             </div>
           </Tooltip>

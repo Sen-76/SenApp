@@ -38,7 +38,7 @@ function DataTable(props: IProps) {
         return (
           <Tooltip placement="bottom" title={record.name} color="#ffffff" arrow={true}>
             <div style={{ display: 'flex', alignItems: 'center', minWidth: 250 }}>
-              <Paragraph ellipsis={{ rows: 3, expandable: false }} style={{ maxWidth: 150, minWidth: 30 }}>
+              <Paragraph ellipsis={{ rows: 1, expandable: false }} style={{ maxWidth: 150, minWidth: 30 }}>
                 {record.title}
               </Paragraph>
             </div>

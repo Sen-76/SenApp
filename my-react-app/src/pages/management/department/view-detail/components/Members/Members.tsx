@@ -8,7 +8,7 @@ const draftMembers = [
   {
     id: 1,
     key: 1,
-    name: 'Sen',
+    fullName: 'Sen',
     job: 'Developer',
     gender: 'Male',
     photoUrl: 'https://top10tphcm.com/wp-content/uploads/2023/02/hinh-anh-meo.jpeg'
@@ -16,7 +16,7 @@ const draftMembers = [
   {
     id: 2,
     key: 2,
-    name: 'Sen',
+    fullName: 'Sen',
     job: 'Developer',
     gender: 'Male',
     photoUrl: 'https://top10tphcm.com/wp-content/uploads/2023/02/hinh-anh-meo.jpeg'

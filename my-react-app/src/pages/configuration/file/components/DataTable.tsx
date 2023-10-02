@@ -1,7 +1,6 @@
-import { useState } from 'react';
-import { EditOutlined, PlusOutlined, SmileOutlined } from '@ant-design/icons';
+import { EditOutlined, SmileOutlined } from '@ant-design/icons';
 import { Button, Table, Tooltip } from 'antd';
-import { ColumnsType, TablePaginationConfig } from 'antd/es/table';
+import { ColumnsType } from 'antd/es/table';
 import { useTranslation } from 'react-i18next';
 import styles from '../FileConfiguration.module.scss';
 import Search from 'antd/es/input/Search';
@@ -9,16 +8,11 @@ import Search from 'antd/es/input/Search';
 interface IProps {
   data: A[];
   openPanel: (data?: A) => void;
+  loading: boolean;
 }
 function DataTable(props: IProps) {
-  const [loading, setLoading] = useState<boolean>(false);
+  const { loading, data } = props;
   const { t } = useTranslation();
-  const [pagination, setPagination] = useState<TablePaginationConfig>({
-    current: 1,
-    pageSize: 10,
-    total: 20,
-    simple: false
-  });
   const columns: ColumnsType<A> = [
     {
       title: t('Common_Title'),
@@ -40,20 +34,20 @@ function DataTable(props: IProps) {
     },
     {
       title: t('file accept'),
-      dataIndex: 'enableFileExtension',
+      dataIndex: 'fileAccept',
       width: 110,
-      key: 'fileSize',
+      key: 'fileAccept',
       render: (_, record) => {
-        return record.fileAccept.join(', ');
+        return record.fileAccept;
       }
     },
     {
       title: t('file type'),
-      dataIndex: 'fileOfFoder',
+      dataIndex: 'fileType',
       width: 110,
-      key: 'fileSize',
+      key: 'fileType',
       render: (_, record) => {
-        return record.numberOfFile ? 'Multiple' : 'Single';
+        return record.fileType ? 'Multiple' : 'Single';
       }
     },
     {
@@ -78,19 +72,6 @@ function DataTable(props: IProps) {
     }
   ];
 
-  const handleTableChange = (pagination: TablePaginationConfig) => {
-    setPagination(pagination);
-    tableLoading();
-  };
-
-  const tableLoading = () => {
-    setLoading(true);
-    const timeout = setTimeout(() => {
-      setLoading(false);
-      clearTimeout(timeout);
-    }, 2000);
-  };
-
   const onSearch = (val: A) => {
     console.log(val);
   };
@@ -98,11 +79,7 @@ function DataTable(props: IProps) {
   const TableHeader = () => {
     return (
       <>
-        <div className={styles.tableHeaderLeft}>
-          <Button type="text" onClick={() => props.openPanel()} icon={<PlusOutlined />}>
-            {t('Common_AddNew')}
-          </Button>
-        </div>
+        <div className={styles.tableHeaderLeft}></div>
         <div className={styles.tableHeaderRight}>
           <Search placeholder={t('Common_SearchByTitle')} allowClear onSearch={onSearch} style={{ width: 250 }} />
         </div>
@@ -114,8 +91,8 @@ function DataTable(props: IProps) {
     <>
       <Table
         columns={columns}
-        dataSource={props.data}
-        pagination={pagination}
+        dataSource={data}
+        pagination={false}
         scroll={{ x: 780 }}
         locale={{
           emptyText: (
@@ -125,7 +102,6 @@ function DataTable(props: IProps) {
           )
         }}
         loading={loading}
-        onChange={handleTableChange}
         title={() => TableHeader()}
         rowKey={(record) => record.id}
       />

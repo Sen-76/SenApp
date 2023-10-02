@@ -4,6 +4,7 @@ import { lazy } from 'react';
 const FileConfiguration = lazy(() => import('../../pages/configuration/file/FileConfiguration'));
 const EmailConfiguration = lazy(() => import('../../pages/configuration/email/EmailConfiguration'));
 const SmtpConfiguration = lazy(() => import('../../pages/configuration/smtp/Smtp'));
+const StarConfiguration = lazy(() => import('../../pages/configuration/star/StarConfiguration'));
 
 const routes: IRouter.IRoute<'/configuration'>[] = [
   {
@@ -26,6 +27,13 @@ const routes: IRouter.IRoute<'/configuration'>[] = [
     exact: true,
     element: SmtpConfiguration,
     meta: { role: [ERole.Admin], pageTitle: 'SMTP Configuration' }
+  },
+  {
+    path: '/configuration/star-configuration',
+    name: 'starconfiguration',
+    exact: true,
+    element: StarConfiguration,
+    meta: { role: [ERole.Admin], pageTitle: 'Star Configuration' }
   }
 ];
 

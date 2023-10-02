@@ -6,10 +6,11 @@ import LeftNav from './components/left-navigation/LeftNav';
 import { BarsOutlined, CalendarOutlined, TranslationOutlined } from '@ant-design/icons';
 import { useTranslation } from 'react-i18next';
 import i18next from 'i18next';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import logo from '@/assets/logo.png';
 import logoLarge from '@/assets/logoLarge.png';
 import Notification from './components/notification/Notification';
+import { useLoginManager } from '@/common/helpers/login-manager';
 
 export interface IProps {
   children?: React.ReactNode;
@@ -20,6 +21,12 @@ function AdminLayout(props: IProps) {
   const [expandLeftNav, setexpandLeftNav] = useState<boolean>(false);
   const [mobileNav, setmobileNav] = useState<boolean>(false);
   const { t } = useTranslation();
+  const { getLoginUser } = useLoginManager();
+
+  useEffect(() => {
+    !getLoginUser() && (location.href = '/login');
+  }, []);
+
   const items: MenuProps['items'] = [
     {
       key: '1',
@@ -54,7 +61,7 @@ function AdminLayout(props: IProps) {
         <Layout style={{ paddingLeft: expandLeftNav ? '80px' : '250px' }}>
           <Affix offsetTop={0}>
             <Header style={{ padding: '0 20px', background: '#fff', borderBottom: `1px solid #EEF2F5` }}>
-              <Row style={{ height: '100%' }} justify="space-between" align="middle">
+              <Row style={{ height: '100%', overflow: 'hidden' }} justify="space-between" align="middle">
                 <div style={{ display: 'flex', alignItems: 'center' }}>
                   <BarsOutlined className={styles.barIcon} onClick={() => setexpandLeftNav(!expandLeftNav)} />
                   <BarsOutlined className={styles.barMobileIcon} onClick={() => setmobileNav(!mobileNav)} />
@@ -75,12 +82,9 @@ function AdminLayout(props: IProps) {
               </Row>
             </Header>
           </Affix>
-          <Content className={styles.content}>
-            <div>{props.children}</div>
-          </Content>
+          <Content className={styles.content}>{props.children}</Content>
         </Layout>
       </Layout>
-
       <Drawer
         placement="left"
         width={250}

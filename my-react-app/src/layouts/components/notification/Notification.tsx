@@ -241,6 +241,7 @@ function Notification() {
         placement="bottomRight"
         menu={{ items: menuItems }}
         className={styles.notiDropdown}
+        overlayClassName={styles.notiOverlay}
         dropdownRender={(menu) => (
           <div
             style={{

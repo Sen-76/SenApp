@@ -4,7 +4,6 @@ import { useEffect, useRef, useState } from 'react';
 import styles from './AccountManagement.module.scss';
 import { useTranslation } from 'react-i18next';
 import { Tabs } from 'antd';
-import { useLoading } from '@/common/context/useLoading';
 import { service } from '@/services/apis';
 import { EState } from './AccountManagement.Model';
 
@@ -25,10 +24,9 @@ function AccountManagement() {
       searchValue: '',
       searchColumn: ['FullName']
     },
-    filter: [{ key: 'Status', value: [EState.Activate] }]
+    filter: [{ key: 'Status', value: [EState.Activate, EState.DeActivate] }]
   };
   const { setBreadcrumb } = useBreadcrumb();
-  const { showLoading, closeLoading } = useLoading();
   const [tabStatus, setTabStatus] = useState<number>(EState.Activate);
   const [loading, setLoading] = useState<boolean>(false);
   const [accountList, setAccountList] = useState<Account.IAccountModel[]>([]);
@@ -50,13 +48,15 @@ function AccountManagement() {
   ];
 
   useEffect(() => {
-    getAccountsList();
     setBreadcrumb([{ icon: <BulbOutlined />, text: `${t('management')}` }, { text: `${t('Manage_Account')}` }]);
   }, [t]);
 
+  useEffect(() => {
+    getAccountsList();
+  }, []);
+
   const getAccountsList = async (draftParam?: Common.IDataGrid) => {
     try {
-      showLoading();
       setLoading(true);
       const result = await service.accountService.getAccount(draftParam ?? param);
       setParam({
@@ -68,7 +68,6 @@ function AccountManagement() {
         }
       });
       setAccountList(result.data);
-      closeLoading();
       setLoading(false);
     } catch (e) {
       console.log(e);

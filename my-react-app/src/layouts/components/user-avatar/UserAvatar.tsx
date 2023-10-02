@@ -4,20 +4,14 @@ import styles from './UserAvatar.module.scss';
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { useLoginManager } from '../../../common/helpers/login-manager';
 import { util } from '@/common/helpers/util';
-
-const draftUser = {
-  photoUrl: 'https://top10tphcm.com/wp-content/uploads/2023/02/hinh-anh-meo.jpeg',
-  userName: 'Sen',
-  currentRole: {
-    title: 'Admin đấy'
-  }
-};
+import { useLoginManager } from '@/common/helpers/login-manager';
 
 function UserAvatar() {
   const { t } = useTranslation();
   const { loginOut } = useLoginManager();
+  const { getLoginUser } = useLoginManager();
+  const userLoged = getLoginUser()?.user;
 
   const menuStyle = {
     boxShadow: 'none'
@@ -38,7 +32,7 @@ function UserAvatar() {
         label: (
           <Link to="/" className={styles.avatarDropdownItem}>
             <RedoOutlined />
-            <div className="dropdown-item-text">{t('change password')}</div>
+            <div className="dropdown-item-text">{t('Common_ChangePassword')}</div>
           </Link>
         ),
         key: '2'
@@ -55,6 +49,7 @@ function UserAvatar() {
     ];
     return items;
   };
+
   return (
     <>
       <Dropdown
@@ -74,14 +69,14 @@ function UserAvatar() {
             <div className={styles.avatarHeader}>
               <Avatar
                 size={50}
-                src={draftUser.photoUrl}
+                src="https://top10tphcm.com/wp-content/uploads/2023/02/hinh-anh-meo.jpeg"
                 style={{ marginRight: '16px', backgroundColor: util.randomColor() }}
               >
-                {draftUser.userName.charAt(0)}
+                {userLoged?.fullName.charAt(0)}
               </Avatar>
               <div className="avatar-header-content">
-                <div className="avatar-header-name">{draftUser.userName}</div>
-                <div className="avatar-header-role">{draftUser.currentRole?.title}</div>
+                <div className="avatar-header-name">{userLoged?.fullName}</div>
+                <div className="avatar-header-role">Admin đấy</div>
               </div>
             </div>
             <Divider style={{ margin: 0 }} />
@@ -89,8 +84,12 @@ function UserAvatar() {
           </div>
         )}
       >
-        <Avatar size={40} src={draftUser.photoUrl} style={{ cursor: 'pointer', backgroundColor: util.randomColor() }}>
-          {draftUser.userName.charAt(0)}
+        <Avatar
+          size={40}
+          src="https://top10tphcm.com/wp-content/uploads/2023/02/hinh-anh-meo.jpeg"
+          style={{ cursor: 'pointer', backgroundColor: util.randomColor() }}
+        >
+          {userLoged?.fullName.charAt(0)}
         </Avatar>
       </Dropdown>
     </>

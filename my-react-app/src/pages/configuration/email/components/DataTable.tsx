@@ -7,7 +7,7 @@ import styles from '../EmailConfiguation.module.scss';
 import Search from 'antd/es/input/Search';
 import dayjs from 'dayjs';
 import { EState } from '../Email.model';
-import { useLoading } from '../../../../common/context/useLoading';
+import { useLoading } from '@/common/context/useLoading';
 
 interface IProps {
   data: A[];
@@ -18,12 +18,6 @@ function DataTable(props: IProps) {
   const { showLoading, closeLoading } = useLoading();
   const { confirm } = Modal;
   const { t } = useTranslation();
-  const [pagination, setPagination] = useState<TablePaginationConfig>({
-    current: 1,
-    pageSize: 10,
-    total: 20,
-    simple: false
-  });
   const columns: ColumnsType<A> = [
     {
       title: t('Common_Title'),
@@ -59,7 +53,7 @@ function DataTable(props: IProps) {
             color="#ffffff"
             arrow={true}
           >
-            <Paragraph ellipsis={{ rows: 3, expandable: false }}>
+            <Paragraph ellipsis={{ rows: 1, expandable: false }}>
               {record.description
                 ? record.description.split('{/n}').map((line: A, index: number) => (
                     <React.Fragment key={index}>
@@ -162,19 +156,6 @@ function DataTable(props: IProps) {
     }
   ];
 
-  const handleTableChange = (pagination: TablePaginationConfig) => {
-    setPagination(pagination);
-    tableLoading();
-  };
-
-  const tableLoading = () => {
-    setLoading(true);
-    const timeout = setTimeout(() => {
-      setLoading(false);
-      clearTimeout(timeout);
-    }, 2000);
-  };
-
   const onSearch = (val: A) => {
     console.log(val);
   };
@@ -182,11 +163,7 @@ function DataTable(props: IProps) {
   const TableHeader = () => {
     return (
       <>
-        <div className={styles.tableHeaderLeft}>
-          <Button type="text" onClick={() => props.openPanel()} icon={<PlusOutlined />}>
-            {t('Common_AddNew')}
-          </Button>
-        </div>
+        <div className={styles.tableHeaderLeft}></div>
         <div className={styles.tableHeaderRight}>
           <Search placeholder={t('Common_SearchByTitle')} allowClear onSearch={onSearch} style={{ width: 250 }} />
         </div>
@@ -199,7 +176,7 @@ function DataTable(props: IProps) {
       <Table
         columns={columns}
         dataSource={props.data}
-        pagination={pagination}
+        pagination={false}
         scroll={{ x: 780 }}
         locale={{
           emptyText: (
@@ -209,7 +186,6 @@ function DataTable(props: IProps) {
           )
         }}
         loading={loading}
-        onChange={handleTableChange}
         title={() => TableHeader()}
         rowKey={(record) => record.id}
       />

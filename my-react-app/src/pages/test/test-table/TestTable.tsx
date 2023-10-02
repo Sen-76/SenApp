@@ -285,7 +285,6 @@ function TestTable() {
           onChange={handleTableChange}
           title={() => TableHeader()}
           footer={() => 'Footer'}
-          rowKey={(record) => record.id}
         />
       </div>
     </>

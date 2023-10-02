@@ -1,31 +1,18 @@
 import { SettingOutlined } from '@ant-design/icons';
 import { useTranslation } from 'react-i18next';
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useBreadcrumb } from '../../../components/breadcrum/Breadcrum';
 import styles from './FileConfiguration.module.scss';
+import { service } from '@/services/apis';
 
 //component
 import DataTable from './components/DataTable';
 import Panel from './components/Panel';
 
-const fileList = [
-  {
-    id: 2,
-    title: 'Avatar',
-    fileSize: '5',
-    fileAccept: ['jpg', 'png'],
-    numberOfFile: true
-  },
-  {
-    id: 1,
-    title: 'Attachment',
-    fileSize: '15',
-    fileAccept: ['pdf', 'png'],
-    numberOfFile: false
-  }
-];
 function FileConfiguration() {
   const { t } = useTranslation();
+  const [loading, setLoading] = useState<boolean>(false);
+  const [fileList, setFileList] = useState<A>(false);
   const { setBreadcrumb } = useBreadcrumb();
   const panelRef = useRef();
 
@@ -35,6 +22,20 @@ function FileConfiguration() {
       { text: `${t('Configuration_File')}` }
     ]);
   }, [t]);
+  useEffect(() => {
+    getFileList();
+  }, []);
+
+  const getFileList = async () => {
+    try {
+      setLoading(true);
+      const result = await service.globalSettingsService.getByType(1);
+      setFileList(result);
+      setLoading(false);
+    } catch (e) {
+      console.log(e);
+    }
+  };
 
   const openPanel = (data?: A) => {
     (panelRef.current as A).openDrawer(data);
@@ -42,7 +43,7 @@ function FileConfiguration() {
 
   return (
     <div className={styles.fileconfiguration}>
-      <DataTable data={fileList} openPanel={openPanel} />
+      <DataTable data={fileList} openPanel={openPanel} loading={loading} />
       <Panel refreshList={() => console.log('refresh')} ref={panelRef} />
     </div>
   );

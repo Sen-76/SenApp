@@ -11,6 +11,15 @@ export const accountService = {
       throw error;
     }
   },
+  async getDetal(id: string): Promise<Response.IDefaultResponse> {
+    try {
+      const response = await axiosInstance.get('/users/userDetail' + id);
+      return response.data;
+    } catch (error) {
+      console.error('An error occurred while get accounts:', error);
+      throw error;
+    }
+  },
   async addAccount(userData: Account.IAccountCreateModel): Promise<Response.IDefaultResponse> {
     try {
       const response = await axiosInstance.post('/users/create', userData);
@@ -25,7 +34,7 @@ export const accountService = {
       const response = await axiosInstance.post('/users/update', userData);
       return response.data;
     } catch (error) {
-      console.error('An error occurred while adding the account:', error);
+      console.error('An error occurred while updating the account:', error);
       throw error;
     }
   },
@@ -34,7 +43,43 @@ export const accountService = {
       const response = await axiosInstance.post('/users/delete', deleteData);
       return response.data;
     } catch (error) {
-      console.error('An error occurred while get accounts:', error);
+      console.error('An error occurred while deleting accounts:', error);
+      throw error;
+    }
+  },
+  async restoreAccount(ids: string[]): Promise<Response.IDefaultResponse> {
+    try {
+      const response = await axiosInstance.post('/users/restoreUser', ids);
+      return response.data;
+    } catch (error) {
+      console.error('An error occurred while restore accounts:', error);
+      throw error;
+    }
+  },
+  async activeAccount(ids: string[]): Promise<Response.IDefaultResponse> {
+    try {
+      const response = await axiosInstance.post('/users/active', ids);
+      return response.data;
+    } catch (error) {
+      console.error('An error occurred while restore accounts:', error);
+      throw error;
+    }
+  },
+  async deactiveAccount(ids: string[]): Promise<Response.IDefaultResponse> {
+    try {
+      const response = await axiosInstance.get('/users/deactive/' + ids);
+      return response.data;
+    } catch (error) {
+      console.error('An error occurred while restore accounts:', error);
+      throw error;
+    }
+  },
+  async updateProfile(userData: Account.IAccountUpdateModel): Promise<A> {
+    try {
+      const response = await axiosInstance.post('/users/update-profile', userData);
+      return response.data;
+    } catch (error) {
+      console.error('An error occurred while updating the account:', error);
       throw error;
     }
   }

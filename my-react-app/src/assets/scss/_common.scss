@@ -19,3 +19,24 @@ button + button {
   // text-align: center;
   align-items: center;
 }
+.customAlert {
+  color: #ff4d4f;
+  display: block;
+  height: 0;
+  margin-top: -34px;
+  margin-bottom: 34px;
+}
+.customFieldAlert {
+  .ant-input-affix-wrapper {
+    border-color: #ff4d4f;
+  }
+}
+.hiddenColumn {
+  max-width: 0px !important;
+  width: 0px !important;
+  overflow: hidden;
+  padding: 0px !important;
+  margin: 0px !important;
+  overflow-wrap: normal !important;
+  border-width: 0px !important;
+}

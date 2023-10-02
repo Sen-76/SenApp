@@ -1,9 +1,11 @@
 import { Modal } from 'antd';
 import axios from 'axios';
 
+const apiUrl = import.meta.env.VITE_REACT_APP_API_URL;
+
 const instance = axios.create({
   timeout: 600000,
-  baseURL: 'http://localhost:3001/api/v1',
+  baseURL: apiUrl,
   headers: {
     Authorization: 'Bearer YOUR_ACCESS_TOKEN',
     'Content-Type': 'application/json',
@@ -24,7 +26,6 @@ instance.interceptors.request.use(
 // Response Interceptor
 instance.interceptors.response.use(
   (response) => {
-    console.log(response);
     if (response.status === 422) {
       Modal.error({
         title: 'Api failure',

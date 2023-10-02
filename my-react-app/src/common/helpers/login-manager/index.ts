@@ -1,41 +1,46 @@
-import { useLoading } from '../../context/useLoading';
+import { service } from '@/services/apis';
 import { cookie } from '../cookie/cookie';
 
 export const useLoginManager = () => {
-  const { closeLoading } = useLoading();
-
   const loginOut = async () => {
     const url = '/login';
-    // const url = await logout();
     if (url) {
       cookie.clearCookie('userLogin');
       location.href = url;
     }
-    closeLoading();
   };
 
   const loginIn = async (userLogin: Authen.IUserLoginModel) => {
-    const serializedObject = JSON.stringify(userLogin);
-    const url = '/';
-    // const url = await logout();
-    if (url) {
+    try {
+      const serializedObject = JSON.stringify(userLogin);
+      const result = await service.authsService.login(userLogin);
       if (userLogin.remember) {
         cookie.setCookie('userSave', serializedObject, 30);
       }
-      cookie.setCookie('userLogin', serializedObject, 1);
-      location.href = url;
+      cookie.setCookie('userLogin', JSON.stringify(result), 1);
+      location.href = '/';
+    } catch (e: A) {
+      console.log(e);
+      if (e.response?.data.status === 422) {
+        return e.response.data.errors;
+      }
     }
-    closeLoading();
   };
 
-  const getSaveUser = async () => {
+  const getSaveUser = () => {
     const user = cookie.getCookie('userSave');
+    return JSON.parse(user as string);
+  };
+
+  const getLoginUser = () => {
+    const user = cookie.getCookie('userLogin');
     return JSON.parse(user as string);
   };
 
   return {
     loginOut,
     loginIn,
-    getSaveUser
+    getSaveUser,
+    getLoginUser
   };
 };

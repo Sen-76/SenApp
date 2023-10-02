@@ -10,40 +10,40 @@ interface IProps {
 }
 const draftUserList = [
   {
-    id: '1',
-    name: 'Sen 1',
+    id: 1,
+    fullName: 'Sen 1',
     job: 'Developer',
     gender: 'Male',
     photoUrl: 'https://top10tphcm.com/wp-content/uploads/2023/02/hinh-anh-meo.jpeg',
     description: 'N/A'
   },
   {
-    id: '2',
-    name: 'Sen 2',
+    id: 2,
+    fullName: 'Sen 2',
     job: 'Developer',
     gender: 'Male',
     photoUrl: 'https://top10tphcm.com/wp-content/uploads/2023/02/hinh-anh-meo.jpeg',
     description: 'N/A'
   },
   {
-    id: '3',
-    name: 'Sen 3',
+    id: 3,
+    fullName: 'Sen 3',
     job: 'Developer',
     gender: 'Male',
     photoUrl: 'https://top10tphcm.com/wp-content/uploads/2023/02/hinh-anh-meo.jpeg',
     description: 'N/A'
   },
   {
-    id: '4',
-    name: 'Sen 4',
+    id: 4,
+    fullName: 'Sen 4',
     job: 'Developer',
     gender: 'Male',
     photoUrl: 'https://top10tphcm.com/wp-content/uploads/2023/02/hinh-anh-meo.jpeg',
     description: 'N/A'
   },
   {
-    id: '5',
-    name: 'Sen 5',
+    id: 5,
+    fullName: 'Sen 5',
     job: 'Developer',
     gender: 'Male',
     photoUrl: 'https://top10tphcm.com/wp-content/uploads/2023/02/hinh-anh-meo.jpeg',
@@ -51,7 +51,7 @@ const draftUserList = [
   },
   {
     id: '6',
-    name: 'Sen 6',
+    fullName: 'Sen 6',
     job: 'Developer',
     gender: 'Male',
     photoUrl: 'https://top10tphcm.com/wp-content/uploads/2023/02/hinh-anh-meo.jpeg',
@@ -59,7 +59,7 @@ const draftUserList = [
   },
   {
     id: '7',
-    name: 'Sen 7',
+    fullName: 'Sen 7',
     job: 'Developer',
     gender: 'Male',
     photoUrl: 'https://top10tphcm.com/wp-content/uploads/2023/02/hinh-anh-meo.jpeg',
@@ -67,7 +67,7 @@ const draftUserList = [
   },
   {
     id: '8',
-    name: 'Sen 8',
+    fullName: 'Sen 8',
     job: 'Developer',
     gender: 'Male',
     photoUrl: 'https://top10tphcm.com/wp-content/uploads/2023/02/hinh-anh-meo.jpeg',
@@ -75,7 +75,7 @@ const draftUserList = [
   },
   {
     id: '9',
-    name: 'Sen 9',
+    fullName: 'Sen 9',
     job: 'Developer',
     gender: 'Male',
     photoUrl: 'https://top10tphcm.com/wp-content/uploads/2023/02/hinh-anh-meo.jpeg',
@@ -83,7 +83,7 @@ const draftUserList = [
   },
   {
     id: '10',
-    name: 'Sen 10',
+    fullName: 'Sen 10',
     job: 'Developer',
     gender: 'Male',
     photoUrl: 'https://top10tphcm.com/wp-content/uploads/2023/02/hinh-anh-meo.jpeg',
@@ -111,13 +111,11 @@ function Panel(props: IProps, ref: A) {
         {
           key: element.id,
           label: (
-            <div
-              style={{ marginRight: 10, display: 'flex', alignItems: 'center', backgroundColor: util.randomColor() }}
-            >
+            <div style={{ marginRight: 10, display: 'flex', alignItems: 'center' }}>
               <Avatar size={40} src={element.photoUrl} style={{ marginRight: 10, backgroundColor: util.randomColor() }}>
-                {element.name.charAt(0)}
+                {element.fullName.charAt(0)}
               </Avatar>
-              {element.name}
+              {element.fullName}
             </div>
           ),
           value: element.id
@@ -130,9 +128,9 @@ function Panel(props: IProps, ref: A) {
         label: (
           <div style={{ marginRight: 10, display: 'flex', alignItems: 'center' }}>
             <Avatar size={40} src={m.photoUrl} style={{ marginRight: 10, backgroundColor: util.randomColor() }}>
-              {m.name.charAt(0)}
+              {m.fullName.charAt(0)}
             </Avatar>
-            {m.name}
+            {m.fullName}
           </div>
         ),
         value: m.id

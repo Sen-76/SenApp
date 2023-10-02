@@ -24,3 +24,12 @@
     cursor: pointer;
   }
 }
+.notiOverlay {
+  :global {
+    .ant-dropdown-menu {
+      max-height: 70vh;
+      overflow-x: hidden;
+      overflow-y: scroll;
+    }
+  }
+}

@@ -12,7 +12,7 @@ const draftTeams = [
     members: [
       {
         id: 1,
-        name: 'Sen 1',
+        fullName: 'Sen 1',
         job: 'Developer',
         gender: 'Male',
         photoUrl: 'https://top10tphcm.com/wp-content/uploads/2023/02/hinh-anh-meo.jpeg',
@@ -20,7 +20,7 @@ const draftTeams = [
       },
       {
         id: 2,
-        name: 'Sen 2',
+        fullName: 'Sen 2',
         job: 'Developer',
         gender: 'Male',
         photoUrl: 'https://top10tphcm.com/wp-content/uploads/2023/02/hinh-anh-meo.jpeg',
@@ -28,7 +28,7 @@ const draftTeams = [
       },
       {
         id: 3,
-        name: 'Sen 3',
+        fullName: 'Sen 3',
         job: 'Developer',
         gender: 'Male',
         photoUrl: 'https://top10tphcm.com/wp-content/uploads/2023/02/hinh-anh-meo.jpeg',
@@ -36,7 +36,7 @@ const draftTeams = [
       },
       {
         id: 4,
-        name: 'Sen 4',
+        fullName: 'Sen 4',
         job: 'Developer',
         gender: 'Male',
         photoUrl: 'https://top10tphcm.com/wp-content/uploads/2023/02/hinh-anh-meo.jpeg',
@@ -44,7 +44,7 @@ const draftTeams = [
       },
       {
         id: 5,
-        name: 'Sen 5',
+        fullName: 'Sen 5',
         job: 'Developer',
         gender: 'Male',
         photoUrl: 'https://top10tphcm.com/wp-content/uploads/2023/02/hinh-anh-meo.jpeg',

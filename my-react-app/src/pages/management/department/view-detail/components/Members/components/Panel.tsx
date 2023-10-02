@@ -16,7 +16,7 @@ const draftMembers = [
   {
     id: 1,
     key: 1,
-    name: 'Sen',
+    fullName: 'Sen',
     job: 'Developer',
     gender: 'Male',
     photoUrl: 'https://top10tphcm.com/wp-content/uploads/2023/02/hinh-anh-meo.jpeg'
@@ -24,7 +24,7 @@ const draftMembers = [
   {
     id: 2,
     key: 2,
-    name: 'Sen 2',
+    fullName: 'Sen 2',
     job: 'Developer',
     gender: 'Male',
     photoUrl: 'https://top10tphcm.com/wp-content/uploads/2023/02/hinh-anh-meo.jpeg'
@@ -70,8 +70,8 @@ function Panel(props: IProps, ref: A) {
               <Avatar size={40} src={record.photoUrl} style={{ marginRight: 10, backgroundColor: util.randomColor() }}>
                 {record.fullName.charAt(0)}
               </Avatar>
-              <Paragraph ellipsis={{ rows: 3, expandable: false }} style={{ maxWidth: 150, minWidth: 30 }}>
-                {record.name}
+              <Paragraph ellipsis={{ rows: 1, expandable: false }} style={{ maxWidth: 150, minWidth: 30 }}>
+                {record.fullName}
               </Paragraph>
             </div>
           </Tooltip>

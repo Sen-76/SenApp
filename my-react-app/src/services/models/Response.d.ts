@@ -1,6 +1,7 @@
 declare namespace Response {
   export interface IDefaultResponse {
-    statusCode: number;
-    message: string;
+    statusCode?: number;
+    message?: string;
+    data?: A;
   }
 }

@@ -1,0 +1,12 @@
+.starConfig {
+  padding: 20px;
+  position: absolute;
+  width: calc(100% - 250px);
+  height: calc(100% - 64px);
+}
+
+@media only screen and (max-width: 800px) {
+  .starConfig {
+    width: 100%;
+  }
+}

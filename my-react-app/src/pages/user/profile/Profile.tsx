@@ -3,6 +3,7 @@ import { useEffect, useState } from 'react';
 import { UserOutlined } from '@ant-design/icons';
 import styles from './Profile.module.scss';
 import { Col, Row, Select } from 'antd';
+import { useTranslation } from 'react-i18next';
 
 //components
 import Information from './components/Information';
@@ -10,24 +11,10 @@ import EditProfile from './components/EditInformation';
 import Task from './components/Task';
 import RecentlyActivities from './components/RecentlyActivities';
 import PieChart from '@/components/chart/pie-chart/PieChart';
-import { useTranslation } from 'react-i18next';
+import { useLoginManager } from '@/common/helpers/login-manager';
+import { useLoading } from '@/common/context/useLoading';
+import { service } from '@/services/apis';
 
-const draftUser = {
-  photoUrl: 'https://top10tphcm.com/wp-content/uploads/2023/02/hinh-anh-meo.jpeg',
-  fullName: 'Sen',
-  userName: 'Sen',
-  phone: '0344382294',
-  dob: '07/06/2001',
-  job: 'Funnier',
-  gender: 'Male',
-  email: 'sen76201@gmail.com',
-  stars: 500,
-  department: 'Tester',
-  team: 'Team no hope',
-  currentRole: {
-    title: 'Admin đấy'
-  }
-};
 const draftTask = [
   {
     title: 'Task 1',
@@ -52,7 +39,10 @@ function Profile() {
   const { setBreadcrumb } = useBreadcrumb();
   const [isInfoEdit, setIsInfoEdit] = useState<boolean>(false);
   const { t } = useTranslation();
-  const [userInfo, setUserInfo] = useState<A>();
+  const { getLoginUser } = useLoginManager();
+  const { showLoading, closeLoading } = useLoading();
+  const [user, setUser] = useState<A>(true);
+
   const pieChartData = [
     { name: 'Resolved', value: 5 },
     { name: 'Open', value: 20 },
@@ -60,19 +50,22 @@ function Profile() {
     { name: 'Finished', value: 1 }
   ];
 
-  const getUserInfo = async () => {
-    setUserInfo(draftUser);
-  };
-
-  const getTask = async () => {
-    setUserInfo([]);
-  };
-
   useEffect(() => {
     setBreadcrumb([{ icon: <UserOutlined />, text: 'Test' }, { text: 'Profile' }]);
-    getUserInfo();
-    getTask();
+    getUserInformation();
   }, []);
+
+  const getUserInformation = async () => {
+    try {
+      showLoading();
+      const result = await service.accountService.getDetal(getLoginUser().user.id);
+      setUser(result.data);
+    } catch (e: A) {
+      console.log(e);
+    } finally {
+      closeLoading();
+    }
+  };
 
   const edit = () => {
     setIsInfoEdit(true);
@@ -85,8 +78,8 @@ function Profile() {
     <>
       <Row className={styles.profile}>
         <Col className={styles.information}>
-          {!isInfoEdit && <Information draftUser={draftUser} edit={edit} />}
-          {isInfoEdit && <EditProfile draftUser={draftUser} cancelEdit={cancelEditz} />}
+          {!isInfoEdit && <Information userLoged={user} edit={edit} />}
+          {isInfoEdit && <EditProfile userLoged={user} cancelEdit={cancelEditz} refreshData={getUserInformation} />}
         </Col>
         <Col className={styles.task}>
           <RecentlyActivities />

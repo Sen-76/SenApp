@@ -35,7 +35,7 @@ function DataTable(props: IProps) {
       key: 'name',
       render: (_, record) => {
         return (
-          <Paragraph ellipsis={{ rows: 3, expandable: false }} style={{ maxWidth: 150, minWidth: 30 }}>
+          <Paragraph ellipsis={{ rows: 1, expandable: false }} style={{ maxWidth: 150, minWidth: 30 }}>
             {record.name}
           </Paragraph>
         );
@@ -47,14 +47,9 @@ function DataTable(props: IProps) {
       key: 'gender',
       render: (_, record) => {
         return (
-          <Avatar.Group maxCount={2} maxStyle={{ color: '#f56a00', backgroundColor: '#fde3cf' }}>
+          <Avatar.Group maxCount={2} maxStyle={{ color: '#f56a00', backgroundColor: '#fde3cf' }} size={40}>
             {record.members.map((user: A) => (
-              <Avatar
-                key={user.id}
-                size={40}
-                src={record.photoUrl}
-                style={{ marginRight: 10, backgroundColor: util.randomColor() }}
-              >
+              <Avatar key={user.id} src={record.photoUrl} style={{ backgroundColor: util.randomColor() }}>
                 {user.fullName.charAt(0)}
               </Avatar>
             ))}

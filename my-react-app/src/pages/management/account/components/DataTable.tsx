@@ -62,7 +62,7 @@ function DataTable(props: IProps) {
               <Avatar size={40} src={record.photoUrl} style={{ marginRight: 10, backgroundColor: util.randomColor() }}>
                 {record.fullName.charAt(0)}
               </Avatar>
-              <Paragraph ellipsis={{ rows: 3, expandable: false }} style={{ maxWidth: 150, minWidth: 30 }}>
+              <Paragraph ellipsis={{ rows: 1, expandable: false }} style={{ maxWidth: 150, minWidth: 30 }}>
                 {record.fullName}
               </Paragraph>
             </div>
@@ -73,12 +73,12 @@ function DataTable(props: IProps) {
     {
       title: t('email'),
       dataIndex: 'email',
-      width: 200,
+      width: 300,
       key: 'email',
       render: (_, record) => {
         return (
           <Tooltip placement="bottom" title={record.userEmail} color="#ffffff" arrow={true}>
-            <Paragraph ellipsis={{ rows: 3, expandable: false }} style={{ maxWidth: 150, minWidth: 100 }}>
+            <Paragraph ellipsis={{ rows: 1, expandable: false }} style={{ maxWidth: 150, minWidth: 100 }}>
               <Link to={`mailto:${record.userEmail}`}>{record.userEmail}</Link>
             </Paragraph>
           </Tooltip>
@@ -126,22 +126,32 @@ function DataTable(props: IProps) {
       width: 100,
       key: 'role',
       render: (_, record) => {
-        return record.role;
+        return (
+          <Tooltip placement="bottom" title={record.userEmail} color="#ffffff" arrow={true}>
+            <Paragraph ellipsis={{ rows: 1, expandable: false }} style={{ maxWidth: 150, minWidth: 100 }}>
+              {record.role}
+            </Paragraph>
+          </Tooltip>
+        );
       }
     },
     {
       title: t('Common_Status'),
       dataIndex: 'status',
-      width: 110,
       key: 'status',
+      className: tabStatus == EState.Deleted ? 'hiddenColumn' : '',
       render: (_, record) => {
         const apiHandle = async (value: boolean) => {
           try {
             showLoading();
+            value
+              ? await service.accountService.activeAccount([record.id])
+              : await service.accountService.deactiveAccount(record.id);
             notification.open({
-              message: value ? 'Activated Successfully.' : 'Deactivated Successfully.',
+              message: value ? t('Common_ActivateSuccess') : t('Common_DeactivateSuccess'),
               type: 'success'
             });
+            props.refreshList();
             closeLoading();
           } catch (e) {
             console.log(e);
@@ -163,7 +173,7 @@ function DataTable(props: IProps) {
           }
         };
         return (
-          <div>
+          <div style={{ minWidth: 120 }}>
             <Tooltip
               placement="bottom"
               title={record.status === EState.Activate ? t('Common_Activate') : t('Common_Inactivate')}
@@ -181,11 +191,14 @@ function DataTable(props: IProps) {
       dataIndex: 'action',
       key: 'action',
       fixed: 'right',
-      width: 130,
+      width: 180,
       className: 'actionCollumn',
       render: (_, record) => {
         return (
-          <div style={{ width: 100 }}>
+          <div>
+            <Tooltip placement="bottom" title={t('Common_ViewDetail')} color="#ffffff" arrow={true}>
+              <Button type="text" onClick={() => props.openDetailPanel(record)} icon={<SolutionOutlined />} />
+            </Tooltip>
             {tabStatus == EState.Activate ? (
               <>
                 <Tooltip placement="bottom" title={t('Common_Edit')} color="#ffffff" arrow={true}>
@@ -205,9 +218,6 @@ function DataTable(props: IProps) {
               </>
             ) : (
               <>
-                <Tooltip placement="bottom" title={t('Common_ViewDetail')} color="#ffffff" arrow={true}>
-                  <Button type="text" onClick={() => props.openDetailPanel(record)} icon={<SolutionOutlined />} />
-                </Tooltip>
                 <Tooltip placement="bottom" title={t('Common_Restore')} color="#ffffff" arrow={true}>
                   <Button type="text" onClick={() => restoreUser(record)} icon={<UndoOutlined />} />
                 </Tooltip>
@@ -244,27 +254,40 @@ function DataTable(props: IProps) {
   };
 
   const confirmDelete = async () => {
-    setIsOpenModal(false);
-    await service.accountService.deleteAccount({
-      isHardDelete: value === EDeleteState.HardDelete,
-      id: selectedItem.map((x) => x.id)
-    });
-    setValue(EDeleteState.None);
-    props.refreshList();
-    setSelectedItem([]);
-    notification.open({
-      message: t('Common_DeleteSuccess'),
-      type: 'success'
-    });
+    try {
+      setIsOpenModal(false);
+      await service.accountService.deleteAccount({
+        isHardDelete: value === EDeleteState.HardDelete,
+        id: selectedItem.map((x) => x.id)
+      });
+      setValue(EDeleteState.None);
+      props.refreshList();
+      setSelectedItem([]);
+      notification.open({
+        message: t('Common_DeleteSuccess'),
+        type: 'success'
+      });
+    } catch (e) {
+      console.log(e);
+    }
   };
 
-  const restoreUser = (user: A) => {
-    props.refreshList();
-    console.log(user);
-    notification.open({
-      message: t('Common_RestoreSuccess'),
-      type: 'success'
-    });
+  const restoreUser = async (user?: A) => {
+    try {
+      showLoading();
+      const ids = selectedItem.map((x) => x.id)
+      console.log(selectedItem.map((x) => x.id));
+      console.log(user.id);
+      await service.accountService.restoreAccount(user.id ? [user.id] : ids);
+      notification.open({
+        message: t('Common_RestoreSuccess'),
+        type: 'success'
+      });
+      props.refreshList();
+      closeLoading();
+    } catch (e) {
+      console.log(e);
+    }
   };
 
   const exportExcel = () => {
@@ -308,6 +331,19 @@ function DataTable(props: IProps) {
               </Button>
             </>
           )}
+          {tabStatus == EState.Deleted && (
+            <>
+              <Button
+                onClick={restoreUser}
+                loading={loading}
+                type="text"
+                icon={<UndoOutlined />}
+                disabled={selectedItem.length === 0}
+              >
+                {t('Common_RestoreSelected')}
+              </Button>
+            </>
+          )}
         </div>
         <div className={styles.tableHeaderRight}>
           <Tooltip placement="bottom" title={t('Common_Filter')} color="#ffffff" arrow={true}>
@@ -331,7 +367,7 @@ function DataTable(props: IProps) {
           total: param.pageInfor!.totalItems,
           simple: false
         }}
-        scroll={{ x: 780 }}
+        scroll={{ x: 1230 }}
         locale={{
           emptyText: (
             <>

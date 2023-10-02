@@ -1,7 +1,7 @@
 declare namespace Authen {
   export interface IUserLoginModel {
-    password: string;
-    username: string;
-    remember: boolean;
+    password?: string;
+    userEmail?: string;
+    remember?: boolean;
   }
 }

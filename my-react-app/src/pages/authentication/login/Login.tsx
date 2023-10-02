@@ -4,27 +4,34 @@ import { LockOutlined, UserOutlined } from '@ant-design/icons';
 import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { useLoginManager } from '../../../common/helpers/login-manager';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { cookie } from '../../../common/helpers/cookie/cookie';
+import { Rule } from 'antd/es/form';
 
 function Login() {
   const { t } = useTranslation();
   const { loginIn } = useLoginManager();
   const [form] = Form.useForm();
+  const [customAlert, setCustomAlert] = useState<Authen.IUserLoginModel>();
+  const { getLoginUser } = useLoginManager();
 
   useEffect(() => {
     const saveUser = cookie.getCookie('userSave');
-    console.log(saveUser);
     form.setFieldsValue(JSON.parse(saveUser as string));
+    getLoginUser() && (location.href = '/');
   }, []);
 
-  const onFinish = (values: A) => {
-    console.log('Success:', values);
-    loginIn(values);
+  const onFinish = async (values: A) => {
+    const result = await loginIn(values);
+    console.log(result);
+    setCustomAlert(result);
   };
 
   const formRule = {
-    username: [{ required: true, message: t('Common_Login_UserRequire_Alert') }],
+    userEmail: [
+      { required: true, message: t('Common_Login_UserRequire_Alert') },
+      { type: 'email', message: t('Manage_Account_Invalid_Email_Format') }
+    ] as Rule[],
     password: [{ required: true, message: t('Common_Login_PasswordRequire_Alert') }]
   };
 
@@ -42,13 +49,32 @@ function Login() {
           <UserOutlined />
           <label>{t('Common_Login')}</label>
         </div>
-        <Form.Item label={t('username')} name="username" rules={formRule.username}>
-          <Input size="large" prefix={<UserOutlined style={{ marginRight: 5 }} />} />
+        <Form.Item
+          label={t('username')}
+          name="userEmail"
+          rules={formRule.userEmail}
+          className={customAlert?.userEmail ? 'customFieldAlert' : ''}
+        >
+          <Input
+            size="large"
+            prefix={<UserOutlined style={{ marginRight: 5 }} />}
+            onChange={() => setCustomAlert({ ...customAlert, userEmail: '' })}
+          />
         </Form.Item>
-
-        <Form.Item label={t('password')} name="password" rules={formRule.password}>
-          <Input.Password size="large" prefix={<LockOutlined style={{ marginRight: 5 }} />} />
+        <div className="customAlert">{customAlert?.userEmail && t('Common_Login_EmailNotExist_Alert')}</div>
+        <Form.Item
+          label={t('password')}
+          name="password"
+          rules={formRule.password}
+          className={customAlert?.password ? 'customFieldAlert' : ''}
+        >
+          <Input.Password
+            size="large"
+            prefix={<LockOutlined style={{ marginRight: 5 }} />}
+            onChange={() => setCustomAlert({ ...customAlert, password: '' })}
+          />
         </Form.Item>
+        <span className="customAlert">{customAlert?.password && t('Common_Login_PasswordNotCorrect_Alert')}</span>
 
         <Row>
           <Form.Item name="remember" valuePropName="checked">

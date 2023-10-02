@@ -161,6 +161,12 @@ function LeftNav(props: IProps) {
           path: '/configuration/smtp-configuration',
           icon: renderIcon(ArrowRightOutlined),
           key: 'smtp-configuration'
+        },
+        {
+          label: `Star ${t('Configuration')}`,
+          path: '/configuration/star-configuration',
+          icon: renderIcon(ArrowRightOutlined),
+          key: 'star-configuration'
         }
       ]
     }

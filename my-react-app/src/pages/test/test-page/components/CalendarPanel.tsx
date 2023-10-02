@@ -214,7 +214,7 @@ function CalendarPanel(props: IProps, ref: React.ForwardedRef<A>) {
             children: (
               <div>
                 {x.title}
-                <Paragraph ellipsis={{ rows: 3, expandable: false }}>{x.content}</Paragraph>
+                <Paragraph ellipsis={{ rows: 1, expandable: false }}>{x.content}</Paragraph>
               </div>
             ),
             color:

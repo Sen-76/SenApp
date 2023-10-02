@@ -1,4 +1,4 @@
-import { Col, Image, Row, Tooltip } from 'antd';
+import { Avatar, Col, Image, Row, Tooltip } from 'antd';
 import styles from '../Profile.module.scss';
 import { Link } from 'react-router-dom';
 import dayjs from 'dayjs';
@@ -14,14 +14,17 @@ import {
 } from '@ant-design/icons';
 import { useTranslation } from 'react-i18next';
 import Paragraph from 'antd/es/typography/Paragraph';
+import { EGender } from '../Profile.module';
+import { util } from '@/common/helpers/util';
 
 interface IProps {
-  draftUser: A;
+  userLoged: A;
   edit: () => void;
 }
 function Information(props: IProps) {
-  const { draftUser, edit } = props;
+  const { userLoged, edit } = props;
   const { t } = useTranslation();
+
   return (
     <>
       <Row className={styles.header}>
@@ -30,18 +33,28 @@ function Information(props: IProps) {
       </Row>
       <div className={styles.body}>
         <div style={{ marginBottom: 10 }}>
-          <Image className={styles.avatar} width={100} src={draftUser.photoUrl} />
+          {userLoged.photoUrl ? (
+            <Image
+              className={styles.avatar}
+              width={100}
+              src="https://top10tphcm.com/wp-content/uploads/2023/02/hinh-anh-meo.jpeg"
+            />
+          ) : (
+            <Avatar size={100} style={{ backgroundColor: util.randomColor() }}>
+              {userLoged.fullName?.charAt(0) ?? 'N/A'}
+            </Avatar>
+          )}
         </div>
-        <span className={styles.userame}>{draftUser.fullName}</span>
+        <span className={styles.userame}>{userLoged.fullName}</span>
         <div>
           <Row gutter={8} className={styles.row}>
             <Col className={styles.keyCol}>
               <MailOutlined /> {t('email')}
             </Col>
             <Col>
-              <Tooltip placement="bottom" title={draftUser.email} color="#ffffff" arrow={true}>
+              <Tooltip placement="bottom" title={userLoged.userEmail ?? 'N/A'} color="#ffffff" arrow={true}>
                 <Paragraph ellipsis={{ rows: 1, expandable: false }} style={{ maxWidth: 130, minWidth: 30 }}>
-                  <Link to={`mailto:${draftUser.email}`}>{draftUser.email}</Link>
+                  <Link to={`mailto:${userLoged.userEmail}`}>{userLoged.userEmail ?? 'N/A'}</Link>
                 </Paragraph>
               </Tooltip>
             </Col>
@@ -52,7 +65,7 @@ function Information(props: IProps) {
             </Col>
             <Col className={styles.valCol}>
               <Paragraph ellipsis={{ rows: 1, expandable: false }} style={{ maxWidth: 130, minWidth: 30 }}>
-                {draftUser.phone}
+                {userLoged.userPhone ?? 'N/A'}
               </Paragraph>
             </Col>
           </Row>
@@ -62,17 +75,17 @@ function Information(props: IProps) {
             </Col>
             <Col className={styles.valCol}>
               <Paragraph ellipsis={{ rows: 1, expandable: false }} style={{ maxWidth: 130, minWidth: 30 }}>
-                {dayjs(draftUser.dob).format('DD MMM YYYY')}
+                {dayjs(userLoged.dob).format('DD MMM YYYY') ?? 'N/A'}
               </Paragraph>
             </Col>
           </Row>
           <Row gutter={8} className={styles.row}>
             <Col className={styles.keyCol}>
-              {draftUser.gender === 'Male' ? <ManOutlined /> : <WomanOutlined />} {t('gender')}
+              {userLoged.gender === EGender.Male ? <ManOutlined /> : <WomanOutlined />} {t('gender')}
             </Col>
             <Col className={styles.valCol}>
               <Paragraph ellipsis={{ rows: 1, expandable: false }} style={{ maxWidth: 130, minWidth: 30 }}>
-                {draftUser.gender}
+                {userLoged.gender === EGender.Male ? 'Male' : 'Female'}
               </Paragraph>
             </Col>
           </Row>
@@ -82,7 +95,7 @@ function Information(props: IProps) {
             </Col>
             <Col className={styles.valCol}>
               <Paragraph ellipsis={{ rows: 1, expandable: false }} style={{ maxWidth: 130, minWidth: 30 }}>
-                {draftUser.department}
+                {userLoged.department ?? 'N/A'}
               </Paragraph>
             </Col>
           </Row>
@@ -92,7 +105,7 @@ function Information(props: IProps) {
             </Col>
             <Col className={styles.valCol}>
               <Paragraph ellipsis={{ rows: 1, expandable: false }} style={{ maxWidth: 130, minWidth: 30 }}>
-                {draftUser.team}
+                {userLoged.team ?? 'N/A'}
               </Paragraph>
             </Col>
           </Row>
@@ -102,7 +115,7 @@ function Information(props: IProps) {
             </Col>
             <Col className={styles.valCol}>
               <Paragraph ellipsis={{ rows: 1, expandable: false }} style={{ maxWidth: 130, minWidth: 30 }}>
-                {draftUser.job}
+                {userLoged.job ?? 'N/A'}
               </Paragraph>
             </Col>
           </Row>

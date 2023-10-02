@@ -61,8 +61,11 @@ export const fileTypeOption = [
     value: 'csv'
   }
 ];
-
+export enum EFileType {
+  Single = 0,
+  Multiple = 1,
+}
 export const fileFolder = [
-  { value: true, label: 'Single' },
-  { value: false, label: 'Multiple' }
+  { value: EFileType.Single, label: 'Single' },
+  { value: EFileType.Multiple, label: 'Multiple' }
 ];
