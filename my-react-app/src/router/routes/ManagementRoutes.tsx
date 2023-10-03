@@ -4,6 +4,7 @@ import { lazy } from 'react';
 const AccountManagement = lazy(() => import('../../pages/management/account/AccountManagement'));
 const DepartmentManagement = lazy(() => import('../../pages/management/department/list/Department'));
 const DepartmentDetail = lazy(() => import('../../pages/management/department/view-detail/ViewDetail'));
+const RoleManagement = lazy(() => import('../../pages/management/role/Role'));
 
 const routes: IRouter.IRoute<'/management'>[] = [
   {
@@ -26,6 +27,13 @@ const routes: IRouter.IRoute<'/management'>[] = [
     exact: true,
     element: DepartmentDetail,
     meta: { role: [ERole.Admin], pageTitle: 'Deparment Management Detail' }
+  },
+  {
+    path: '/management/role-management',
+    name: 'role-management',
+    exact: true,
+    element: RoleManagement,
+    meta: { role: [ERole.Admin], pageTitle: 'Role Management' }
   }
 ];
 

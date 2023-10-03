@@ -59,7 +59,7 @@ function Members() {
         refreshList={getMembers}
         loading={loading}
       />
-      <DetailPanel refreshList={getMembers} ref={detailPanelRef} />
+      <DetailPanel refreshList={getMembers} openPanel={openPanel} ref={detailPanelRef} />
       <Panel refreshList={getMembers} ref={panelRef} />
     </>
   );

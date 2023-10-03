@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useImperativeHandle, useState } from 'react';
 import { Avatar, Button, Input, Modal, Radio, RadioChangeEvent, Switch, Table, Tooltip, notification } from 'antd';
 import type { ColumnsType } from 'antd/es/table';
 import type { TablePaginationConfig, TableRowSelection } from 'antd/es/table/interface';
@@ -37,10 +37,11 @@ interface IProps {
   param: Common.IDataGrid;
   tabStatus: number;
   loading: boolean;
+  defaultselected: Account.IAccountModel[];
 }
 function DataTable(props: IProps) {
   const { loading, param, tabStatus } = props;
-  const [selectedItem, setSelectedItem] = useState<Account.IAccountModel[]>([]);
+  const [selectedRowKeys, setSelectedRowKeys] = useState<React.Key[]>([]);
   const [isModalOpen, setIsOpenModal] = useState<boolean>(false);
   const [choosenUser, setChoosenUser] = useState<Account.IAccountModel | null>();
   const { showLoading, closeLoading } = useLoading();
@@ -54,15 +55,21 @@ function DataTable(props: IProps) {
       title: t('name'),
       dataIndex: 'fullName',
       key: 'fullName',
-      width: 200,
       render: (_, record) => {
         return (
           <Tooltip placement="bottom" title={record.fullName} color="#ffffff" arrow={true}>
-            <div style={{ display: 'flex', alignItems: 'center', minWidth: 250 }}>
-              <Avatar size={40} src={record.photoUrl} style={{ marginRight: 10, backgroundColor: util.randomColor() }}>
+            <div style={{ display: 'flex', alignItems: 'center' }}>
+              <Avatar
+                size={40}
+                src={record.photoUrl}
+                style={{ marginRight: 10, minWidth: 40, backgroundColor: util.randomColor() }}
+              >
                 {record.fullName.charAt(0)}
               </Avatar>
-              <Paragraph ellipsis={{ rows: 1, expandable: false }} style={{ maxWidth: 150, minWidth: 30 }}>
+              <Paragraph
+                ellipsis={{ rows: 1, expandable: false }}
+                style={{ maxWidth: 150, minWidth: 30, overflow: 'hidden' }}
+              >
                 {record.fullName}
               </Paragraph>
             </div>
@@ -73,12 +80,11 @@ function DataTable(props: IProps) {
     {
       title: t('email'),
       dataIndex: 'email',
-      width: 300,
       key: 'email',
       render: (_, record) => {
         return (
           <Tooltip placement="bottom" title={record.userEmail} color="#ffffff" arrow={true}>
-            <Paragraph ellipsis={{ rows: 1, expandable: false }} style={{ maxWidth: 150, minWidth: 100 }}>
+            <Paragraph ellipsis={{ rows: 1, expandable: false }} style={{ minWidth: 100 }}>
               <Link to={`mailto:${record.userEmail}`}>{record.userEmail}</Link>
             </Paragraph>
           </Tooltip>
@@ -139,6 +145,7 @@ function DataTable(props: IProps) {
       title: t('Common_Status'),
       dataIndex: 'status',
       key: 'status',
+      width: 100,
       className: tabStatus == EState.Deleted ? 'hiddenColumn' : '',
       render: (_, record) => {
         const apiHandle = async (value: boolean) => {
@@ -160,7 +167,7 @@ function DataTable(props: IProps) {
         const activeChange = async (value: boolean) => {
           if (!value) {
             confirm({
-              content: `Are you sure you wish to deactivate ${record.fullName}?`,
+              content: t('Common_DeActive_Confirm').replace('{0}', record.fullName),
               title: t('Common_Confirm'),
               okText: t('Common_Deactivate'),
               cancelText: t('Common_Cancel'),
@@ -204,17 +211,6 @@ function DataTable(props: IProps) {
                 <Tooltip placement="bottom" title={t('Common_Edit')} color="#ffffff" arrow={true}>
                   <Button type="text" onClick={() => props.openPanel(record)} icon={<EditOutlined />} />
                 </Tooltip>
-                <Tooltip placement="bottom" title={t('Common_Delete')} color="#ffffff" arrow={true}>
-                  <Button
-                    type="text"
-                    onClick={() => {
-                      setIsOpenModal(true);
-                      setChoosenUser(record);
-                      setSelectedItem([record]);
-                    }}
-                    icon={<DeleteOutlined />}
-                  />
-                </Tooltip>
               </>
             ) : (
               <>
@@ -223,16 +219,34 @@ function DataTable(props: IProps) {
                 </Tooltip>
               </>
             )}
+            <Tooltip placement="bottom" title={t('Common_Delete')} color="#ffffff" arrow={true}>
+              <Button
+                type="text"
+                onClick={() => {
+                  setIsOpenModal(true);
+                  setChoosenUser(record);
+                  setSelectedRowKeys([record.id]);
+                }}
+                icon={<DeleteOutlined />}
+              />
+            </Tooltip>
           </div>
         );
       }
     }
   ];
 
-  const rowSelection: TableRowSelection<A> = {
-    onChange: (_, selectedRows) => {
-      setSelectedItem(selectedRows);
-    }
+  useEffect(() => {
+    setSelectedRowKeys([]);
+  }, [tabStatus]);
+
+  const onSelectChange = (newSelectedRowKeys: React.Key[]) => {
+    setSelectedRowKeys(newSelectedRowKeys);
+  };
+
+  const rowSelection = {
+    selectedRowKeys,
+    onChange: onSelectChange
   };
 
   const handleTableChange = (pagination: TablePaginationConfig) => {
@@ -258,11 +272,11 @@ function DataTable(props: IProps) {
       setIsOpenModal(false);
       await service.accountService.deleteAccount({
         isHardDelete: value === EDeleteState.HardDelete,
-        id: selectedItem.map((x) => x.id)
+        id: selectedRowKeys as string[]
       });
       setValue(EDeleteState.None);
       props.refreshList();
-      setSelectedItem([]);
+      setSelectedRowKeys([]);
       notification.open({
         message: t('Common_DeleteSuccess'),
         type: 'success'
@@ -275,14 +289,13 @@ function DataTable(props: IProps) {
   const restoreUser = async (user?: A) => {
     try {
       showLoading();
-      const ids = selectedItem.map((x) => x.id)
-      console.log(selectedItem.map((x) => x.id));
-      console.log(user.id);
+      const ids = selectedRowKeys as string[];
       await service.accountService.restoreAccount(user.id ? [user.id] : ids);
       notification.open({
         message: t('Common_RestoreSuccess'),
         type: 'success'
       });
+      setSelectedRowKeys([]);
       props.refreshList();
       closeLoading();
     } catch (e) {
@@ -314,15 +327,6 @@ function DataTable(props: IProps) {
               <Button type="text" onClick={() => props.openPanel()} icon={<PlusOutlined />}>
                 {t('Common_AddNew')}
               </Button>
-              <Button
-                onClick={() => setIsOpenModal(true)}
-                loading={loading}
-                type="text"
-                icon={<DeleteOutlined />}
-                disabled={selectedItem.length === 0}
-              >
-                {t('Common_DeleteSelected')}
-              </Button>
               <Button type="text" onClick={exportExcel} icon={<ExportOutlined />}>
                 {t('Common_ExportExcel')}
               </Button>
@@ -338,12 +342,21 @@ function DataTable(props: IProps) {
                 loading={loading}
                 type="text"
                 icon={<UndoOutlined />}
-                disabled={selectedItem.length === 0}
+                disabled={selectedRowKeys.length === 0}
               >
                 {t('Common_RestoreSelected')}
               </Button>
             </>
           )}
+          <Button
+            onClick={() => setIsOpenModal(true)}
+            loading={loading}
+            type="text"
+            icon={<DeleteOutlined />}
+            disabled={selectedRowKeys.length === 0}
+          >
+            {t('Common_DeleteSelected')}
+          </Button>
         </div>
         <div className={styles.tableHeaderRight}>
           <Tooltip placement="bottom" title={t('Common_Filter')} color="#ffffff" arrow={true}>
@@ -359,7 +372,7 @@ function DataTable(props: IProps) {
     <>
       <Table
         columns={columns}
-        rowSelection={{ ...rowSelection }}
+        rowSelection={rowSelection}
         dataSource={props.data}
         pagination={{
           current: param.pageInfor!.pageNumber,
@@ -397,17 +410,27 @@ function DataTable(props: IProps) {
               ? t('Manage_Account_DeleteSingleUser_Text').replaceAll('{0}', choosenUser.fullName)
               : t('Manage_Account_DeleteUser_Text')}
           </div>
-          <Radio.Group
-            onChange={onRadioChange}
-            style={{ display: 'flex', flexDirection: 'column', gap: 10, marginBottom: 60, marginLeft: 20 }}
-            value={value}
-          >
-            <Radio value={EDeleteState.HardDelete}>{t('Common_HardDelete')}</Radio>
-            <Radio value={EDeleteState.SoftDelete}>{t('Common_SoftDelete')}</Radio>
-          </Radio.Group>
+
+          {tabStatus == EState.Activate ? (
+            <Radio.Group
+              onChange={onRadioChange}
+              style={{ display: 'flex', flexDirection: 'column', gap: 10, marginBottom: 60, marginLeft: 20 }}
+              value={value}
+            >
+              <Radio value={EDeleteState.HardDelete}>{t('Common_HardDelete')}</Radio>
+              <Radio value={EDeleteState.SoftDelete}>{t('Common_SoftDelete')}</Radio>
+            </Radio.Group>
+          ) : (
+            <div style={{ marginBottom: 30 }}></div>
+          )}
+
           <div className="actionBtnBottom">
             <Button onClick={onCancelModal}>{t('Common_Cancel')}</Button>
-            <Button type="primary" disabled={value === EDeleteState.None} onClick={confirmDelete}>
+            <Button
+              type="primary"
+              disabled={value === EDeleteState.None && tabStatus == EState.Activate}
+              onClick={confirmDelete}
+            >
               {t('Common_Delete')}
             </Button>
           </div>

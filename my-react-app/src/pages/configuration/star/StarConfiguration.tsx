@@ -1,7 +1,7 @@
 import { useBreadcrumb } from '@/components/breadcrum/Breadcrum';
 import { SettingOutlined } from '@ant-design/icons';
-import { Button, Form, Input, InputNumber, notification } from 'antd';
-import { useEffect, useState } from 'react';
+import { Button, Form, InputNumber, notification } from 'antd';
+import { useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import styles from './StarConfiguration.module.scss';
 import { useLoading } from '@/common/context/useLoading';

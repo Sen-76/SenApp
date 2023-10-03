@@ -63,7 +63,7 @@ export const fileTypeOption = [
 ];
 export enum EFileType {
   Single = 0,
-  Multiple = 1,
+  Multiple = 1
 }
 export const fileFolder = [
   { value: EFileType.Single, label: 'Single' },

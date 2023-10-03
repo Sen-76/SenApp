@@ -14,7 +14,7 @@ import {
 } from '@ant-design/icons';
 import { useTranslation } from 'react-i18next';
 import Paragraph from 'antd/es/typography/Paragraph';
-import { EGender } from '../Profile.module';
+import { EGender } from '../Profile.model';
 import { util } from '@/common/helpers/util';
 
 interface IProps {

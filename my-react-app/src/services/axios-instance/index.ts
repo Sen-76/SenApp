@@ -1,13 +1,16 @@
+import { cookie } from '@/common/helpers/cookie/cookie';
 import { Modal } from 'antd';
 import axios from 'axios';
 
 const apiUrl = import.meta.env.VITE_REACT_APP_API_URL;
+const user: A = cookie.getCookie('userLogin');
+const token = JSON.parse(user)?.token ?? '';
 
 const instance = axios.create({
   timeout: 600000,
   baseURL: apiUrl,
   headers: {
-    Authorization: 'Bearer YOUR_ACCESS_TOKEN',
+    Authorization: `Bearer ${token}`,
     'Content-Type': 'application/json',
     'Access-Control-Allow-Origin': '*'
   }

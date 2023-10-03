@@ -24,10 +24,6 @@ export const GenderOptions = [
   {
     label: 'Female',
     value: EGender.Female
-  },
-  {
-    label: 'Other',
-    value: EGender.Other
   }
 ];
 export const DepartmentOptions = [

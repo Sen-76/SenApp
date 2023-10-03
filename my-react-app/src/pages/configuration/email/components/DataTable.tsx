@@ -104,7 +104,7 @@ function DataTable(props: IProps) {
         const activeChange = async (value: boolean) => {
           if (!value) {
             confirm({
-              content: `Are you sure you wish to deactivate ${record.fullName} value?`,
+              content: t('Common_DeActive_Confirm').replace('{0}', record.fullName),
               title: t('Common_Confirm'),
               okText: t('Common_Deactivate'),
               cancelText: t('Common_Cancel'),

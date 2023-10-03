@@ -51,9 +51,12 @@ function Profile() {
   ];
 
   useEffect(() => {
-    setBreadcrumb([{ icon: <UserOutlined />, text: 'Test' }, { text: 'Profile' }]);
     getUserInformation();
   }, []);
+
+  useEffect(() => {
+    setBreadcrumb([{ icon: <UserOutlined />, text: t('Profile') }]);
+  }, [t]);
 
   const getUserInformation = async () => {
     try {

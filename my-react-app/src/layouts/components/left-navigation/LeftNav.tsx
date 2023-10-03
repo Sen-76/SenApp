@@ -123,13 +123,19 @@ function LeftNav(props: IProps) {
           label: t('Manage_Department'),
           path: '/management/department-management',
           icon: renderIcon(ArrowRightOutlined),
-          key: 'department'
+          key: 'department-management'
         },
         {
           label: t('Manage_Account'),
           path: '/management/account-management',
           icon: renderIcon(ArrowRightOutlined),
-          key: 'account-configuration'
+          key: 'account-management'
+        },
+        {
+          label: t('Manage_Role'),
+          path: '/management/role-management',
+          icon: renderIcon(ArrowRightOutlined),
+          key: 'role-management'
         }
       ]
     },
@@ -157,13 +163,13 @@ function LeftNav(props: IProps) {
           key: 'email-configuration'
         },
         {
-          label: `SMTP ${t('Configuration')}`,
+          label: t('Configuration_SMTP'),
           path: '/configuration/smtp-configuration',
           icon: renderIcon(ArrowRightOutlined),
           key: 'smtp-configuration'
         },
         {
-          label: `Star ${t('Configuration')}`,
+          label: t('Configuration_Star'),
           path: '/configuration/star-configuration',
           icon: renderIcon(ArrowRightOutlined),
           key: 'star-configuration'

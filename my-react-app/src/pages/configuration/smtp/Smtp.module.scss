@@ -1,4 +1,4 @@
-.starConfig {
+.smtpConfig {
   padding: 20px;
   position: absolute;
   width: calc(100% - 250px);
@@ -9,7 +9,7 @@
 }
 
 @media only screen and (max-width: 800px) {
-  .starConfig {
+  .smtpConfig {
     width: 100%;
   }
 }

@@ -31,6 +31,7 @@ function AccountManagement() {
   const [loading, setLoading] = useState<boolean>(false);
   const [accountList, setAccountList] = useState<Account.IAccountModel[]>([]);
   const [param, setParam] = useState<Common.IDataGrid>(initDataGrid);
+  const [selectedItem, setSelectedItem] = useState<Account.IAccountModel[]>([]);
   const panelRef = useRef();
   const filterPanelRef = useRef();
   const detailPanelRef = useRef();
@@ -96,6 +97,7 @@ function AccountManagement() {
       draftGrid.filter?.push({ key: 'Status', value: [Number(e)] });
     }
     draftGrid.pageInfor!.pageNumber = 1;
+    setSelectedItem([]);
     setParam(draftGrid);
     setTabStatus(e);
     getAccountsList(draftGrid);
@@ -134,6 +136,7 @@ function AccountManagement() {
         param={param}
         setPage={setPage}
         loading={loading}
+        defaultselected={selectedItem}
       />
       <Panel refreshList={getAccountsList} ref={panelRef} />
       <FilterPanel refreshList={getAccountsList} ref={filterPanelRef} />

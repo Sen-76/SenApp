@@ -29,7 +29,6 @@ function Panel(props: IProps, ref: A) {
 
   const openDrawer = (data?: A) => {
     setOpen(true);
-    console.log(data);
     setIsEdit(false);
     if (data) {
       setIsEdit(true);
@@ -159,7 +158,7 @@ function Panel(props: IProps, ref: A) {
           style={{ width: '70%', margin: 'auto', marginBottom: 20 }}
           onChange={onStepChange}
           current={step}
-          items={[{ title: 'General Info' }, { title: 'System Info' }]}
+          items={[{ title: t('Manage_Account_GeneralInfo') }, { title: t('Manage_Account_SystemInfo') }]}
         />
         {step === 0 && (
           <>
@@ -173,12 +172,7 @@ function Panel(props: IProps, ref: A) {
                 rules={formRule.userEmail}
                 className={customAlert?.userEmail && 'customFieldAlert'}
               >
-                <Input
-                  maxLength={250}
-                  showCount
-                  onChange={() => setCustomAlert({ ...customAlert, userEmail: '' })}
-                  disabled={isEdit}
-                />
+                <Input maxLength={250} showCount onChange={() => setCustomAlert({ ...customAlert, userEmail: '' })} />
               </Form.Item>
               <div className="customAlert">{customAlert?.userEmail && t('Manage_Account_Exist_Email')}</div>
               <Form.Item name="userPhone" label={t('phone')} rules={formRule.userPhone}>

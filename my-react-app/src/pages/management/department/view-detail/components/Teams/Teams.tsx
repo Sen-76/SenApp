@@ -96,7 +96,7 @@ function Teams() {
         refreshList={getTeams}
         loading={loading}
       />
-      <DetailPanel refreshList={getTeams} ref={detailPanelRef} />
+      <DetailPanel refreshList={getTeams} openPanel={openPanel} ref={detailPanelRef} />
       <Panel refreshList={getTeams} ref={panelRef} />
     </>
   );
