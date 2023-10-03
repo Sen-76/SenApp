@@ -4,6 +4,8 @@ import { useEffect } from 'react';
 import { Button, Tabs } from 'antd';
 import TestQRCode from './components/QRCode';
 import TestCalendar from './components/Calendar';
+import QuillEditor from './components/QuilEditor';
+import Kanban from './components/Kanban';
 
 function Test() {
   const { setBreadcrumb } = useBreadcrumb();
@@ -22,9 +24,14 @@ function Test() {
       children: <TestCalendar />
     },
     {
-      label: `Tab 3`,
+      label: `QuilEditor`,
       key: '3',
-      children: `Content of tab 3`
+      children: <QuillEditor />
+    },
+    {
+      label: `Kanban`,
+      key: '4',
+      children: <Kanban />
     }
   ];
 

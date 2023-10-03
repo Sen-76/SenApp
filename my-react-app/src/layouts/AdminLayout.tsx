@@ -23,9 +23,9 @@ function AdminLayout(props: IProps) {
   const { t } = useTranslation();
   const { getLoginUser } = useLoginManager();
 
-  // useEffect(() => {
-  //   !getLoginUser() && (location.href = '/login');
-  // }, []);
+  useEffect(() => {
+    !getLoginUser() && (location.href = '/login');
+  }, []);
 
   const items: MenuProps['items'] = [
     {

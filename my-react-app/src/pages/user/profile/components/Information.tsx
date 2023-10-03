@@ -115,7 +115,7 @@ function Information(props: IProps) {
             </Col>
             <Col className={styles.valCol}>
               <Paragraph ellipsis={{ rows: 1, expandable: false }} style={{ maxWidth: 130, minWidth: 30 }}>
-                {userLoged.job ?? 'N/A'}
+                {userLoged.jobTitle ?? 'N/A'}
               </Paragraph>
             </Col>
           </Row>

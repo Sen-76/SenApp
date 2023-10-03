@@ -29,15 +29,24 @@ instance.interceptors.request.use(
 // Response Interceptor
 instance.interceptors.response.use(
   (response) => {
-    if (response.status === 422) {
+    return response;
+  },
+  (error) => {
+    if (error.response.status === 401) {
+      Modal.error({
+        title: 'Unauthorized',
+        content: 'Your session has expired. Please log in again.',
+        onOk: () => {
+          location.href = '/login';
+        }
+      });
+    }
+    if (error.response.status === 422) {
       Modal.error({
         title: 'Api failure',
         content: 'Something wrong. Please check api again!'
       });
     }
-    return response;
-  },
-  (error) => {
     return Promise.reject(error);
   }
 );
