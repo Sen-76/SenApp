@@ -3,6 +3,7 @@ import { Button, Drawer, Form, Input } from 'antd';
 import { forwardRef, useImperativeHandle, useState } from 'react';
 import styles from '../Department.module.scss';
 import { useTranslation } from 'react-i18next';
+import { service } from '@/services/apis';
 
 interface IProps {
   refreshList: () => void;
@@ -10,6 +11,7 @@ interface IProps {
 function Panel(props: IProps, ref: A) {
   const [open, setOpen] = useState<boolean>(false);
   const [isEdit, setIsEdit] = useState<boolean>(false);
+  const [customAlert, setCustomAlert] = useState<A>();
   const { t } = useTranslation();
   const [form] = Form.useForm();
   const { TextArea } = Input;
@@ -28,10 +30,22 @@ function Panel(props: IProps, ref: A) {
   };
 
   const closeDrawer = () => {
+    form.resetFields();
     setOpen(false);
   };
 
-  const onFinish = (val: A) => {
+  const onFinish = async (val: A) => {
+    try {
+      const result = await service.departmentService.create(val);
+      closeDrawer();
+      props.refreshList();
+      console.log(result);
+    } catch (e: A) {
+      if (e.response?.data.status === 422) {
+        const errors: A = e.response.data.errors;
+        setCustomAlert(errors);
+      }
+    }
     console.log(val);
   };
 
@@ -53,9 +67,15 @@ function Panel(props: IProps, ref: A) {
         destroyOnClose={true}
       >
         <Form form={form} onFinish={onFinish} layout="vertical" className={styles.panelform}>
-          <Form.Item name="title" label="Title" rules={formRule.title}>
-            <Input maxLength={250} showCount />
+          <Form.Item
+            name="title"
+            label="Title"
+            rules={formRule.title}
+            className={customAlert?.title && 'customFieldAlert'}
+          >
+            <Input maxLength={250} showCount onChange={() => setCustomAlert({ ...customAlert, title: '' })} />
           </Form.Item>
+          <div className="customAlert">{customAlert?.title && t('Manage_Account_Exist_Email')}</div>
           <Form.Item name="description" label={t('Common_Description')}>
             <TextArea maxLength={1000} showCount />
           </Form.Item>

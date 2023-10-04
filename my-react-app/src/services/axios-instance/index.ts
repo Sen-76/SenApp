@@ -37,14 +37,19 @@ instance.interceptors.response.use(
         title: 'Unauthorized',
         content: 'Your session has expired. Please log in again.',
         onOk: () => {
+          cookie.clearCookie('userLogin');
           location.href = '/login';
         }
       });
-    }
-    if (error.response.status === 422) {
+    } else if (error.response.status === 422) {
       Modal.error({
         title: 'Api failure',
         content: 'Something wrong. Please check api again!'
+      });
+    } else if (error.response.status !== 200 && error.response.status !== 422) {
+      Modal.error({
+        title: error.response.status,
+        content: 'Something wrong!'
       });
     }
     return Promise.reject(error);

@@ -16,7 +16,7 @@ function RoleManagement() {
     },
     searchInfor: {
       searchValue: '',
-      searchColumn: ['FullName']
+      searchColumn: ['Title']
     }
   };
   const { setBreadcrumb } = useBreadcrumb();
@@ -41,7 +41,7 @@ function RoleManagement() {
   const getRoleList = async (draftParam?: Common.IDataGrid) => {
     try {
       setLoading(true);
-      const result = await service.rolesService.getRoles(draftParam ?? param);
+      const result = await service.rolesService.get(draftParam ?? param);
       setParam({
         ...param,
         pageInfor: {

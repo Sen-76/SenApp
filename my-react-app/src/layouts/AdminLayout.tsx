@@ -6,11 +6,10 @@ import LeftNav from './components/left-navigation/LeftNav';
 import { BarsOutlined, CalendarOutlined, TranslationOutlined } from '@ant-design/icons';
 import { useTranslation } from 'react-i18next';
 import i18next from 'i18next';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import logo from '@/assets/logo.png';
 import logoLarge from '@/assets/logoLarge.png';
 import Notification from './components/notification/Notification';
-import { useLoginManager } from '@/common/helpers/login-manager';
 
 export interface IProps {
   children?: React.ReactNode;
@@ -21,11 +20,6 @@ function AdminLayout(props: IProps) {
   const [expandLeftNav, setexpandLeftNav] = useState<boolean>(false);
   const [mobileNav, setmobileNav] = useState<boolean>(false);
   const { t } = useTranslation();
-  const { getLoginUser } = useLoginManager();
-
-  useEffect(() => {
-    !getLoginUser() && (location.href = '/login');
-  }, []);
 
   const items: MenuProps['items'] = [
     {

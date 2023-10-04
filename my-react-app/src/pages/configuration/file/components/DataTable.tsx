@@ -1,9 +1,8 @@
 import { EditOutlined, SmileOutlined } from '@ant-design/icons';
 import { Button, Table, Tooltip } from 'antd';
 import { ColumnsType } from 'antd/es/table';
+import Paragraph from 'antd/es/typography/Paragraph';
 import { useTranslation } from 'react-i18next';
-import styles from '../FileConfiguration.module.scss';
-import Search from 'antd/es/input/Search';
 
 interface IProps {
   data: A[];
@@ -20,7 +19,13 @@ function DataTable(props: IProps) {
       width: 110,
       key: 'title',
       render: (_, record) => {
-        return record.title;
+        return (
+          <Tooltip placement="bottom" title={record.userEmail} color="#ffffff" arrow={true}>
+            <Paragraph ellipsis={{ rows: 1, expandable: false }} style={{ minWidth: 100 }}>
+              {record.title}
+            </Paragraph>
+          </Tooltip>
+        );
       }
     },
     {
@@ -72,21 +77,6 @@ function DataTable(props: IProps) {
     }
   ];
 
-  const onSearch = (val: A) => {
-    console.log(val);
-  };
-
-  const TableHeader = () => {
-    return (
-      <>
-        <div className={styles.tableHeaderLeft}></div>
-        <div className={styles.tableHeaderRight}>
-          <Search placeholder={t('Common_SearchByTitle')} allowClear onSearch={onSearch} style={{ width: 250 }} />
-        </div>
-      </>
-    );
-  };
-
   return (
     <>
       <Table
@@ -102,7 +92,6 @@ function DataTable(props: IProps) {
           )
         }}
         loading={loading}
-        title={() => TableHeader()}
         rowKey={(record) => record.id}
       />
     </>

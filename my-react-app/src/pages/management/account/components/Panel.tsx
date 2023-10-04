@@ -8,6 +8,7 @@ import { useTranslation } from 'react-i18next';
 import { service } from '@/services/apis';
 import { Rule } from 'antd/es/form';
 import { useLoading } from '@/common/context/useLoading';
+import { useRule } from '@/common/rule/rule';
 
 interface IProps {
   refreshList: () => void;
@@ -60,6 +61,10 @@ function Panel(props: IProps, ref: A) {
     }
   };
 
+  const backStep = () => {
+    setStep(step - 1);
+  };
+
   const onConfirm = async () => {
     try {
       const generalCheck = await generalForm.validateFields();
@@ -75,6 +80,9 @@ function Panel(props: IProps, ref: A) {
             userRole: null,
             userTeam: null,
             userDepartment: null,
+            userName: systemForm.getFieldValue('userName')?.trim() ?? '',
+            fullName: generalForm.getFieldValue('fullName')?.trim() ?? '',
+            jobTitle: systemForm.getFieldValue('jobTitle')?.trim() ?? '',
             dob: dayjs(generalForm.getFieldValue('dob')).format('YYYY-MM-DD')
           });
           notification.open({
@@ -88,6 +96,9 @@ function Panel(props: IProps, ref: A) {
             userRole: null,
             userTeam: null,
             userDepartment: null,
+            userName: systemForm.getFieldValue('userName')?.trim() ?? '',
+            fullName: generalForm.getFieldValue('fullName')?.trim() ?? '',
+            jobTitle: systemForm.getFieldValue('jobTitle')?.trim() ?? '',
             dob: dayjs(generalForm.getFieldValue('dob')).format('YYYY-MM-DD')
           });
           notification.open({
@@ -119,7 +130,7 @@ function Panel(props: IProps, ref: A) {
   };
 
   const formRule = {
-    fullName: [{ required: true, message: t('Common_Require_Field') }],
+    fullName: [useRule().createRequiredRule(true, false)],
     userEmail: [
       { required: true, message: t('Common_Require_Field') },
       { type: 'email', message: t('Manage_Account_Invalid_Email_Format') }
@@ -128,11 +139,11 @@ function Panel(props: IProps, ref: A) {
       { required: true, message: t('Common_Require_Field') },
       {
         pattern: /^(?:\+84|0)(?:\d{9,10})$/,
-        message: 'Invalid phone number format (e.g., 1234567890)'
+        message: t('Manage_Account_Invalid_Phone_Format')
       }
     ] as Rule[],
     dob: [{ required: true, message: t('Common_Require_Field') }],
-    userName: [{ required: true, message: t('Common_Require_Field') }],
+    userName: [useRule().createRequiredRule(true, false)],
     password: [{ required: true, message: t('Common_Require_Field') }],
     userRole: [{ required: true, message: t('Common_Require_Field') }]
   };
@@ -182,7 +193,7 @@ function Panel(props: IProps, ref: A) {
                 <DatePicker format={'DD MMM YYYY'} disabledDate={disabledDate} />
               </Form.Item>
               <Form.Item name="gender" label={t('gender')}>
-                <Select options={GenderOptions} />
+                <Select options={GenderOptions} defaultValue={0} />
               </Form.Item>
             </Form>
           </>
@@ -216,6 +227,7 @@ function Panel(props: IProps, ref: A) {
         )}
         <div className="actionBtnBottom">
           <Button onClick={closeDrawer}>{t('Common_Cancel')}</Button>
+          {step !== 0 && <Button onClick={backStep}>{t('Common_Back')}</Button>}
           <Button type="primary" onClick={onConfirm}>
             {step === 1 ? t('Common_Confirm') : t('Common_Next')}
           </Button>

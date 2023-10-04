@@ -67,16 +67,16 @@ function Kanban() {
     }
   ]);
   return (
-    <>
-      {projectList.map((project: any) => {
+    <div style={{ display: 'flex', gap: 20 }}>
+      {projectList.map((project: A) => {
         return (
           <div key={project.id}>
             <ReactSortable
               list={project.tasks}
-              setList={(newState, sortable) => {
+              setList={(newState: A, sortable: A) => {
                 if (sortable) {
-                  const groupId: any = sortable.el.closest('[data-group]')?.getAttribute('data-group') || 0;
-                  const newList = projectList.map((task: any) => {
+                  const groupId: A = sortable.el.closest('[data-group]')?.getAttribute('data-group') || 0;
+                  const newList = projectList.map((task: A) => {
                     if (parseInt(task.id) === parseInt(groupId)) {
                       task.tasks = newState;
                     }
@@ -90,11 +90,28 @@ function Kanban() {
               group={{ name: 'shared', pull: true, put: true }}
               ghostClass="sortable-ghost"
               dragClass="sortable-drag"
-              className="connect-sorting-content min-h-[150px]"
+              style={{
+                width: 250,
+                border: '1px solid black',
+                padding: 10,
+                borderRadius: 8,
+                minHeight: 500,
+                transition: 'all 0.5s',
+                display: 'flex',
+                flexDirection: 'column',
+                gap: 10
+              }}
             >
-              {project.tasks.map((task: any) => {
+              {project.tasks.map((task: A) => {
                 return (
-                  <div className="sortable-list " key={project.id + '' + task.id}>
+                  <div
+                    style={{
+                      border: '1px solid black',
+                      padding: 10,
+                      borderRadius: 4
+                    }}
+                    key={project.id + '' + task.id}
+                  >
                     <div className="shadow bg-[#f4f4f4] dark:bg-white-dark/20 p-3 pb-5 rounded-md mb-5 space-y-3 cursor-move">
                       {task.image ? (
                         <img
@@ -109,7 +126,7 @@ function Kanban() {
                       <p className="break-all">{task.description}</p>
                       <div className="flex gap-2 items-center flex-wrap">
                         {task.tags?.length ? (
-                          task.tags.map((tag: any, i: any) => {
+                          task.tags.map((tag: A, i: A) => {
                             return (
                               <div key={i} className="btn px-2 py-1 flex btn-outline-primary">
                                 <svg
@@ -313,7 +330,7 @@ function Kanban() {
           </div>
         );
       })}
-    </>
+    </div>
   );
 }
 

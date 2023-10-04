@@ -14,6 +14,7 @@ function Login() {
   const [form] = Form.useForm();
   const [customAlert, setCustomAlert] = useState<Authen.IUserLoginModel>();
   const { getLoginUser } = useLoginManager();
+  const [loading, setLoading] = useState<boolean>(false);
 
   useEffect(() => {
     const saveUser = cookie.getCookie('userSave');
@@ -22,9 +23,10 @@ function Login() {
   }, []);
 
   const onFinish = async (values: A) => {
+    setLoading(true);
     const result = await loginIn(values);
-    console.log(result);
     setCustomAlert(result);
+    setLoading(false);
   };
 
   const formRule = {
@@ -86,7 +88,7 @@ function Login() {
         </Row>
 
         <Form.Item>
-          <Button type="primary" htmlType="submit">
+          <Button type="primary" htmlType="submit" loading={loading}>
             {t('Common_Login')}
           </Button>
         </Form.Item>

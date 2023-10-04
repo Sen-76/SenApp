@@ -122,6 +122,24 @@ function AccountManagement() {
     getAccountsList(draftGrid);
   };
 
+  const filterAccount = (val: A) => {
+    const draftGrid = { ...param };
+    if (draftGrid.filter) {
+      const gender = draftGrid.filter.findIndex((x) => x.key === 'Gender');
+      gender !== -1 && draftGrid.filter.splice(gender as number, 1);
+      const department = draftGrid.filter.findIndex((x) => x.key === 'Department');
+      department !== -1 && draftGrid.filter.splice(department as number, 1);
+      const role = draftGrid.filter.findIndex((x) => x.key === 'Role');
+      role !== -1 && draftGrid.filter.splice(role as number, 1);
+      val.gender.length > 0 &&
+        draftGrid.filter.push({
+          key: 'Gender',
+          value: val.gender
+        });
+    }
+    getAccountsList(draftGrid);
+  };
+
   return (
     <div className={styles.accountconfiguration}>
       <Tabs items={tabItems} size="large" onChange={onTabChanged} />
@@ -139,7 +157,7 @@ function AccountManagement() {
         defaultselected={selectedItem}
       />
       <Panel refreshList={getAccountsList} ref={panelRef} />
-      <FilterPanel refreshList={getAccountsList} ref={filterPanelRef} />
+      <FilterPanel ref={filterPanelRef} filterAccount={filterAccount} />
       <DetailPanel refreshList={getAccountsList} ref={detailPanelRef} openPanel={openPanel} />
     </div>
   );

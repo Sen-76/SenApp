@@ -13,7 +13,7 @@ export const accountService = {
   },
   async getDetal(id: string): Promise<Response.IDefaultResponse> {
     try {
-      const response = await axiosInstance.get('/users/userDetail' + id);
+      const response = await axiosInstance.get('/users/userDetail/' + id);
       return response.data;
     } catch (error) {
       console.error('An error occurred while get accounts:', error);

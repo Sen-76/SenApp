@@ -1,26 +1,24 @@
 import { EditOutlined, InfoCircleOutlined, PlusOutlined, SmileOutlined } from '@ant-design/icons';
 import { Button, Input, Table, Tooltip } from 'antd';
 import styles from '../Department.module.scss';
-import { useState } from 'react';
 import { ColumnsType, TablePaginationConfig } from 'antd/es/table';
 import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import dayjs from 'dayjs';
+import Paragraph from 'antd/es/typography/Paragraph';
 
 interface IProps {
   data: A[];
   openPanel: (data?: A) => void;
+  loading: boolean;
+  onSearch: (value: string) => void;
+  setPage: (paging: number) => void;
+  param: Common.IDataGrid;
 }
 function DataTable(props: IProps) {
-  const [loading, setLoading] = useState<boolean>(false);
+  const { loading, data, param } = props;
   const { Search } = Input;
   const { t } = useTranslation();
-  const [pagination, setPagination] = useState<TablePaginationConfig>({
-    current: 1,
-    pageSize: 10,
-    total: 20,
-    simple: false
-  });
 
   const columns: ColumnsType<A> = [
     {
@@ -29,7 +27,13 @@ function DataTable(props: IProps) {
       key: 'title',
       width: 200,
       render: (_, record) => {
-        return record.title;
+        return (
+          <Tooltip placement="bottom" title={record.userEmail} color="#ffffff" arrow={true}>
+            <Paragraph ellipsis={{ rows: 1, expandable: false }} style={{ minWidth: 100 }}>
+              {record.title}
+            </Paragraph>
+          </Tooltip>
+        );
       }
     },
     {
@@ -38,7 +42,13 @@ function DataTable(props: IProps) {
       key: 'description',
       width: 300,
       render: (_, record) => {
-        return record.description;
+        return (
+          <Tooltip placement="bottom" title={record.userEmail} color="#ffffff" arrow={true}>
+            <Paragraph ellipsis={{ rows: 1, expandable: false }} style={{ minWidth: 100 }}>
+              {record.description}
+            </Paragraph>
+          </Tooltip>
+        );
       }
     },
     {
@@ -85,20 +95,11 @@ function DataTable(props: IProps) {
   ];
 
   const handleTableChange = (pagination: TablePaginationConfig) => {
-    setPagination(pagination);
-    tableLoading();
-  };
-
-  const tableLoading = () => {
-    setLoading(true);
-    const timeout = setTimeout(() => {
-      setLoading(false);
-      clearTimeout(timeout);
-    }, 2000);
+    props.setPage(pagination.current ?? 1);
   };
 
   const onSearch = (val: A) => {
-    console.log(val);
+    props.onSearch(val);
   };
 
   const TableHeader = () => {
@@ -120,9 +121,14 @@ function DataTable(props: IProps) {
     <>
       <Table
         columns={columns}
-        dataSource={props.data}
-        pagination={pagination}
+        dataSource={data}
         scroll={{ x: 780 }}
+        pagination={{
+          current: param.pageInfor!.pageNumber,
+          pageSize: param.pageInfor!.pageSize,
+          total: param.pageInfor!.totalItems,
+          simple: false
+        }}
         locale={{
           emptyText: (
             <>

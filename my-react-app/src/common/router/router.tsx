@@ -2,14 +2,16 @@ import { FC, Suspense, useEffect } from 'react';
 import { LoadingProvider } from '../context/useLoading';
 import { Routes, BrowserRouter as ReactRouter, Route, useNavigate } from 'react-router-dom';
 
-import LazyLoading from '../../components/lazy-loading/LazyLoading';
+import LazyLoading from '@/components/lazy-loading/LazyLoading';
+import { useLoginManager } from '../helpers/login-manager';
+import Login from '@/pages/authentication/login/Login';
 
 const RouteList = (list: IRouter.IRoute[]) => {
   return list?.map?.((route) => RouteItem(route)).filter((item) => item);
 };
 
 const RouteItem = (route: IRouter.IRoute) => {
-  const routerProps: any = {};
+  const routerProps: A = {};
   if (route.exact) {
     routerProps.exact = true;
   }
@@ -45,12 +47,30 @@ const Redirect = ({ to }: { to: string }) => {
   return null;
 };
 const Router: FC<IRouter.RouterProps> = (props) => {
+  const { getLoginUser } = useLoginManager();
+
   return (
     <>
       <ReactRouter>
         <LoadingProvider>
           {props.children}
-          <Routes>{RouteList(props.routers)}</Routes>
+          <Routes>
+            {getLoginUser() ? (
+              RouteList(props.routers)
+            ) : (
+              <>
+                <Route
+                  path="/login"
+                  element={
+                    <Suspense fallback={<LazyLoading />}>
+                      <Login />
+                    </Suspense>
+                  }
+                ></Route>
+                <Route path="*" element={<Redirect to="/login" />}></Route>
+              </>
+            )}
+          </Routes>
         </LoadingProvider>
       </ReactRouter>
     </>

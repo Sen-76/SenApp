@@ -1,10 +1,10 @@
 /* eslint-disable no-useless-catch */
 import axiosInstance from '../axios-instance/index';
 
-export const rolesService = {
-  async create(role: Role.IRoleModel): Promise<A> {
+export const departmentService = {
+  async create(role: Department.IDepartmentCreateModel): Promise<A> {
     try {
-      const response = await axiosInstance.post('/role/create', role);
+      const response = await axiosInstance.post('/department/create', role);
       return response.data;
     } catch (error) {
       console.error('An error occurred while create:', error);
@@ -13,7 +13,7 @@ export const rolesService = {
   },
   async get(param: Common.IDataGrid): Promise<A> {
     try {
-      const response = await axiosInstance.post('/role/get', param);
+      const response = await axiosInstance.post('/department/get', param);
       return response.data;
     } catch (error) {
       console.error('An error occurred while get:', error);

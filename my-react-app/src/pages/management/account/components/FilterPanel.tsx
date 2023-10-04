@@ -6,7 +6,7 @@ import { DepartmentOptions, GenderOptions, RoleOptions } from '../AccountManagem
 import { useTranslation } from 'react-i18next';
 
 interface IProps {
-  refreshList: () => void;
+  filterAccount: (val: A) => void;
 }
 
 function FilterPanel(props: IProps, ref: A) {
@@ -76,10 +76,12 @@ function FilterPanel(props: IProps, ref: A) {
 
   const openDrawer = (data?: A) => {
     console.log(data);
-    // const dataTable: A = {
-    //   status: data?.filter.find((x: A) => x.key === 'Status')?.value ?? []
-    // };
-    // form.setFieldsValue(dataTable);
+    const dataTable: A = {
+      gender: data.find((x: A) => x.key == 'Gender')?.value,
+      department: data.find((x: A) => x.key == 'Department')?.value,
+      role: data.find((x: A) => x.key == 'Role')?.value
+    };
+    form.setFieldsValue(dataTable);
     setOpen(true);
     getFilterValue();
   };
@@ -94,9 +96,8 @@ function FilterPanel(props: IProps, ref: A) {
   };
 
   const onFinish = (val: A) => {
-    console.log(val);
+    props.filterAccount(val);
     closeDrawer();
-    props.refreshList();
   };
 
   return (
