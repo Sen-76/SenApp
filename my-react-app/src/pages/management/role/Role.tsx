@@ -22,7 +22,7 @@ function RoleManagement() {
   const { setBreadcrumb } = useBreadcrumb();
   const { t } = useTranslation();
   const [loading, setLoading] = useState<boolean>(false);
-  const [roleList, setRoleList] = useState<Role.IRoleModel[]>([]);
+  const [roleList, setRoleList] = useState<Role.IRoleCreateModel[]>([]);
   const [param, setParam] = useState<Common.IDataGrid>(initDataGrid);
   const panelRef = useRef();
 

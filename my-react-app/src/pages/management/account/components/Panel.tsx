@@ -114,6 +114,7 @@ function Panel(props: IProps, ref: A) {
         const errors: A = e.response.data.errors;
         setCustomAlert(errors);
         errors.userEmail && setStep(0);
+        errors.userPhone && setStep(0);
       }
     } finally {
       closeLoading();
@@ -123,6 +124,7 @@ function Panel(props: IProps, ref: A) {
   const onStepChange = async (value: number) => {
     try {
       const generalCheck = await generalForm.validateFields();
+      setEditData({ ...editData, ...generalForm.getFieldsValue() });
       generalCheck && setStep(value);
     } catch {
       console.log('');
@@ -185,10 +187,16 @@ function Panel(props: IProps, ref: A) {
               >
                 <Input maxLength={250} showCount onChange={() => setCustomAlert({ ...customAlert, userEmail: '' })} />
               </Form.Item>
-              <div className="customAlert">{customAlert?.userEmail && t('Manage_Account_Exist_Email')}</div>
-              <Form.Item name="userPhone" label={t('phone')} rules={formRule.userPhone}>
-                <Input />
+              {customAlert?.userEmail && <div className="customAlert">{t('Manage_Account_Exist_Email')}</div>}
+              <Form.Item
+                name="userPhone"
+                label={t('phone')}
+                rules={formRule.userPhone}
+                className={customAlert?.userEmail && 'customFieldAlert'}
+              >
+                <Input onChange={() => setCustomAlert({ ...customAlert, userPhone: '' })} />
               </Form.Item>
+              {customAlert?.userPhone && <div className="customAlert">{t('Manage_Account_Exist_Phone')}</div>}
               <Form.Item name="dob" label={t('date of birth')} rules={formRule.dob}>
                 <DatePicker format={'DD MMM YYYY'} disabledDate={disabledDate} />
               </Form.Item>
@@ -209,7 +217,7 @@ function Panel(props: IProps, ref: A) {
               >
                 <Input maxLength={250} showCount onChange={() => setCustomAlert({ ...customAlert, userName: '' })} />
               </Form.Item>
-              <div className="customAlert">{customAlert?.userName && t('Manage_Account_Exist_Username')}</div>
+              {customAlert?.userName && <div className="customAlert">{t('Manage_Account_Exist_Username')}</div>}
               <Form.Item name="jobTitle" label={t('job')}>
                 <Input maxLength={250} showCount />
               </Form.Item>

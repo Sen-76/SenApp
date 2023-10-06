@@ -1,5 +1,5 @@
 import { CloseOutlined, DeleteOutlined, SearchOutlined } from '@ant-design/icons';
-import { Avatar, Button, Drawer, Empty, Form, Input, Select, Spin, Table, Tooltip } from 'antd';
+import { Avatar, Button, Drawer, Empty, Form, Input, Select, Spin, Steps, Table, Tooltip, notification } from 'antd';
 import { forwardRef, useEffect, useImperativeHandle, useState } from 'react';
 import styles from '../Department.module.scss';
 import { useTranslation } from 'react-i18next';
@@ -9,6 +9,7 @@ import { EState } from '@/pages/management/account/AccountManagement.Model';
 import Paragraph from 'antd/es/typography/Paragraph';
 import { util } from '@/common/helpers/util';
 import { ColumnsType } from 'antd/es/table';
+import { useLoading } from '@/common/context/useLoading';
 
 interface IProps {
   refreshList: () => void;
@@ -18,27 +19,14 @@ function Panel(props: IProps, ref: A) {
   const [isEdit, setIsEdit] = useState<boolean>(false);
   const [customAlert, setCustomAlert] = useState<A>({});
   const [searchUserValue, setSearchUserValue] = useState<string>('');
-  const [selectLoading, setSelectLoading] = useState<boolean>(false);
+  const [selectLoading, setSelectLoading] = useState<boolean>();
+  const [tableLoading, setTableLoading] = useState<boolean>();
   const userDebounced = useDebounce(searchUserValue, 300);
-  const [userList, setUserList] = useState<A>([]);
-  const [memberList, setMemberList] = useState<A>([
-    {
-      id: 1,
-      key: 1,
-      fullName: 'Sen',
-      job: 'Developer',
-      gender: 'Male',
-      photoUrl: 'https://top10tphcm.com/wp-content/uploads/2023/02/hinh-anh-meo.jpeg'
-    },
-    {
-      id: 2,
-      key: 2,
-      fullName: 'Sen',
-      job: 'Developer',
-      gender: 'Male',
-      photoUrl: 'https://top10tphcm.com/wp-content/uploads/2023/02/hinh-anh-meo.jpeg'
-    }
-  ]);
+  const [editData, setEditData] = useState<Department.IDepartmentCreateModel>();
+  const [step, setStep] = useState<number>(0);
+  const { showLoading, closeLoading } = useLoading();
+  const [userList, setUserList] = useState<Account.IAccountModel[]>([]);
+  const [memberList, setMemberList] = useState<Department.IDepartmentModel[]>([]);
   const { t } = useTranslation();
   const [form] = Form.useForm();
   const { TextArea } = Input;
@@ -58,22 +46,43 @@ function Panel(props: IProps, ref: A) {
 
   const closeDrawer = () => {
     form.resetFields();
+    setMemberList([]);
+    setStep(0);
     setOpen(false);
   };
 
-  const onFinish = async (val: A) => {
-    try {
-      const result = await service.departmentService.create(val);
-      closeDrawer();
-      props.refreshList();
-      console.log(result);
-    } catch (e: A) {
-      if (e.response?.data.status === 422) {
-        const errors: A = e.response.data.errors;
-        setCustomAlert(errors);
+  const onConfirm = async () => {
+    const generalCheck = await form.validateFields();
+    setEditData({ ...form, ...form.getFieldsValue() });
+    generalCheck && setStep(1);
+    if (step == 1 && generalCheck) {
+      try {
+        if (isEdit) {
+          console.log('edit');
+        } else {
+          showLoading();
+          await service.departmentService.create({
+            ...editData,
+            members: memberList.map((x) => x.id)
+          });
+          closeLoading();
+          closeDrawer();
+          props.refreshList();
+          notification.open({
+            message: t('Common_CreateSuccess'),
+            type: 'success'
+          });
+        }
+      } catch (e: A) {
+        if (e.response?.data.status === 422) {
+          const errors: A = e.response.data.errors;
+          setCustomAlert(errors);
+          setStep(0);
+        }
+      } finally {
+        closeLoading();
       }
     }
-    console.log(val);
   };
 
   const formRule = {
@@ -92,7 +101,7 @@ function Panel(props: IProps, ref: A) {
     },
     searchInfor: {
       searchValue: '',
-      searchColumn: ['FullName']
+      searchColumn: ['FullName', 'UserEmail']
     },
     filter: [{ key: 'Status', value: [EState.Activate] }]
   };
@@ -115,6 +124,7 @@ function Panel(props: IProps, ref: A) {
 
   const onMemberSelect = async (val: A) => {
     try {
+      setTableLoading(true);
       // const draftParam = { ...initDataGrid };
       // if (draftParam.searchInfor) {
       //   const id = draftParam.filter?.findIndex((x) => x.key === 'Id');
@@ -125,20 +135,11 @@ function Panel(props: IProps, ref: A) {
       //   });
       // }
       // const result = await service.accountService.getAccount(draftParam);
+      setSearchUserValue('');
+      form.setFieldValue('members', '');
       const result = await service.accountService.getDetal(val);
-      setMemberList([
-        ...memberList,
-        {
-          id: 3,
-          key: 3,
-          fullName: 'Sen',
-          job: 'Developer',
-          gender: 'Male',
-          photoUrl: 'https://top10tphcm.com/wp-content/uploads/2023/02/hinh-anh-meo.jpeg'
-        }
-      ]);
-      // setMemberList([...memberList, ...result.data]);
-      setSelectLoading(false);
+      setMemberList([...memberList, result.data]);
+      setTableLoading(false);
     } catch (e) {
       console.log(e);
     }
@@ -146,6 +147,20 @@ function Panel(props: IProps, ref: A) {
 
   const onMemberRemove = (id: string) => {
     setMemberList(memberList.filter((x: A) => x.id !== id));
+  };
+
+  const onStepChange = async (value: number) => {
+    try {
+      const generalCheck = await form.validateFields();
+      setEditData({ ...editData, ...form.getFieldsValue() });
+      generalCheck && setStep(value);
+    } catch (e) {
+      console.log(e);
+    }
+  };
+
+  const backStep = () => {
+    setStep(step - 1);
   };
 
   const columns: ColumnsType<A> = [
@@ -195,7 +210,7 @@ function Panel(props: IProps, ref: A) {
   return (
     <>
       <Drawer
-        title={isEdit ? 'Edit Department' : 'Add Department'}
+        title={isEdit ? t('Department_Edit_Department') : t('Department_Add_Department')}
         placement="right"
         open={open}
         extra={<CloseOutlined onClick={closeDrawer} />}
@@ -205,107 +220,127 @@ function Panel(props: IProps, ref: A) {
         width={720}
         destroyOnClose={true}
       >
-        <Form form={form} onFinish={onFinish} layout="vertical" className={styles.panelform}>
-          <Form.Item
-            name="title"
-            label="Title"
-            rules={formRule.title}
-            className={customAlert?.title && 'customFieldAlert'}
-          >
-            <Input maxLength={250} showCount onChange={() => setCustomAlert({ ...customAlert, title: '' })} />
-          </Form.Item>
-          <div className="customAlert">{customAlert?.title && t('Manage_Account_Exist_Email')}</div>
-          <Form.Item
-            name="manager"
-            label="Manager"
-            rules={formRule.title}
-            className={customAlert?.title && 'customFieldAlert'}
-          >
-            <Select
-              showSearch
-              onSearch={(value) => {
-                setSelectLoading(true);
-                setUserList([]);
-                setSearchUserValue(value);
-              }}
-              notFoundContent={
-                selectLoading ? (
-                  <div
-                    style={{
-                      width: '100%',
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                      height: 100
-                    }}
-                  >
-                    <Spin />
-                  </div>
-                ) : (
-                  <Empty />
-                )
-              }
-              dropdownRender={(menu) => <>{menu}</>}
-              filterOption={() => true}
-              options={userList}
-              suffixIcon={<SearchOutlined />}
-            />
-          </Form.Item>
-          <Form.Item name="description" label={t('Common_Description')}>
-            <TextArea maxLength={1000} showCount />
-          </Form.Item>
-          <Form.Item label={t('members')}>
-            <div>
-              <Select
-                style={{ width: '100%', marginBottom: 10 }}
-                size="large"
-                showSearch
-                onSearch={(value) => {
-                  setSelectLoading(true);
-                  setUserList([]);
-                  setSearchUserValue(value);
-                }}
-                notFoundContent={
-                  selectLoading ? (
-                    <div
-                      style={{
-                        width: '100%',
-                        display: 'flex',
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                        height: 100
-                      }}
-                    >
-                      <Spin />
-                    </div>
-                  ) : (
-                    <Empty />
-                  )
-                }
-                dropdownRender={(menu) => <>{menu}</>}
-                filterOption={() => true}
-                options={userList}
-                suffixIcon={<SearchOutlined />}
-                onSelect={onMemberSelect}
-                placeholder="Assign members to department"
-              />
-              <Table
-                columns={columns}
-                dataSource={memberList}
-                pagination={{
-                  pageSize: 5,
-                  total: memberList.length
-                }}
-              ></Table>
-            </div>
-          </Form.Item>
-          <div className="actionBtnBottom">
-            <Button onClick={closeDrawer}>{t('Common_Cancel')}</Button>
-            <Button type="primary" htmlType="submit">
-              {t('Common_Save')}
-            </Button>
-          </div>
+        <Steps
+          style={{ width: '70%', margin: 'auto', marginBottom: 20 }}
+          onChange={onStepChange}
+          current={step}
+          items={[{ title: t('Manage_Deparment_Info') }, { title: t('Common_AssignMember') }]}
+        />
+        <Form form={form} layout="vertical" className={styles.panelform}>
+          {step === 0 && (
+            <>
+              <Form.Item
+                name="title"
+                label="Title"
+                rules={formRule.title}
+                className={customAlert?.title && 'customFieldAlert'}
+              >
+                <Input maxLength={250} showCount onChange={() => setCustomAlert({ ...customAlert, title: '' })} />
+              </Form.Item>
+              {customAlert?.title && <div className="customAlert">{t('Manage_Account_Exist_Email')}</div>}
+              <Form.Item
+                name="owner"
+                label="Manager"
+                rules={formRule.title}
+                className={customAlert?.title && 'customFieldAlert'}
+              >
+                <Select
+                  showSearch
+                  placeholder={t('Common_SearchNameAndEmail')}
+                  onSelect={() => setSearchUserValue('')}
+                  onSearch={(value) => {
+                    setSelectLoading(true);
+                    setUserList([]);
+                    setSearchUserValue(value);
+                  }}
+                  notFoundContent={
+                    selectLoading ? (
+                      <div
+                        style={{
+                          width: '100%',
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                          height: 100
+                        }}
+                      >
+                        <Spin />
+                      </div>
+                    ) : (
+                      <Empty />
+                    )
+                  }
+                  dropdownRender={(menu) => <>{menu}</>}
+                  filterOption={() => true}
+                  options={userList}
+                  suffixIcon={<SearchOutlined />}
+                />
+              </Form.Item>
+              <Form.Item name="description" label={t('Common_Description')}>
+                <TextArea maxLength={1000} showCount />
+              </Form.Item>
+            </>
+          )}
+          {step === 1 && (
+            <>
+              <Form.Item name="members" label={t('members')}>
+                <Select
+                  style={{ width: '100%', marginBottom: 10 }}
+                  size="large"
+                  showSearch
+                  onSearch={(value) => {
+                    setSelectLoading(true);
+                    setUserList([]);
+                    setSearchUserValue(value);
+                  }}
+                  notFoundContent={
+                    selectLoading ? (
+                      <div
+                        style={{
+                          width: '100%',
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                          height: 100
+                        }}
+                      >
+                        <Spin />
+                      </div>
+                    ) : (
+                      <Empty />
+                    )
+                  }
+                  dropdownRender={(menu) => <>{menu}</>}
+                  filterOption={() => true}
+                  options={userList}
+                  suffixIcon={<SearchOutlined />}
+                  onSelect={onMemberSelect}
+                  placeholder="Assign members to department"
+                />
+              </Form.Item>
+              <div>
+                <Table
+                  columns={columns}
+                  dataSource={memberList}
+                  loading={tableLoading}
+                  rowKey={(record) => record.id}
+                  style={{ marginTop: '-30px' }}
+                  pagination={{
+                    pageSize: 5,
+                    total: memberList.length
+                  }}
+                />
+              </div>
+            </>
+          )}
         </Form>
+        <div className="actionBtnBottom">
+          <Button onClick={closeDrawer}>{t('Common_Cancel')}</Button>
+          {step !== 0 && <Button onClick={backStep}>{t('Common_Back')}</Button>}
+          <Button type="primary" onClick={onConfirm} loading={tableLoading}>
+            {step === 1 ? t('Common_Confirm') : t('Common_Next')}
+          </Button>
+        </div>
       </Drawer>
     </>
   );

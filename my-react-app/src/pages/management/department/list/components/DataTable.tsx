@@ -52,6 +52,13 @@ function DataTable(props: IProps) {
       }
     },
     {
+      title: t('Department_Manger'),
+      dataIndex: 'manager',
+      width: 200,
+      key: 'manager',
+      render: (_, record) => record.owner
+    },
+    {
       title: t('Common_ModifiedOn'),
       dataIndex: 'modifiedOn',
       key: 'modifiedOn',
@@ -59,13 +66,6 @@ function DataTable(props: IProps) {
       render: (_, record) => {
         return <div style={{ minWidth: 90 }}>{dayjs(record.updatedDate).format('DD MMM YYYY HH:mm')}</div>;
       }
-    },
-    {
-      title: t('Common_ModifiedBy'),
-      dataIndex: 'modifiedBy',
-      width: 200,
-      key: 'modifiedBy',
-      render: (_, record) => record.modifiedBy
     },
     {
       title: t('Common_Action'),

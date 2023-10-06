@@ -2,7 +2,7 @@
 import axiosInstance from '../axios-instance/index';
 
 export const authsService = {
-  async login(userLogin: Authen.IUserLoginModel): Promise<A> {
+  async login(userLogin: Authen.IUserLoginModel): Promise<Response.IDefaultResponse> {
     try {
       const response = await axiosInstance.post('/auth/login', userLogin);
       return response.data;

@@ -2,7 +2,7 @@
 import axiosInstance from '../axios-instance/index';
 
 export const departmentService = {
-  async create(role: Department.IDepartmentCreateModel): Promise<A> {
+  async create(role: Department.IDepartmentCreateModel): Promise<Response.IDefaultResponse> {
     try {
       const response = await axiosInstance.post('/department/create', role);
       return response.data;
@@ -11,7 +11,7 @@ export const departmentService = {
       throw error;
     }
   },
-  async get(param: Common.IDataGrid): Promise<A> {
+  async get(param: Common.IDataGrid): Promise<Response.IDefaultResponse> {
     try {
       const response = await axiosInstance.post('/department/get', param);
       return response.data;

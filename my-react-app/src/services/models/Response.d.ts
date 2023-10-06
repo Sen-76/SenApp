@@ -3,5 +3,6 @@ declare namespace Response {
     statusCode?: number;
     message?: string;
     data?: A;
+    prameter?: A;
   }
 }

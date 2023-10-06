@@ -29,9 +29,10 @@ function StarConfiguration() {
       showLoading();
       const result = await service.globalSettingsService.getByType(3);
       form.setFieldsValue(result);
-      closeLoading();
     } catch (e) {
       console.log(e);
+    } finally {
+      closeLoading();
     }
   };
 
@@ -45,9 +46,10 @@ function StarConfiguration() {
           type: 'success'
         });
       form.setFieldsValue(result);
-      closeLoading();
     } catch (e) {
       console.log(e);
+    } finally {
+      closeLoading();
     }
   };
 
@@ -61,7 +63,7 @@ function StarConfiguration() {
           rules={[{ required: true, message: t('Common_Require_Field') }]}
           style={{ width: '50%', minWidth: 300 }}
         >
-          <InputNumber min={0}></InputNumber>
+          <InputNumber min={1}></InputNumber>
         </Form.Item>
       </Form>
       <div className="actionBtnBottom">

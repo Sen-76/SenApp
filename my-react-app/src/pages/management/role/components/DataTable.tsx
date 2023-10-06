@@ -1,14 +1,13 @@
 import { DeleteOutlined, EditOutlined, PlusOutlined, SmileOutlined } from '@ant-design/icons';
-import { Button, Input, Modal, Switch, Tooltip, notification } from 'antd';
+import { Button, Input, Modal, Tooltip, notification } from 'antd';
 import Table, { ColumnsType, TablePaginationConfig } from 'antd/es/table';
 import dayjs from 'dayjs';
 import { useTranslation } from 'react-i18next';
 import styles from '../Role.module.scss';
-import { EState } from '../Role.model';
 import Paragraph from 'antd/es/typography/Paragraph';
 
 interface IProps {
-  data: Role.IRoleModel[];
+  data: Role.IRoleCreateModel[];
   openPanel: (data?: A) => void;
   refreshList: () => void;
   onSearch: (value: string) => void;
@@ -54,70 +53,6 @@ function DataTable(props: IProps) {
       width: 150,
       render: (_, record) => {
         return <div style={{ minWidth: 90 }}>{dayjs(record.updatedDate).format('DD MMM YYYY HH:mm')}</div>;
-      }
-    },
-    {
-      title: t('Common_ModifiedBy'),
-      dataIndex: 'modifiedBy',
-      width: 150,
-      key: 'modifiedBy',
-      render: (_, record) => {
-        return (
-          <Tooltip placement="bottom" title={record.modifiedBy} color="#ffffff" arrow={true}>
-            <Paragraph ellipsis={{ rows: 1, expandable: false }} style={{ minWidth: 100 }}>
-              {record.modifiedBy}
-            </Paragraph>
-          </Tooltip>
-        );
-      }
-    },
-    {
-      title: t('Common_Status'),
-      dataIndex: 'status',
-      key: 'status',
-      width: 100,
-      render: (_, record) => {
-        const apiHandle = async (value: boolean) => {
-          try {
-            // value
-            //   ? await service.accountService.activeAccount([record.id])
-            //   : await service.accountService.deactiveAccount(record.id);
-            notification.open({
-              message: value ? t('Common_ActivateSuccess') : t('Common_DeactivateSuccess'),
-              type: 'success'
-            });
-            props.refreshList();
-          } catch (e) {
-            console.log(e);
-          }
-        };
-        const activeChange = async (value: boolean) => {
-          if (!value) {
-            confirm({
-              content: t('Common_DeActive_Confirm').replace('{0}', record.title),
-              title: t('Common_Confirm'),
-              okText: t('Common_Deactivate'),
-              cancelText: t('Common_Cancel'),
-              onOk: async () => {
-                await apiHandle(value);
-              }
-            });
-          } else {
-            await apiHandle(value);
-          }
-        };
-        return (
-          <div style={{ minWidth: 120 }}>
-            <Tooltip
-              placement="bottom"
-              title={record.status === EState.Activate ? t('Common_Activate') : t('Common_Inactivate')}
-              color="#ffffff"
-              arrow={true}
-            >
-              <Switch checked={record.status === EState.Activate} onChange={activeChange} style={{ marginRight: 5 }} />
-            </Tooltip>
-          </div>
-        );
       }
     },
     {

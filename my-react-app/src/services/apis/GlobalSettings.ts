@@ -2,7 +2,7 @@
 import axiosInstance from '../axios-instance/index';
 
 export const globalSettingsService = {
-  async getGlobalSetting(): Promise<A> {
+  async getGlobalSetting(): Promise<Response.IDefaultResponse> {
     try {
       const response = await axiosInstance.get('/globalSettings/get-all');
       return response.data;
@@ -11,18 +11,18 @@ export const globalSettingsService = {
       throw error;
     }
   },
-  async getByType(type: number): Promise<A> {
+  async getByType(type: number): Promise<Response.IDefaultResponse> {
     try {
-      const response = await axiosInstance.get('globalSettings/get-by-type' + type);
+      const response = await axiosInstance.get('globalSettings/get-by-type/' + type);
       return response.data;
     } catch (error) {
       console.error('An error occurred while get global setting:', error);
       throw error;
     }
   },
-  async getById(id: string): Promise<A> {
+  async getById(id: string): Promise<Response.IDefaultResponse> {
     try {
-      const response = await axiosInstance.get('/users/update' + id);
+      const response = await axiosInstance.get('/users/update/' + id);
       return response.data;
     } catch (error) {
       console.error('An error occurred while get global setting:', error);

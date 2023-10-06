@@ -47,7 +47,6 @@ function DataTable(props: IProps) {
   const { showLoading, closeLoading } = useLoading();
   const [value, setValue] = useState<EDeleteState>(EDeleteState.None);
   const { t } = useTranslation();
-  const { confirm } = Modal;
   const { Search } = Input;
 
   const columns: ColumnsType<A> = [
@@ -68,7 +67,7 @@ function DataTable(props: IProps) {
               </Avatar>
               <Paragraph
                 ellipsis={{ rows: 1, expandable: false }}
-                style={{ maxWidth: 150, minWidth: 30, overflow: 'hidden' }}
+                style={{ maxWidth: 200, minWidth: 50, overflow: 'hidden' }}
               >
                 {record.fullName}
               </Paragraph>
@@ -94,7 +93,6 @@ function DataTable(props: IProps) {
     {
       title: t('phone'),
       dataIndex: 'phone',
-      width: 110,
       key: 'phone',
       render: (_, record) => {
         return record.userPhone;
@@ -103,7 +101,6 @@ function DataTable(props: IProps) {
     {
       title: t('date of birth'),
       dataIndex: 'dob',
-      width: 120,
       key: 'dob',
       render: (_, record) => {
         return <div style={{ width: 115 }}>{dayjs(record.dob).format('DD MMM YYYY')}</div>;
@@ -112,7 +109,6 @@ function DataTable(props: IProps) {
     {
       title: t('gender'),
       dataIndex: 'gender',
-      width: 90,
       key: 'gender',
       render: (_, record) => {
         return record.gender === EGender.Male ? (
@@ -129,67 +125,14 @@ function DataTable(props: IProps) {
     {
       title: t('role'),
       dataIndex: 'role',
-      width: 100,
       key: 'role',
       render: (_, record) => {
         return (
           <Tooltip placement="bottom" title={record.userEmail} color="#ffffff" arrow={true}>
-            <Paragraph ellipsis={{ rows: 1, expandable: false }} style={{ maxWidth: 150, minWidth: 100 }}>
+            <Paragraph ellipsis={{ rows: 1, expandable: false }} style={{ maxWidth: 100 }}>
               {record.role}
             </Paragraph>
           </Tooltip>
-        );
-      }
-    },
-    {
-      title: t('Common_Status'),
-      dataIndex: 'status',
-      key: 'status',
-      width: 100,
-      className: tabStatus == EState.Deleted ? 'hiddenColumn' : '',
-      render: (_, record) => {
-        const apiHandle = async (value: boolean) => {
-          try {
-            showLoading();
-            value
-              ? await service.accountService.activeAccount([record.id])
-              : await service.accountService.deactiveAccount(record.id);
-            notification.open({
-              message: value ? t('Common_ActivateSuccess') : t('Common_DeactivateSuccess'),
-              type: 'success'
-            });
-            props.refreshList();
-            closeLoading();
-          } catch (e) {
-            console.log(e);
-          }
-        };
-        const activeChange = async (value: boolean) => {
-          if (!value) {
-            confirm({
-              content: t('Common_DeActive_Confirm').replace('{0}', record.fullName),
-              title: t('Common_Confirm'),
-              okText: t('Common_Deactivate'),
-              cancelText: t('Common_Cancel'),
-              onOk: async () => {
-                await apiHandle(value);
-              }
-            });
-          } else {
-            await apiHandle(value);
-          }
-        };
-        return (
-          <div style={{ minWidth: 120 }}>
-            <Tooltip
-              placement="bottom"
-              title={record.status === EState.Activate ? t('Common_Activate') : t('Common_Inactivate')}
-              color="#ffffff"
-              arrow={true}
-            >
-              <Switch checked={record.status === EState.Activate} onChange={activeChange} style={{ marginRight: 5 }} />
-            </Tooltip>
-          </div>
         );
       }
     },
@@ -257,9 +200,9 @@ function DataTable(props: IProps) {
     props.onSearch(val);
   };
 
-  const onRadioChange = (e: RadioChangeEvent) => {
-    setValue(Number(e.target.value));
-  };
+  // const onRadioChange = (e: RadioChangeEvent) => {
+  //   setValue(Number(e.target.value));
+  // };
 
   const onCancelModal = () => {
     setIsOpenModal(false);
@@ -271,7 +214,8 @@ function DataTable(props: IProps) {
     try {
       setIsOpenModal(false);
       await service.accountService.deleteAccount({
-        isHardDelete: value === EDeleteState.HardDelete,
+        // isHardDelete: value === EDeleteState.HardDelete,
+        isHardDelete: false,
         id: selectedRowKeys as string[]
       });
       setValue(EDeleteState.None);
@@ -411,7 +355,7 @@ function DataTable(props: IProps) {
               : t('Manage_Account_DeleteUser_Text')}
           </div>
 
-          {tabStatus == EState.Activate ? (
+          {/* {tabStatus == EState.Activate ? (
             <Radio.Group
               onChange={onRadioChange}
               style={{ display: 'flex', flexDirection: 'column', gap: 10, marginBottom: 60, marginLeft: 20 }}
@@ -422,13 +366,13 @@ function DataTable(props: IProps) {
             </Radio.Group>
           ) : (
             <div style={{ marginBottom: 30 }}></div>
-          )}
+          )} */}
 
           <div className="actionBtnBottom">
             <Button onClick={onCancelModal}>{t('Common_Cancel')}</Button>
             <Button
               type="primary"
-              disabled={value === EDeleteState.None && tabStatus == EState.Activate}
+              // disabled={value === EDeleteState.None && tabStatus == EState.Activate}
               onClick={confirmDelete}
             >
               {t('Common_Delete')}

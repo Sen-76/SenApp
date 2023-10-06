@@ -2,7 +2,7 @@
 import axiosInstance from '../axios-instance/index';
 
 export const accountService = {
-  async getAccount(userData: Common.IDataGrid): Promise<A> {
+  async getAccount(userData: Common.IDataGrid): Promise<Response.IDefaultResponse> {
     try {
       const response = await axiosInstance.post('/users/get', userData);
       return response.data;
@@ -74,7 +74,7 @@ export const accountService = {
       throw error;
     }
   },
-  async updateProfile(userData: Account.IAccountUpdateModel): Promise<A> {
+  async updateProfile(userData: Account.IAccountUpdateModel): Promise<Response.IDefaultResponse> {
     try {
       const response = await axiosInstance.post('/users/update-profile', userData);
       return response.data;

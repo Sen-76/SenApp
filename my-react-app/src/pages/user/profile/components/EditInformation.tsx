@@ -43,8 +43,6 @@ function EditInformation(props: IProps) {
       }, 2000);
     } catch (e: A) {
       console.log(e);
-    } finally {
-      closeLoading();
     }
   };
 

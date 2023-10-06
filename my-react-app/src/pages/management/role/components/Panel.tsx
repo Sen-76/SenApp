@@ -1,9 +1,25 @@
 import { CloseOutlined } from '@ant-design/icons';
-import { Button, Drawer, Form, Input, Steps } from 'antd';
+import {
+  Button,
+  Checkbox,
+  Col,
+  Collapse,
+  CollapseProps,
+  Drawer,
+  Form,
+  Input,
+  Row,
+  Steps,
+  message,
+  notification
+} from 'antd';
 import { forwardRef, useImperativeHandle, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import styles from '../Role.module.scss';
 import TextArea from 'antd/es/input/TextArea';
+import { service } from '@/services/apis';
+import { useLoading } from '@/common/context/useLoading';
+import Paragraph from 'antd/es/typography/Paragraph';
 
 interface IProps {
   refreshList: () => void;
@@ -15,41 +31,121 @@ function Panel(props: IProps, ref: A) {
   const { t } = useTranslation();
   const [generalForm] = Form.useForm();
   const [permissionForm] = Form.useForm();
-  const [editData, setEditData] = useState<A>();
+  const [editData, setEditData] = useState<Role.IRoleCreateModel>();
+  const { showLoading, closeLoading } = useLoading();
+  const [customAlert, setCustomAlert] = useState<A>();
+  const [roleItems, setRolesItem] = useState<CollapseProps['items']>([]);
+  const [messageApi, contextHolder] = message.useMessage();
 
   useImperativeHandle(ref, () => ({
     openDrawer
   }));
 
-  const openDrawer = (data?: A) => {
+  const openDrawer = (data?: Role.IRoleCreateModel) => {
     setOpen(true);
     setIsEdit(false);
+    getRoleList();
     if (data) {
       setIsEdit(true);
+      generalForm.setFieldsValue(data);
     }
   };
 
+  const getRoleList = async () => {
+    try {
+      showLoading();
+      const result = await service.permissionService.get();
+      genPermissionElements(result.data);
+    } catch (e) {
+      console.log(e);
+    } finally {
+      closeLoading();
+    }
+  };
+
+  const genPermissionElements = (rolesList: Permission.IRolePermissionModel[]) => {
+    const item = rolesList.map((x, index: number) => ({
+      key: index.toString(),
+      label: x.title,
+      children: (
+        <>
+          <Form.Item name={x.title}>
+            <Checkbox.Group>
+              <Row>
+                {x.permissions.map((x) => (
+                  <Col span={24} key={x.id}>
+                    <Checkbox value={x.id}>
+                      <Paragraph ellipsis={{ rows: 1, expandable: false }} style={{ minWidth: '100%' }}>
+                        {t(x.keyI18n)}
+                      </Paragraph>
+                    </Checkbox>
+                  </Col>
+                ))}
+              </Row>
+            </Checkbox.Group>
+          </Form.Item>
+        </>
+      )
+    }));
+    setRolesItem(item);
+  };
+
   const closeDrawer = () => {
+    generalForm.resetFields();
+    permissionForm.resetFields();
+    setStep(0);
     setOpen(false);
   };
 
   const onConfirm = async () => {
-    const generalCheck = await generalForm.validateFields();
-    setEditData({ ...editData, ...generalForm.getFieldsValue() });
-    generalCheck && setStep(1);
-    const permissionCheck = await permissionForm.validateFields();
-    if (step == 1 && generalCheck && permissionCheck) {
-      console.log('ọk');
+    try {
+      const generalCheck = await generalForm.validateFields();
+      setEditData({ ...editData, ...generalForm.getFieldsValue() });
+      generalCheck && setStep(1);
+      const permissionCheck = await permissionForm.validateFields();
+      if (step == 1 && generalCheck && permissionCheck) {
+        const per = permissionForm.getFieldsValue();
+        if (Object.keys(per).length === 0) {
+          messageApi.error('Please_Select_At_Least_1_Role');
+          return;
+        }
+        if (isEdit) {
+          console.log('edit');
+        } else {
+          showLoading();
+          await service.rolesService.create({ ...editData, permission: per });
+          closeLoading();
+          closeDrawer();
+          props.refreshList();
+          notification.open({
+            message: t('Common_CreateSuccess'),
+            type: 'success'
+          });
+        }
+      }
+    } catch (e: A) {
+      if (e.response?.data.status === 422) {
+        const errors: A = e.response.data.errors;
+        setCustomAlert(errors);
+        errors.title && setStep(0);
+      }
+    } finally {
+      closeLoading();
     }
   };
 
   const onStepChange = async (value: number) => {
     try {
       const generalCheck = await generalForm.validateFields();
+      setEditData({ ...editData, ...generalForm.getFieldsValue() });
       generalCheck && setStep(value);
-    } catch {
-      console.log('');
+    } catch (e) {
+      console.log(e);
     }
+  };
+
+  const backStep = () => {
+    setStep(step - 1);
   };
 
   const formRule = {
@@ -69,6 +165,7 @@ function Panel(props: IProps, ref: A) {
         width={720}
         destroyOnClose={true}
       >
+        {contextHolder}
         <Steps
           style={{ width: '70%', margin: 'auto', marginBottom: 20 }}
           onChange={onStepChange}
@@ -78,9 +175,15 @@ function Panel(props: IProps, ref: A) {
         {step === 0 && (
           <>
             <Form form={generalForm} layout="vertical" className={styles.panelform}>
-              <Form.Item name="title" label={t('Common_Title')} rules={formRule.title}>
-                <Input maxLength={250} showCount />
+              <Form.Item
+                name="title"
+                label={t('Common_Title')}
+                rules={formRule.title}
+                className={customAlert?.userEmail && 'customFieldAlert'}
+              >
+                <Input maxLength={250} showCount onChange={() => setCustomAlert({ ...customAlert, title: '' })} />
               </Form.Item>
+              {customAlert?.title && <div className="customAlert">{t('Common_TitleExist')}</div>}
               <Form.Item name="description" label={t('Common_Description')}>
                 <TextArea maxLength={1000} showCount />
               </Form.Item>
@@ -90,12 +193,20 @@ function Panel(props: IProps, ref: A) {
         {step === 1 && (
           <>
             <Form form={permissionForm} layout="vertical" className={styles.panelform}>
-              cc
+              <Collapse
+                items={roleItems}
+                bordered={false}
+                ghost
+                size="large"
+                expandIconPosition="end"
+                collapsible="icon"
+              />
             </Form>
           </>
         )}
         <div className="actionBtnBottom">
           <Button onClick={closeDrawer}>{t('Common_Cancel')}</Button>
+          {step !== 0 && <Button onClick={backStep}>{t('Common_Back')}</Button>}
           <Button type="primary" onClick={onConfirm}>
             {step === 1 ? t('Common_Confirm') : t('Common_Next')}
           </Button>

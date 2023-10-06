@@ -30,7 +30,7 @@ function UserAvatar() {
       },
       {
         label: (
-          <Link to="/" className={styles.avatarDropdownItem}>
+          <Link to="/user/change-password" className={styles.avatarDropdownItem}>
             <RedoOutlined />
             <div className="dropdown-item-text">{t('Common_ChangePassword')}</div>
           </Link>

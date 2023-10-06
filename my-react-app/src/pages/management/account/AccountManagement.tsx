@@ -60,6 +60,7 @@ function AccountManagement() {
     try {
       setLoading(true);
       const result = await service.accountService.getAccount(draftParam ?? param);
+      console.log(result);
       setParam({
         ...param,
         pageInfor: {
