@@ -231,7 +231,6 @@ function Notification() {
         key: noti.id
       }))
     );
-    console.log('seted');
   };
 
   return (

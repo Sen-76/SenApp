@@ -8,6 +8,7 @@ declare namespace Common {
   export interface IFilter {
     key?: string;
     value?: A[];
+    operators?: string;
   }
   export interface ISearchInfo {
     searchValue?: string | number;

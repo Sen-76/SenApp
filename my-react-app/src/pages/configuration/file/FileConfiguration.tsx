@@ -13,6 +13,7 @@ function FileConfiguration() {
   const { t } = useTranslation();
   const [loading, setLoading] = useState<boolean>(false);
   const [fileList, setFileList] = useState<A>(false);
+  const [fileSetting, setFileSetting] = useState<A>();
   const { setBreadcrumb } = useBreadcrumb();
   const panelRef = useRef();
 
@@ -30,7 +31,8 @@ function FileConfiguration() {
     try {
       setLoading(true);
       const result = await service.globalSettingsService.getByType(1);
-      setFileList(result);
+      setFileList(result.detail);
+      setFileSetting(result);
       setLoading(false);
     } catch (e) {
       console.log(e);
@@ -44,7 +46,7 @@ function FileConfiguration() {
   return (
     <div className={styles.fileconfiguration}>
       <DataTable data={fileList} openPanel={openPanel} loading={loading} />
-      <Panel refreshList={() => console.log('refresh')} ref={panelRef} />
+      <Panel refreshList={getFileList} ref={panelRef} all={fileSetting} />
     </div>
   );
 }

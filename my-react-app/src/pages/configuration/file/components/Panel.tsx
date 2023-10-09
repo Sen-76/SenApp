@@ -1,17 +1,21 @@
 import { CloseOutlined } from '@ant-design/icons';
-import { Button, Drawer, Form, Input, Select } from 'antd';
+import { Button, Drawer, Form, Input, Select, notification } from 'antd';
 import { forwardRef, useImperativeHandle, useState } from 'react';
 import styles from '../FileConfiguration.module.scss';
 import { useTranslation } from 'react-i18next';
 import { fileFolder, fileTypeOption } from '../File.Model';
+import { useLoading } from '@/common/context/useLoading';
+import { service } from '@/services/apis';
 
 interface IProps {
+  all: A;
   refreshList: () => void;
 }
 function Panel(props: IProps, ref: A) {
   const [open, setOpen] = useState<boolean>(false);
   const { t } = useTranslation();
   const [isEdit, setIsEdit] = useState<boolean>(false);
+  const { showLoading, closeLoading } = useLoading();
   const [form] = Form.useForm();
 
   useImperativeHandle(ref, () => ({
@@ -23,7 +27,7 @@ function Panel(props: IProps, ref: A) {
     setIsEdit(false);
     if (data) {
       setIsEdit(true);
-      form.setFieldsValue(data);
+      form.setFieldsValue({ ...data });
     }
   };
 
@@ -32,12 +36,29 @@ function Panel(props: IProps, ref: A) {
     form.resetFields();
   };
 
-  const onFinish = (val: A) => {
-    console.log(val);
+  const onFinish = async (val: A) => {
+    try {
+      showLoading();
+      await service.globalSettingsService.updateFileConfig({
+        id: props.all.id,
+        fileSting: [...props.all.detail.filter((x: A) => x.title !== val.title), val]
+      });
+      props.refreshList();
+      notification.open({
+        message: t('Common_UpdateSuccess'),
+        type: 'success'
+      });
+      closeDrawer();
+      closeLoading();
+    } catch (e) {
+      console.log(e);
+    } finally {
+      closeLoading();
+    }
   };
 
   const fileSizeCustomRule = (rule: A, value: string) => {
-    if (value && (!Number.isInteger(Number(value)) || 1 > Number(value) || Number(value) > 99 || value.includes('.'))) {
+    if (value && (!Number.isInteger(Number(value)) || 1 > Number(value) || value.includes('.'))) {
       return Promise.reject('Please enter only Positive Integers in this field.');
     }
     return Promise.resolve();
@@ -65,7 +86,7 @@ function Panel(props: IProps, ref: A) {
       >
         <Form form={form} onFinish={onFinish} layout="vertical" className={styles.panelform}>
           <Form.Item name="title" label={t('Common_Title')} rules={formRule.title}>
-            <Input maxLength={250} showCount />
+            <Input disabled />
           </Form.Item>
           <Form.Item name="fileSize" label={`${t('file size')} (MB)`} rules={formRule.fileSize}>
             <Input />
@@ -73,7 +94,7 @@ function Panel(props: IProps, ref: A) {
           <Form.Item name="fileAccept" label={t('file accept')} rules={formRule.fileAccept}>
             <Select mode="multiple" options={fileTypeOption} />
           </Form.Item>
-          <Form.Item name="numberOfFile" label={t('file type')} rules={formRule.numberOfFile}>
+          <Form.Item name="fileType" label={t('file type')} rules={formRule.numberOfFile}>
             <Select options={fileFolder} />
           </Form.Item>
           <div className="actionBtnBottom">

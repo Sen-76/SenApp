@@ -34,6 +34,7 @@ function Panel(props: IProps, ref: A) {
   const [editData, setEditData] = useState<Role.IRoleCreateModel>();
   const { showLoading, closeLoading } = useLoading();
   const [customAlert, setCustomAlert] = useState<A>();
+  const [openDefault, setOpenDefault] = useState<A[]>([]);
   const [roleItems, setRolesItem] = useState<CollapseProps['items']>([]);
   const [messageApi, contextHolder] = message.useMessage();
 
@@ -41,21 +42,16 @@ function Panel(props: IProps, ref: A) {
     openDrawer
   }));
 
-  const openDrawer = (data?: Role.IRoleCreateModel) => {
-    setOpen(true);
-    setIsEdit(false);
-    getRoleList();
-    if (data) {
-      setIsEdit(true);
-      generalForm.setFieldsValue(data);
-    }
-  };
-
-  const getRoleList = async () => {
+  const openDrawer = async (data?: Role.IRoleModel) => {
     try {
       showLoading();
-      const result = await service.permissionService.get();
-      genPermissionElements(result.data);
+      setOpen(true);
+      setIsEdit(false);
+      await getPermissionList();
+      if (data) {
+        setIsEdit(true);
+        await getRoleDetail(data?.id ?? '');
+      }
     } catch (e) {
       console.log(e);
     } finally {
@@ -63,16 +59,40 @@ function Panel(props: IProps, ref: A) {
     }
   };
 
-  const genPermissionElements = (rolesList: Permission.IRolePermissionModel[]) => {
-    const item = rolesList.map((x, index: number) => ({
-      key: index.toString(),
+  const getRoleDetail = async (id: string) => {
+    try {
+      const result = await service.rolesService.detail(id);
+      generalForm.setFieldsValue(result.data);
+      Object.entries(result.data.permission).map(([label, value]) => {
+        permissionForm.setFieldValue(label, value);
+        openDefault.push(label);
+        setOpenDefault([...openDefault]);
+      });
+      setEditData(result.data);
+    } catch (e) {
+      console.log(e);
+    }
+  };
+
+  const getPermissionList = async () => {
+    try {
+      const result = await service.permissionService.get();
+      genPermissionElements(result.data);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const genPermissionElements = (rolesList: A[]) => {
+    const item = rolesList.map((x) => ({
+      key: x.title,
       label: x.title,
       children: (
         <>
           <Form.Item name={x.title}>
             <Checkbox.Group>
               <Row>
-                {x.permissions.map((x) => (
+                {x.permissions.map((x: A) => (
                   <Col span={24} key={x.id}>
                     <Checkbox value={x.id}>
                       <Paragraph ellipsis={{ rows: 1, expandable: false }} style={{ minWidth: '100%' }}>
@@ -93,6 +113,8 @@ function Panel(props: IProps, ref: A) {
   const closeDrawer = () => {
     generalForm.resetFields();
     permissionForm.resetFields();
+    setCustomAlert([]);
+    setOpenDefault([]);
     setStep(0);
     setOpen(false);
   };
@@ -104,16 +126,29 @@ function Panel(props: IProps, ref: A) {
       generalCheck && setStep(1);
       const permissionCheck = await permissionForm.validateFields();
       if (step == 1 && generalCheck && permissionCheck) {
+        showLoading();
         const per = permissionForm.getFieldsValue();
         if (Object.keys(per).length === 0) {
-          messageApi.error('Please_Select_At_Least_1_Role');
+          messageApi.error(t('Please_Select_At_Least_1_Role'));
           return;
         }
+        const permissionValues = [];
+        for (const key in per) {
+          if (Array.isArray(per[key])) {
+            permissionValues.push(...per[key]);
+          }
+        }
         if (isEdit) {
-          console.log('edit');
+          await service.rolesService.update({ ...editData, permissionIds: permissionValues });
+          closeLoading();
+          closeDrawer();
+          props.refreshList();
+          notification.open({
+            message: t('Common_UpdateSuccess'),
+            type: 'success'
+          });
         } else {
-          showLoading();
-          await service.rolesService.create({ ...editData, permission: per });
+          await service.rolesService.create({ ...editData, permissionIds: permissionValues });
           closeLoading();
           closeDrawer();
           props.refreshList();
@@ -200,6 +235,7 @@ function Panel(props: IProps, ref: A) {
                 size="large"
                 expandIconPosition="end"
                 collapsible="icon"
+                defaultActiveKey={openDefault}
               />
             </Form>
           </>

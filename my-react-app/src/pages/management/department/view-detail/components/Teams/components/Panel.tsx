@@ -135,7 +135,6 @@ function Panel(props: IProps, ref: A) {
         ),
         value: m.id
       }));
-      console.log(data);
       form.setFieldsValue(data);
       setIsEdit(true);
     }
@@ -152,7 +151,6 @@ function Panel(props: IProps, ref: A) {
   };
 
   const onFinish = (val: A) => {
-    console.log(val);
     showLoading();
     if (isEdit) {
       const timeout = setTimeout(() => {

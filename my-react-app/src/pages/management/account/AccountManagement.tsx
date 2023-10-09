@@ -60,7 +60,6 @@ function AccountManagement() {
     try {
       setLoading(true);
       const result = await service.accountService.getAccount(draftParam ?? param);
-      console.log(result);
       setParam({
         ...param,
         pageInfor: {
@@ -92,9 +91,7 @@ function AccountManagement() {
     const draftGrid = { ...param };
     if (draftGrid.filter) {
       const statusIndex = draftGrid.filter.findIndex((x) => x.key === 'Status');
-      if (statusIndex !== -1) {
-        draftGrid.filter.splice(statusIndex, 1);
-      }
+      statusIndex !== -1 && draftGrid.filter.splice(statusIndex, 1);
       draftGrid.filter?.push({ key: 'Status', value: [Number(e)] });
     }
     draftGrid.pageInfor!.pageNumber = 1;
@@ -127,15 +124,25 @@ function AccountManagement() {
     const draftGrid = { ...param };
     if (draftGrid.filter) {
       const gender = draftGrid.filter.findIndex((x) => x.key === 'Gender');
-      gender !== -1 && draftGrid.filter.splice(gender as number, 1);
+      gender !== -1 && draftGrid.filter.splice(gender, 1);
       const department = draftGrid.filter.findIndex((x) => x.key === 'Department');
-      department !== -1 && draftGrid.filter.splice(department as number, 1);
+      department !== -1 && draftGrid.filter.splice(department, 1);
       const role = draftGrid.filter.findIndex((x) => x.key === 'Role');
-      role !== -1 && draftGrid.filter.splice(role as number, 1);
-      val.gender.length > 0 &&
+      role !== -1 && draftGrid.filter.splice(role, 1);
+      val.gender?.length > 0 &&
         draftGrid.filter.push({
           key: 'Gender',
           value: val.gender
+        });
+      val.role?.length > 0 &&
+        draftGrid.filter.push({
+          key: 'Role',
+          value: val.role
+        });
+      val.department?.length > 0 &&
+        draftGrid.filter.push({
+          key: 'Department',
+          value: val.department
         });
     }
     getAccountsList(draftGrid);

@@ -115,7 +115,6 @@ function Panel(props: IProps, ref: A) {
   };
 
   const assignCLick = (user?: A) => {
-    console.log(user);
     setSelectedItem([]);
     setLoading(true);
     const timeout = setTimeout(() => {
@@ -137,7 +136,6 @@ function Panel(props: IProps, ref: A) {
 
   const rowSelection: TableRowSelection<A> = {
     onChange: (selectedRowKeys, selectedRows) => {
-      console.log(`selectedRowKeys: ${selectedRowKeys}`, 'selectedRows: ', selectedRows);
       setSelectedItem(selectedRows);
     }
   };

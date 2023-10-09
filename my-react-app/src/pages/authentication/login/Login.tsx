@@ -63,7 +63,7 @@ function Login() {
             onChange={() => setCustomAlert({ ...customAlert, userEmail: '' })}
           />
         </Form.Item>
-        <div className="customAlert">{customAlert?.userEmail && t('Common_Login_EmailNotExist_Alert')}</div>
+        {customAlert?.userEmail && <div className="customAlert">{t('Common_Login_EmailNotExist_Alert')}</div>}
         <Form.Item
           label={t('password')}
           name="password"
@@ -76,7 +76,7 @@ function Login() {
             onChange={() => setCustomAlert({ ...customAlert, password: '' })}
           />
         </Form.Item>
-        <span className="customAlert">{customAlert?.password && t('Common_Login_PasswordNotCorrect_Alert')}</span>
+        {customAlert?.password && <span className="customAlert">{t('Common_Login_PasswordNotCorrect_Alert')}</span>}
 
         <Row>
           <Form.Item name="remember" valuePropName="checked">

@@ -49,7 +49,6 @@ function DetailPanel(props: IProps, ref: A) {
 
   const openDrawer = (data?: A) => {
     setOpen(true);
-    console.log(data);
     getUserInformation(data.id);
   };
 
@@ -122,7 +121,7 @@ function DetailPanel(props: IProps, ref: A) {
             <Col className={styles.keyCol}>
               <ContactsOutlined /> {t('department')}
             </Col>
-            <Col className={styles.valueCol}>{user.department ?? 'N/A'}</Col>
+            <Col className={styles.valueCol}>{user.userDepartment ?? 'N/A'}</Col>
           </Row>
           <Row className={styles.detailRow}>
             <Col className={styles.keyCol}>

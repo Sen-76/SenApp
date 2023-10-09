@@ -49,7 +49,6 @@ function DetailPanel(props: IProps, ref: A) {
 
   const openDrawer = (data?: A) => {
     setOpen(true);
-    console.log(data);
     getUserInformation(data.id);
   };
 

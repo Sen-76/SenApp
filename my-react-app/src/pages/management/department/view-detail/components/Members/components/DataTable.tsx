@@ -38,11 +38,11 @@ function DataTable(props: IProps) {
   const columns: ColumnsType<A> = [
     {
       title: t('name'),
-      dataIndex: 'name',
-      key: 'name',
+      dataIndex: 'fullName',
+      key: 'fullName',
       render: (_, record) => {
         return (
-          <Tooltip placement="bottom" title={record.name} color="#ffffff" arrow={true}>
+          <Tooltip placement="bottom" title={record.fullName} color="#ffffff" arrow={true}>
             <div style={{ display: 'flex', alignItems: 'center', minWidth: 250 }}>
               <Avatar size={40} src={record.photoUrl} style={{ marginRight: 10, backgroundColor: util.randomColor() }}>
                 {record.fullName.charAt(0)}
@@ -162,7 +162,6 @@ function DataTable(props: IProps) {
 
   const rowSelection: TableRowSelection<A> = {
     onChange: (selectedRowKeys, selectedRows) => {
-      console.log(`selectedRowKeys: ${selectedRowKeys}`, 'selectedRows: ', selectedRows);
       setSelectedItem(selectedRows);
     }
   };

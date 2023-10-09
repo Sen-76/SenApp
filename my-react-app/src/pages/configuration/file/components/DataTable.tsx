@@ -43,7 +43,7 @@ function DataTable(props: IProps) {
       width: 110,
       key: 'fileAccept',
       render: (_, record) => {
-        return record.fileAccept;
+        return record.fileAccept.join(', ');
       }
     },
     {
@@ -92,7 +92,7 @@ function DataTable(props: IProps) {
           )
         }}
         loading={loading}
-        rowKey={(record) => record.id}
+        rowKey={(record) => record.title}
       />
     </>
   );

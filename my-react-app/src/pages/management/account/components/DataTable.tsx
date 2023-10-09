@@ -123,14 +123,14 @@ function DataTable(props: IProps) {
       }
     },
     {
-      title: t('role'),
-      dataIndex: 'role',
-      key: 'role',
+      title: t('job'),
+      dataIndex: 'job_title',
+      key: 'job_title',
       render: (_, record) => {
         return (
-          <Tooltip placement="bottom" title={record.userEmail} color="#ffffff" arrow={true}>
+          <Tooltip placement="bottom" title={record.jobTitle} color="#ffffff" arrow={true}>
             <Paragraph ellipsis={{ rows: 1, expandable: false }} style={{ maxWidth: 100 }}>
-              {record.role}
+              {record.jobTitle}
             </Paragraph>
           </Tooltip>
         );
@@ -154,6 +154,17 @@ function DataTable(props: IProps) {
                 <Tooltip placement="bottom" title={t('Common_Edit')} color="#ffffff" arrow={true}>
                   <Button type="text" onClick={() => props.openPanel(record)} icon={<EditOutlined />} />
                 </Tooltip>
+                <Tooltip placement="bottom" title={t('Common_Delete')} color="#ffffff" arrow={true}>
+                  <Button
+                    type="text"
+                    onClick={() => {
+                      setIsOpenModal(true);
+                      setChoosenUser(record);
+                      setSelectedRowKeys([record.id]);
+                    }}
+                    icon={<DeleteOutlined />}
+                  />
+                </Tooltip>
               </>
             ) : (
               <>
@@ -162,17 +173,6 @@ function DataTable(props: IProps) {
                 </Tooltip>
               </>
             )}
-            <Tooltip placement="bottom" title={t('Common_Delete')} color="#ffffff" arrow={true}>
-              <Button
-                type="text"
-                onClick={() => {
-                  setIsOpenModal(true);
-                  setChoosenUser(record);
-                  setSelectedRowKeys([record.id]);
-                }}
-                icon={<DeleteOutlined />}
-              />
-            </Tooltip>
           </div>
         );
       }
@@ -271,6 +271,15 @@ function DataTable(props: IProps) {
               <Button type="text" onClick={() => props.openPanel()} icon={<PlusOutlined />}>
                 {t('Common_AddNew')}
               </Button>
+              <Button
+                onClick={() => setIsOpenModal(true)}
+                loading={loading}
+                type="text"
+                icon={<DeleteOutlined />}
+                disabled={selectedRowKeys.length === 0}
+              >
+                {t('Common_DeleteSelected')}
+              </Button>
               <Button type="text" onClick={exportExcel} icon={<ExportOutlined />}>
                 {t('Common_ExportExcel')}
               </Button>
@@ -292,15 +301,6 @@ function DataTable(props: IProps) {
               </Button>
             </>
           )}
-          <Button
-            onClick={() => setIsOpenModal(true)}
-            loading={loading}
-            type="text"
-            icon={<DeleteOutlined />}
-            disabled={selectedRowKeys.length === 0}
-          >
-            {t('Common_DeleteSelected')}
-          </Button>
         </div>
         <div className={styles.tableHeaderRight}>
           <Tooltip placement="bottom" title={t('Common_Filter')} color="#ffffff" arrow={true}>
@@ -348,13 +348,12 @@ function DataTable(props: IProps) {
         footer={<></>}
         onCancel={onCancelModal}
       >
-        <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 10, marginBottom: 50 }}>
           <div style={{ fontSize: 16, margin: '10px 0' }}>
             {choosenUser
               ? t('Manage_Account_DeleteSingleUser_Text').replaceAll('{0}', choosenUser.fullName)
               : t('Manage_Account_DeleteUser_Text')}
           </div>
-
           {/* {tabStatus == EState.Activate ? (
             <Radio.Group
               onChange={onRadioChange}
@@ -367,7 +366,6 @@ function DataTable(props: IProps) {
           ) : (
             <div style={{ marginBottom: 30 }}></div>
           )} */}
-
           <div className="actionBtnBottom">
             <Button onClick={onCancelModal}>{t('Common_Cancel')}</Button>
             <Button

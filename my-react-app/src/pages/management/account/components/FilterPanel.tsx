@@ -1,9 +1,11 @@
 import { CloseOutlined } from '@ant-design/icons';
 import { Button, Checkbox, Col, Collapse, CollapseProps, Drawer, Form, Row, Typography } from 'antd';
-import { forwardRef, useImperativeHandle, useState } from 'react';
+import { forwardRef, useEffect, useImperativeHandle, useState } from 'react';
 import styles from '../AccountManagement.module.scss';
-import { DepartmentOptions, GenderOptions, RoleOptions } from '../AccountManagement.Model';
+import { DepartmentOptions, GenderOptions } from '../AccountManagement.Model';
 import { useTranslation } from 'react-i18next';
+import { service } from '@/services/apis';
+import { useLoading } from '@/common/context/useLoading';
 
 interface IProps {
   filterAccount: (val: A) => void;
@@ -12,16 +14,63 @@ interface IProps {
 function FilterPanel(props: IProps, ref: A) {
   const [open, setOpen] = useState<boolean>(false);
   const [items, setItems] = useState<CollapseProps['items']>([]);
+  const { showLoading, closeLoading } = useLoading();
+  const [roleList, setRoleList] = useState<A>();
+  const [departmentList, setDepartmentList] = useState<A>();
   const { t } = useTranslation();
   const [form] = Form.useForm();
   const { Paragraph } = Typography;
+
+  const getRoleList = async () => {
+    try {
+      const result = await service.rolesService.get({
+        pageInfor: {
+          pageSize: 100,
+          pageNumber: 1,
+          totalItems: 0
+        }
+      });
+      setRoleList(
+        result.data.map((role: A) => ({
+          label: role.title,
+          value: role.id
+        }))
+      );
+    } catch (e) {
+      console.log(e);
+    } 
+  };
+
+  const getDepartmentList = async () => {
+    try {
+      const result = await service.departmentService.get({
+        pageInfor: {
+          pageSize: 100,
+          pageNumber: 1,
+          totalItems: 0
+        }
+      });
+      setDepartmentList(
+        result.data.map((department: A) => ({
+          label: department.title,
+          value: department.id
+        }))
+      );
+    } catch (e) {
+      console.log(e);
+    }
+  };
+
+  useEffect(() => {
+    getFilterValue();
+  }, [roleList, departmentList]);
 
   const getFilterValue = () => {
     const DepartmentElement = (
       <Form.Item name="department">
         <Checkbox.Group>
           <Row>
-            {DepartmentOptions.map((item: A) => (
+            {departmentList?.map((item: A) => (
               <Col span={12} key={item.value} className={styles.col}>
                 <Checkbox value={item.value}>
                   <Paragraph ellipsis={{ rows: 4, expandable: false }}>{item.label}</Paragraph>
@@ -51,7 +100,7 @@ function FilterPanel(props: IProps, ref: A) {
       <Form.Item name="role">
         <Checkbox.Group>
           <Row>
-            {RoleOptions.map((item: A) => (
+            {roleList?.map((item: A) => (
               <Col span={12} key={item.value} className={styles.col}>
                 <Checkbox value={item.value}>
                   <Paragraph ellipsis={{ rows: 4, expandable: false }}>{item.label}</Paragraph>
@@ -74,16 +123,24 @@ function FilterPanel(props: IProps, ref: A) {
     openDrawer
   }));
 
-  const openDrawer = (data?: A) => {
-    console.log(data);
-    const dataTable: A = {
-      gender: data.find((x: A) => x.key == 'Gender')?.value,
-      department: data.find((x: A) => x.key == 'Department')?.value,
-      role: data.find((x: A) => x.key == 'Role')?.value
-    };
-    form.setFieldsValue(dataTable);
-    setOpen(true);
-    getFilterValue();
+  const openDrawer = async (data?: A) => {
+    try {
+      showLoading();
+      await getRoleList();
+      await getDepartmentList();
+      const dataTable: A = {
+        gender: data.find((x: A) => x.key == 'Gender')?.value,
+        department: data.find((x: A) => x.key == 'Department')?.value,
+        role: data.find((x: A) => x.key == 'Role')?.value
+      };
+      form.setFieldsValue(dataTable);
+      setOpen(true);
+      getFilterValue();
+    } catch (e) {
+      console.log(e);
+    } finally {
+      closeLoading();
+    }
   };
 
   const closeDrawer = () => {

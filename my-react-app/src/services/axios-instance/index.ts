@@ -41,12 +41,14 @@ instance.interceptors.response.use(
           location.href = '/login';
         }
       });
-    } else if (error.response.status === 422) {
-      Modal.error({
-        title: 'Api failure',
-        content: 'Something wrong. Please check api again!'
-      });
-    } else if (error.response.status !== 200 && error.response.status !== 422) {
+    }
+    // else if (error.response.status === 422) {
+    //   Modal.error({
+    //     title: 'Api failure',
+    //     content: 'Something wrong. Please check api again!'
+    //   });
+    // }
+    else if (error.response.status !== 200 && error.response.status !== 422) {
       Modal.error({
         title: error.response.status,
         content: 'Something wrong!'

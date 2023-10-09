@@ -5,6 +5,7 @@ import dayjs from 'dayjs';
 import { useTranslation } from 'react-i18next';
 import styles from '../Role.module.scss';
 import Paragraph from 'antd/es/typography/Paragraph';
+import { service } from '@/services/apis';
 
 interface IProps {
   data: Role.IRoleCreateModel[];
@@ -66,15 +67,23 @@ function DataTable(props: IProps) {
         const deleteHandle = () => {
           confirm({
             content: t('Manage_Role_DeleteConfirm').replace('{0}', record.title),
-            title: t('Common_Confirm'),
+            title: t('Manage_Role_Delete'),
             okText: t('Common_Delete'),
             cancelText: t('Common_Cancel'),
             onOk: async () => {
-              notification.open({
-                message: t('Common_DeleteSuccess'),
-                type: 'success'
-              });
-              props.refreshList();
+              try {
+                await service.rolesService.delete({
+                  isHardDelete: true,
+                  id: [record.id]
+                });
+                notification.open({
+                  message: t('Common_DeleteSuccess'),
+                  type: 'success'
+                });
+                props.refreshList();
+              } catch (e) {
+                console.log(e);
+              }
             }
           });
         };
@@ -84,13 +93,7 @@ function DataTable(props: IProps) {
               <Button type="text" onClick={() => openPanel(record)} icon={<EditOutlined />} />
             </Tooltip>
             <Tooltip placement="bottom" title={t('Common_Delete')} color="#ffffff" arrow={true}>
-              <Button
-                type="text"
-                onClick={() => {
-                  deleteHandle();
-                }}
-                icon={<DeleteOutlined />}
-              />
+              <Button type="text" onClick={deleteHandle} icon={<DeleteOutlined />} />
             </Tooltip>
           </div>
         );

@@ -36,14 +36,3 @@ export const DepartmentOptions = [
     value: 'Developer'
   }
 ];
-
-export const RoleOptions = [
-  {
-    label: 'Admin',
-    value: 'Admin'
-  },
-  {
-    label: 'Worker',
-    value: 'Worker'
-  }
-];

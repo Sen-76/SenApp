@@ -19,14 +19,19 @@ function Panel(props: IProps, ref: A) {
   const [isEdit, setIsEdit] = useState<boolean>(false);
   const [customAlert, setCustomAlert] = useState<A>({});
   const [searchUserValue, setSearchUserValue] = useState<string>('');
+  const [searchManageValue, setSearchManagerValue] = useState<string>('');
   const [selectLoading, setSelectLoading] = useState<boolean>();
   const [tableLoading, setTableLoading] = useState<boolean>();
   const userDebounced = useDebounce(searchUserValue, 300);
+  const userDebouncedManager = useDebounce(searchManageValue, 300);
   const [editData, setEditData] = useState<Department.IDepartmentCreateModel>();
   const [step, setStep] = useState<number>(0);
   const { showLoading, closeLoading } = useLoading();
   const [userList, setUserList] = useState<Account.IAccountModel[]>([]);
+  const [userMemberList, setUserMemberList] = useState<Account.IAccountModel[]>([]);
   const [memberList, setMemberList] = useState<Department.IDepartmentModel[]>([]);
+  const [selectedUser, setSelectedUser] = useState<string[]>([]);
+  const [selectedManager, setSelectedManager] = useState<string>();
   const { t } = useTranslation();
   const [form] = Form.useForm();
   const { TextArea } = Input;
@@ -47,6 +52,7 @@ function Panel(props: IProps, ref: A) {
   const closeDrawer = () => {
     form.resetFields();
     setMemberList([]);
+    setSelectedUser([]);
     setStep(0);
     setOpen(false);
   };
@@ -90,8 +96,12 @@ function Panel(props: IProps, ref: A) {
   };
 
   useEffect(() => {
-    getUsers();
+    getUsers(false);
   }, [userDebounced]);
+
+  useEffect(() => {
+    getUsers(true);
+  }, [userDebouncedManager]);
 
   const initDataGrid: Common.IDataGrid = {
     pageInfor: {
@@ -103,19 +113,31 @@ function Panel(props: IProps, ref: A) {
       searchValue: '',
       searchColumn: ['FullName', 'UserEmail']
     },
-    filter: [{ key: 'Status', value: [EState.Activate] }]
+    filter: [{ key: 'Status', value: [EState.Activate] }, { key: 'ownerDepartmentId' }, { key: 'userDepartment' }]
   };
 
-  const getUsers = async () => {
+  const getUsers = async (isSearchManager?: boolean) => {
     try {
       const draftParam = { ...initDataGrid };
-      draftParam.searchInfor!.searchValue = userDebounced ?? '';
+      draftParam.searchInfor!.searchValue = isSearchManager ? userDebouncedManager : userDebounced ?? '';
+      selectedUser.length > 0 && draftParam.filter!.push({ key: 'id', value: selectedUser, operators: 'not in' });
       const result = await service.accountService.getAccount(draftParam);
-      const optionsValue = result.data.map((x: A) => ({
-        label: x.fullName,
+      const optionsValue = result.data?.map((x: A) => ({
+        label: (
+          <div style={{ display: 'flex', alignItems: 'center' }}>
+            <Avatar size={30} style={{ marginRight: '16px', backgroundColor: util.randomColor() }}>
+              {x.fullName.charAt(0)}
+            </Avatar>
+            <div>
+              <div>{x.fullName}</div>
+              <div>{x.jobDetail}</div>
+            </div>
+          </div>
+        ),
         value: x.id
       }));
       setUserList(optionsValue);
+      isSearchManager && setUserMemberList(optionsValue);
       setSelectLoading(false);
     } catch (e) {
       console.log(e);
@@ -139,10 +161,17 @@ function Panel(props: IProps, ref: A) {
       form.setFieldValue('members', '');
       const result = await service.accountService.getDetal(val);
       setMemberList([...memberList, result.data]);
+      setSelectedUser([...selectedUser, result.data.id]);
       setTableLoading(false);
     } catch (e) {
       console.log(e);
     }
+  };
+
+  const onManagerSelect = async (val: A) => {
+    setSelectedUser([...selectedUser.filter((x) => x !== selectedManager), val]);
+    setSelectedManager(val);
+    setSearchManagerValue('');
   };
 
   const onMemberRemove = (id: string) => {
@@ -246,12 +275,17 @@ function Panel(props: IProps, ref: A) {
               >
                 <Select
                   showSearch
+                  // labelInValue
                   placeholder={t('Common_SearchNameAndEmail')}
-                  onSelect={() => setSearchUserValue('')}
+                  onSelect={onManagerSelect}
+                  onClick={() => {
+                    getUsers(true);
+                    setSelectLoading(true);
+                  }}
                   onSearch={(value) => {
                     setSelectLoading(true);
                     setUserList([]);
-                    setSearchUserValue(value);
+                    setSearchManagerValue(value);
                   }}
                   notFoundContent={
                     selectLoading ? (
@@ -272,12 +306,12 @@ function Panel(props: IProps, ref: A) {
                   }
                   dropdownRender={(menu) => <>{menu}</>}
                   filterOption={() => true}
-                  options={userList}
+                  options={userMemberList}
                   suffixIcon={<SearchOutlined />}
                 />
               </Form.Item>
               <Form.Item name="description" label={t('Common_Description')}>
-                <TextArea maxLength={1000} showCount />
+                <TextArea maxLength={1000} showCount rows={5} />
               </Form.Item>
             </>
           )}
@@ -286,7 +320,12 @@ function Panel(props: IProps, ref: A) {
               <Form.Item name="members" label={t('members')}>
                 <Select
                   style={{ width: '100%', marginBottom: 10 }}
+                  // labelInValue
                   size="large"
+                  onClick={() => {
+                    getUsers(false);
+                    setSelectLoading(true);
+                  }}
                   showSearch
                   onSearch={(value) => {
                     setSelectLoading(true);

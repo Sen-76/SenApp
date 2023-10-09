@@ -3,7 +3,7 @@ import { Button, DatePicker, Drawer, Form, Input, Select, Steps, notification } 
 import { forwardRef, useImperativeHandle, useState } from 'react';
 import styles from '../AccountManagement.module.scss';
 import dayjs from 'dayjs';
-import { GenderOptions, DepartmentOptions, RoleOptions } from '../AccountManagement.Model';
+import { GenderOptions, DepartmentOptions } from '../AccountManagement.Model';
 import { useTranslation } from 'react-i18next';
 import { service } from '@/services/apis';
 import { Rule } from 'antd/es/form';
@@ -20,6 +20,8 @@ function Panel(props: IProps, ref: A) {
   const [customAlert, setCustomAlert] = useState<A>();
   const [step, setStep] = useState<number>(0);
   const [editData, setEditData] = useState<A>();
+  const [roleList, setRoleList] = useState<A>();
+  const [departmentList, setDepartmentList] = useState<A>();
   const { t } = useTranslation();
   const [generalForm] = Form.useForm();
   const [systemForm] = Form.useForm();
@@ -28,13 +30,61 @@ function Panel(props: IProps, ref: A) {
     openDrawer
   }));
 
-  const openDrawer = (data?: A) => {
-    setOpen(true);
-    setIsEdit(false);
-    if (data) {
-      setIsEdit(true);
-      setEditData(data);
-      getUserInformation(data.id);
+  const openDrawer = async (data?: A) => {
+    try {
+      showLoading();
+      setIsEdit(false);
+      setOpen(true);
+      await getRoleList();
+      await getDepartmentList();
+      if (data) {
+        setIsEdit(true);
+        await getUserInformation(data.id);
+      }
+    } catch (e) {
+      console.log(e);
+    } finally {
+      closeLoading();
+    }
+  };
+
+  const getRoleList = async () => {
+    try {
+      const result = await service.rolesService.get({
+        pageInfor: {
+          pageSize: 100,
+          pageNumber: 1,
+          totalItems: 0
+        }
+      });
+      setRoleList(
+        result.data.map((role: A) => ({
+          label: role.title,
+          value: role.id
+        }))
+      );
+    } catch (e) {
+      console.log(e);
+    }
+  };
+
+  const getDepartmentList = async () => {
+    try {
+      const result = await service.departmentService.get({
+        pageInfor: {
+          pageSize: 100,
+          pageNumber: 1,
+          totalItems: 0
+        }
+      });
+      setDepartmentList(
+        result.data.map((department: A) => ({
+          label: department.title,
+          value: department.id
+        }))
+      );
+    } catch (e) {
+      console.log(e);
     }
   };
 
@@ -49,15 +99,13 @@ function Panel(props: IProps, ref: A) {
 
   const getUserInformation = async (id: string) => {
     try {
-      showLoading();
       const result = await service.accountService.getDetal(id);
       result.data.dob = dayjs(result.data.dob);
+      setEditData(result.data);
       generalForm.setFieldsValue(result.data);
       systemForm.setFieldsValue(result.data);
     } catch (e: A) {
       console.log(e);
-    } finally {
-      closeLoading();
     }
   };
 
@@ -77,13 +125,12 @@ function Panel(props: IProps, ref: A) {
           await service.accountService.updateAccount({
             ...editData,
             ...systemForm.getFieldsValue(),
-            userRole: null,
             userTeam: null,
-            userDepartment: null,
             userName: systemForm.getFieldValue('userName')?.trim() ?? '',
             fullName: generalForm.getFieldValue('fullName')?.trim() ?? '',
             jobTitle: systemForm.getFieldValue('jobTitle')?.trim() ?? '',
-            dob: dayjs(generalForm.getFieldValue('dob')).format('YYYY-MM-DD')
+            dob: dayjs(generalForm.getFieldValue('dob')).format('YYYY-MM-DD'),
+            userRole: editData.userRoleId
           });
           notification.open({
             message: t('Common_UpdateSuccess'),
@@ -93,13 +140,12 @@ function Panel(props: IProps, ref: A) {
           await service.accountService.addAccount({
             ...editData,
             ...systemForm.getFieldsValue(),
-            userRole: null,
             userTeam: null,
-            userDepartment: null,
             userName: systemForm.getFieldValue('userName')?.trim() ?? '',
             fullName: generalForm.getFieldValue('fullName')?.trim() ?? '',
             jobTitle: systemForm.getFieldValue('jobTitle')?.trim() ?? '',
-            dob: dayjs(generalForm.getFieldValue('dob')).format('YYYY-MM-DD')
+            dob: dayjs(generalForm.getFieldValue('dob')).format('YYYY-MM-DD'),
+            userRole: editData.userRoleId
           });
           notification.open({
             message: t('Common_CreateSuccess'),
@@ -140,7 +186,7 @@ function Panel(props: IProps, ref: A) {
     userPhone: [
       { required: true, message: t('Common_Require_Field') },
       {
-        pattern: /^(?:\+84|0)(?:\d{9,10})$/,
+        pattern: /^(\+?84|0)([35789]\d{8}|[1-9]\d{9})$/,
         message: t('Manage_Account_Invalid_Phone_Format')
       }
     ] as Rule[],
@@ -222,13 +268,13 @@ function Panel(props: IProps, ref: A) {
                 <Input maxLength={250} showCount />
               </Form.Item>
               <Form.Item name="userDepartment" label={t('department')}>
-                <Select options={DepartmentOptions} />
+                <Select options={departmentList} />
               </Form.Item>
               <Form.Item name="userTeam" label={t('team')}>
                 <Select options={DepartmentOptions} />
               </Form.Item>
               <Form.Item name="userRole" label={t('role')} rules={formRule.userRole}>
-                <Select options={RoleOptions} />
+                <Select options={roleList} />
               </Form.Item>
             </Form>
           </>

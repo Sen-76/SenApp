@@ -102,7 +102,6 @@ function DataTable(props: IProps) {
 
   const rowSelection: TableRowSelection<A> = {
     onChange: (selectedRowKeys, selectedRows) => {
-      console.log(`selectedRowKeys: ${selectedRowKeys}`, 'selectedRows: ', selectedRows);
       setSelectedItem(selectedRows);
     }
   };

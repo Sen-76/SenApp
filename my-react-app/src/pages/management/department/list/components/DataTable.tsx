@@ -1,4 +1,4 @@
-import { EditOutlined, InfoCircleOutlined, PlusOutlined, SmileOutlined } from '@ant-design/icons';
+import { EditOutlined, PlusOutlined, SmileOutlined, SolutionOutlined } from '@ant-design/icons';
 import { Button, Input, Table, Tooltip } from 'antd';
 import styles from '../Department.module.scss';
 import { ColumnsType, TablePaginationConfig } from 'antd/es/table';
@@ -56,7 +56,7 @@ function DataTable(props: IProps) {
       dataIndex: 'manager',
       width: 200,
       key: 'manager',
-      render: (_, record) => record.owner
+      render: (_, record) => record.manager.fullName
     },
     {
       title: t('Common_ModifiedOn'),
@@ -85,7 +85,7 @@ function DataTable(props: IProps) {
             </Tooltip>
             <Tooltip placement="bottom" title={t('Common_ViewDetail')} color="#ffffff" arrow={true}>
               <Link to={`/management/department-management/department-detail/${record.title}/${record.id}`}>
-                <Button type="text" icon={<InfoCircleOutlined />} />
+                <Button type="text" icon={<SolutionOutlined />} />
               </Link>
             </Tooltip>
           </div>

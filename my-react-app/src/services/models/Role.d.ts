@@ -2,7 +2,17 @@ declare namespace Role {
   export interface IRoleCreateModel {
     title?: string;
     description?: string;
-    permission?: A[];
+    permissionIds?: string[];
+  }
+  export interface IRoleUpdateModel {
+    id?: string;
+    title?: string;
+    description?: string;
+    permissionIds?: string[];
+  }
+  export interface IRoleDeleteModel {
+    isHardDelete: boolean;
+    id: string[];
   }
   export interface IRoleModel {
     id: string;
