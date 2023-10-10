@@ -5,7 +5,6 @@ import type { TablePaginationConfig, TableRowSelection } from 'antd/es/table/int
 import { BulbOutlined, DeleteOutlined, ExclamationCircleFilled } from '@ant-design/icons';
 import { useBreadcrumb } from '../../../components/breadcrum/Breadcrum';
 import { useLoading } from '../../../common/context/useLoading';
-import Marquee from 'react-fast-marquee';
 
 interface DataType {
   key: React.ReactNode;
@@ -262,14 +261,6 @@ function TestTable() {
   };
   return (
     <>
-      <Alert
-        banner
-        message={
-          <Marquee pauseOnHover gradient={false}>
-            I can be a React component, multiple React components, or just some text.
-          </Marquee>
-        }
-      />
       <div style={{ padding: 20 }}>
         {contextHolder}
         <Button onClick={tableLoading} loading={loading} type="primary">

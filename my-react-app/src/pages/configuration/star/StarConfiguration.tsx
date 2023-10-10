@@ -28,7 +28,7 @@ function StarConfiguration() {
     try {
       showLoading();
       const result = await service.globalSettingsService.getByType(3);
-      form.setFieldsValue(result);
+      form.setFieldsValue(result.detail);
     } catch (e) {
       console.log(e);
     } finally {

@@ -125,9 +125,9 @@ function AccountManagement() {
     if (draftGrid.filter) {
       const gender = draftGrid.filter.findIndex((x) => x.key === 'Gender');
       gender !== -1 && draftGrid.filter.splice(gender, 1);
-      const department = draftGrid.filter.findIndex((x) => x.key === 'Department');
+      const department = draftGrid.filter.findIndex((x) => x.key === 'UserDepartment');
       department !== -1 && draftGrid.filter.splice(department, 1);
-      const role = draftGrid.filter.findIndex((x) => x.key === 'Role');
+      const role = draftGrid.filter.findIndex((x) => x.key === 'UserRole');
       role !== -1 && draftGrid.filter.splice(role, 1);
       val.gender?.length > 0 &&
         draftGrid.filter.push({
@@ -136,12 +136,12 @@ function AccountManagement() {
         });
       val.role?.length > 0 &&
         draftGrid.filter.push({
-          key: 'Role',
+          key: 'UserRole',
           value: val.role
         });
       val.department?.length > 0 &&
         draftGrid.filter.push({
-          key: 'Department',
+          key: 'UserDepartment',
           value: val.department
         });
     }

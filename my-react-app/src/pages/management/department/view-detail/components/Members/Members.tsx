@@ -4,8 +4,10 @@ import DetailPanel from './components/DetailPanel';
 import Panel from './components/Panel';
 import { service } from '@/services/apis';
 import { EState } from '@/pages/management/account/AccountManagement.Model';
+import { useParams } from 'react-router';
 
 function Members() {
+  const data = useParams();
   const initDataGrid: Common.IDataGrid = {
     pageInfor: {
       pageSize: 10,
@@ -17,8 +19,8 @@ function Members() {
       searchColumn: ['FullName']
     },
     filter: [
-      { key: 'Status', value: [EState.Activate] }
-      // { key: 'Department', value: param }
+      { key: 'Status', value: [EState.Activate] },
+      { key: 'UserDepartment', value: [data.id] }
     ]
   };
   const detailPanelRef = useRef();

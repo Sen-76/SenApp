@@ -130,8 +130,8 @@ function FilterPanel(props: IProps, ref: A) {
       await getDepartmentList();
       const dataTable: A = {
         gender: data.find((x: A) => x.key == 'Gender')?.value,
-        department: data.find((x: A) => x.key == 'Department')?.value,
-        role: data.find((x: A) => x.key == 'Role')?.value
+        department: data.find((x: A) => x.key == 'UserDepartment')?.value,
+        role: data.find((x: A) => x.key == 'UserRole')?.value
       };
       form.setFieldsValue(dataTable);
       setOpen(true);

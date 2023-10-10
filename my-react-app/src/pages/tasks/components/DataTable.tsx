@@ -7,9 +7,9 @@ import {
   SolutionOutlined
 } from '@ant-design/icons';
 import { Button, Table, Tag, Tooltip, notification } from 'antd';
-import { ColumnsType, TablePaginationConfig } from 'antd/es/table';
+import { ColumnsType } from 'antd/es/table';
 import { useTranslation } from 'react-i18next';
-import styles from '../Project.module.scss';
+import styles from '../Task.module.scss';
 import Search from 'antd/es/input/Search';
 import Paragraph from 'antd/es/typography/Paragraph';
 
@@ -40,7 +40,7 @@ function DataTable(props: IProps) {
       }
     },
     {
-      title: t('Project_Prioty'),
+      title: t('Task_Prioty'),
       dataIndex: 'description',
       key: 'description',
       render: (_, record) => {
@@ -48,7 +48,7 @@ function DataTable(props: IProps) {
       }
     },
     {
-      title: t('Project_Assignee'),
+      title: t('Task_Assignee'),
       dataIndex: 'modifiedOn',
       key: 'modifiedOn',
       render: (_, record) => {
@@ -56,13 +56,13 @@ function DataTable(props: IProps) {
       }
     },
     {
-      title: t('Project_ReportTo'),
+      title: t('Task_ReportTo'),
       dataIndex: 'modifiedBy',
       key: 'modifiedBy',
       render: (_, record) => record.reportTo
     },
     {
-      title: t('Project_Status'),
+      title: t('Task_Status'),
       dataIndex: 'description',
       key: 'description',
       render: (_, record) => {
@@ -77,16 +77,13 @@ function DataTable(props: IProps) {
       className: 'actionCollumn',
       width: 180,
       render: (_, record) => {
-        const editClick = () => {
-          props.openPanel(record);
-        };
         return (
           <div>
             <Tooltip placement="bottom" title={t('Common_ViewDetail')} color="#ffffff" arrow={true}>
               <Button type="text" onClick={() => props.openDetailPanel(record)} icon={<SolutionOutlined />} />
             </Tooltip>
             <Tooltip placement="bottom" title={t('Common_Edit')} color="#ffffff" arrow={true}>
-              <Button type="text" onClick={editClick} icon={<EditOutlined />} />
+              <Button type="text" onClick={() => props.openPanel(record)} icon={<EditOutlined />} />
             </Tooltip>
           </div>
         );
@@ -102,7 +99,7 @@ function DataTable(props: IProps) {
     return (
       <>
         <div className={styles.tableHeaderLeft}>
-          <Button type="text" icon={<PlusOutlined />}>
+          <Button type="text" icon={<PlusOutlined />} onClick={() => props.openPanel()}>
             {t('Common_AddNew')}
           </Button>
           <Button type="text" onClick={exportExcel} icon={<ExportOutlined />}>

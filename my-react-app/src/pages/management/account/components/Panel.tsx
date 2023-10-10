@@ -130,7 +130,9 @@ function Panel(props: IProps, ref: A) {
             fullName: generalForm.getFieldValue('fullName')?.trim() ?? '',
             jobTitle: systemForm.getFieldValue('jobTitle')?.trim() ?? '',
             dob: dayjs(generalForm.getFieldValue('dob')).format('YYYY-MM-DD'),
-            userRole: editData.userRoleId
+            userDepartment: systemForm.getFieldValue('userDepartmentId'),
+            userRole: systemForm.getFieldValue('userRoleId'),
+            gender: systemForm.getFieldValue('gender') ?? 1
           });
           notification.open({
             message: t('Common_UpdateSuccess'),
@@ -145,7 +147,9 @@ function Panel(props: IProps, ref: A) {
             fullName: generalForm.getFieldValue('fullName')?.trim() ?? '',
             jobTitle: systemForm.getFieldValue('jobTitle')?.trim() ?? '',
             dob: dayjs(generalForm.getFieldValue('dob')).format('YYYY-MM-DD'),
-            userRole: editData.userRoleId
+            userDepartment: systemForm.getFieldValue('userDepartmentId'),
+            userRole: systemForm.getFieldValue('userRoleId'),
+            gender: systemForm.getFieldValue('gender') ?? 1
           });
           notification.open({
             message: t('Common_CreateSuccess'),
@@ -267,13 +271,13 @@ function Panel(props: IProps, ref: A) {
               <Form.Item name="jobTitle" label={t('job')}>
                 <Input maxLength={250} showCount />
               </Form.Item>
-              <Form.Item name="userDepartment" label={t('department')}>
+              <Form.Item name="userDepartmentId" label={t('department')}>
                 <Select options={departmentList} />
               </Form.Item>
               <Form.Item name="userTeam" label={t('team')}>
                 <Select options={DepartmentOptions} />
               </Form.Item>
-              <Form.Item name="userRole" label={t('role')} rules={formRule.userRole}>
+              <Form.Item name="userRoleId" label={t('role')} rules={formRule.userRole}>
                 <Select options={roleList} />
               </Form.Item>
             </Form>

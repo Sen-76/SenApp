@@ -133,7 +133,7 @@ function DetailPanel(props: IProps, ref: A) {
             <Col className={styles.keyCol}>
               <KeyOutlined /> {t('role')}
             </Col>
-            <Col className={styles.valueCol}>{user.role ?? 'N/A'}</Col>
+            <Col className={styles.valueCol}>{user.userRole ?? 'N/A'}</Col>
           </Row>
           <div className="actionBtnBottom">
             <Button onClick={closeDrawer}>{t('Common_Cancel')}</Button>
