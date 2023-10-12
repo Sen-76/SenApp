@@ -86,6 +86,7 @@ function Department() {
         param={param}
         onSearch={onSearch}
         setPage={setPage}
+        refreshList={getDepartmentsList}
       />
       <Panel refreshList={getDepartmentsList} ref={panelRef} />
     </div>

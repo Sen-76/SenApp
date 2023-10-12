@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-non-null-assertion */
 import {
   LogoutOutlined,
   ManOutlined,
@@ -15,6 +16,9 @@ import Paragraph from 'antd/es/typography/Paragraph';
 import Search from 'antd/es/input/Search';
 import { TableRowSelection } from 'antd/es/table/interface';
 import { util } from '@/common/helpers/util';
+import { useLoading } from '@/common/context/useLoading';
+import { service } from '@/services/apis';
+import { useParams } from 'react-router';
 
 interface IProps {
   data: A[];
@@ -28,7 +32,9 @@ interface IProps {
 }
 function DataTable(props: IProps) {
   const { loading, param } = props;
-  const [selectedItem, setSelectedItem] = useState<A[]>([]);
+  const [selectedRowKeys, setSelectedRowKeys] = useState<React.Key[]>([]);
+  const { showLoading, closeLoading } = useLoading();
+  const data = useParams();
   const { confirm } = Modal;
   const { t } = useTranslation();
 
@@ -73,7 +79,7 @@ function DataTable(props: IProps) {
       dataIndex: 'job',
       key: 'job',
       render: (_, record) => {
-        return record.job;
+        return record.jobTitle;
       }
     },
     {
@@ -110,6 +116,26 @@ function DataTable(props: IProps) {
     props.onSearch(val);
   };
 
+  const confirmDelete = async (id?: string) => {
+    try {
+      showLoading();
+      await service.departmentService.kickMember({
+        id: data.id ?? '',
+        members: id ? [id] : (selectedRowKeys as string[])
+      });
+      props.refreshList();
+      setSelectedRowKeys([]);
+      notification.open({
+        message: t('Common_DeleteSuccess'),
+        type: 'success'
+      });
+    } catch (e) {
+      console.log(e);
+    } finally {
+      closeLoading();
+    }
+  };
+
   const kickoutMembers = (user?: A) => {
     confirm({
       content: user.id
@@ -119,14 +145,7 @@ function DataTable(props: IProps) {
       okText: t('Common_Kick'),
       cancelText: t('Common_Cancel'),
       onOk() {
-        props.refreshList();
-        notification.open({
-          message: t('Common_KickSuccess'),
-          type: 'success'
-        });
-      },
-      onCancel() {
-        console.log('Cancel');
+        confirmDelete(user && user.id);
       }
     });
   };
@@ -143,7 +162,7 @@ function DataTable(props: IProps) {
             loading={loading}
             type="text"
             icon={<LogoutOutlined />}
-            disabled={selectedItem.length === 0}
+            disabled={selectedRowKeys.length === 0}
           >
             {t('Common_Kick')}
           </Button>
@@ -155,10 +174,13 @@ function DataTable(props: IProps) {
     );
   };
 
-  const rowSelection: TableRowSelection<A> = {
-    onChange: (selectedRowKeys, selectedRows) => {
-      setSelectedItem(selectedRows);
-    }
+  const onSelectChange = (newSelectedRowKeys: React.Key[]) => {
+    setSelectedRowKeys(newSelectedRowKeys);
+  };
+
+  const rowSelection = {
+    selectedRowKeys,
+    onChange: onSelectChange
   };
 
   return (

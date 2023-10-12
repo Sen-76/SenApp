@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-non-null-assertion */
 import { CloseOutlined, DeleteOutlined, SearchOutlined } from '@ant-design/icons';
 import { Avatar, Button, Drawer, Empty, Form, Input, Select, Spin, Steps, Table, Tooltip, notification } from 'antd';
 import { forwardRef, useEffect, useImperativeHandle, useState } from 'react';
@@ -24,7 +25,7 @@ function Panel(props: IProps, ref: A) {
   const [tableLoading, setTableLoading] = useState<boolean>();
   const userDebounced = useDebounce(searchUserValue, 300);
   const userDebouncedManager = useDebounce(searchManageValue, 300);
-  const [editData, setEditData] = useState<Department.IDepartmentCreateModel>();
+  const [editData, setEditData] = useState<Department.IDepartmentModel>();
   const [step, setStep] = useState<number>(0);
   const { showLoading, closeLoading } = useLoading();
   const [userList, setUserList] = useState<Account.IAccountModel[]>([]);
@@ -44,8 +45,25 @@ function Panel(props: IProps, ref: A) {
     setOpen(true);
     setIsEdit(false);
     if (data) {
+      getUserDetail(data.id);
       setIsEdit(true);
+    }
+  };
+
+  const getUserDetail = async (id: string) => {
+    try {
+      showLoading();
+      const { data } = await service.departmentService.getDetail(id);
+      setEditData(data);
+      console.log(data);
+      data.owner = { value: data.manager.id, label: data.manager.fullName };
+      setMemberList(data.users);
+      setSelectedUser(data.users?.map((x: A) => x.id));
       form.setFieldsValue(data);
+    } catch (e) {
+      console.log(e);
+    } finally {
+      closeLoading();
     }
   };
 
@@ -59,17 +77,33 @@ function Panel(props: IProps, ref: A) {
 
   const onConfirm = async () => {
     const generalCheck = await form.validateFields();
-    setEditData({ ...form, ...form.getFieldsValue() });
+    setEditData({ ...editData, ...form.getFieldsValue() });
     generalCheck && setStep(1);
     if (step == 1 && generalCheck) {
       try {
+        showLoading();
         if (isEdit) {
-          console.log('edit');
+          await service.departmentService.update({
+            ...editData,
+            id: editData?.id ?? '',
+            members: memberList.map((x) => x.id),
+            owner:
+              typeof form.getFieldValue('owner') === 'string'
+                ? form.getFieldValue('owner')
+                : form.getFieldValue('owner').value
+          });
+          closeLoading();
+          closeDrawer();
+          props.refreshList();
+          notification.open({
+            message: t('Common_UpdateSuccess'),
+            type: 'success'
+          });
         } else {
-          showLoading();
           await service.departmentService.create({
             ...editData,
-            members: memberList.map((x) => x.id)
+            members: memberList.map((x) => x.id),
+            owner: form.getFieldValue('owner')
           });
           closeLoading();
           closeDrawer();
@@ -113,14 +147,15 @@ function Panel(props: IProps, ref: A) {
       searchValue: '',
       searchColumn: ['FullName', 'UserEmail']
     },
-    filter: [{ key: 'Status', value: [EState.Activate] }, { key: 'ownerDepartmentId' }, { key: 'userDepartment' }]
+    filter: [{ key: 'Status', value: [EState.Activate] }, { key: 'userDepartment' }]
+    // filter: [{ key: 'Status', value: [EState.Activate] }, { key: 'ownerDepartmentId' }, { key: 'userDepartment' }]
   };
 
   const getUsers = async (isSearchManager?: boolean) => {
     try {
       const draftParam = { ...initDataGrid };
       draftParam.searchInfor!.searchValue = isSearchManager ? userDebouncedManager : userDebounced ?? '';
-      selectedUser.length > 0 && draftParam.filter!.push({ key: 'id', value: selectedUser, operators: 'not in' });
+      selectedUser?.length > 0 && draftParam.filter!.push({ key: 'id', value: selectedUser, operators: 'not in' });
       const result = await service.accountService.getAccount(draftParam);
       const optionsValue = result.data?.map((x: A) => ({
         label: (
@@ -138,9 +173,10 @@ function Panel(props: IProps, ref: A) {
       }));
       setUserList(optionsValue);
       isSearchManager && setUserMemberList(optionsValue);
-      setSelectLoading(false);
     } catch (e) {
       console.log(e);
+    } finally {
+      setSelectLoading(false);
     }
   };
 
@@ -162,9 +198,10 @@ function Panel(props: IProps, ref: A) {
       const result = await service.accountService.getDetal(val);
       setMemberList([...memberList, result.data]);
       setSelectedUser([...selectedUser, result.data.id]);
-      setTableLoading(false);
     } catch (e) {
       console.log(e);
+    } finally {
+      setTableLoading(false);
     }
   };
 
@@ -278,6 +315,7 @@ function Panel(props: IProps, ref: A) {
                   // labelInValue
                   placeholder={t('Common_SearchNameAndEmail')}
                   onSelect={onManagerSelect}
+                  disabled={tableLoading}
                   onClick={() => {
                     getUsers(true);
                     setSelectLoading(true);
@@ -327,6 +365,7 @@ function Panel(props: IProps, ref: A) {
                     setSelectLoading(true);
                   }}
                   showSearch
+                  disabled={tableLoading}
                   onSearch={(value) => {
                     setSelectLoading(true);
                     setUserList([]);
@@ -366,7 +405,7 @@ function Panel(props: IProps, ref: A) {
                   style={{ marginTop: '-30px' }}
                   pagination={{
                     pageSize: 5,
-                    total: memberList.length
+                    total: memberList?.length
                   }}
                 />
               </div>

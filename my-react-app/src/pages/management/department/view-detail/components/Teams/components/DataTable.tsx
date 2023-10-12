@@ -8,25 +8,27 @@ import Paragraph from 'antd/es/typography/Paragraph';
 import Search from 'antd/es/input/Search';
 import { TableRowSelection } from 'antd/es/table/interface';
 import { util } from '@/common/helpers/util';
+import { useLoading } from '@/common/context/useLoading';
+import { service } from '@/services/apis';
+import { useParams } from 'react-router';
 
 interface IProps {
   data: A[];
   openPanel: (data?: A) => void;
   openDetailPanel: (data?: A) => void;
+  setPage: (paging: number) => void;
+  onSearch: (value: string) => void;
   refreshList: () => void;
   loading: boolean;
+  param: Common.IDataGrid;
 }
 function DataTable(props: IProps) {
-  const { loading } = props;
+  const { loading, param } = props;
   const [selectedItem, setSelectedItem] = useState<A[]>([]);
+  const { showLoading, closeLoading } = useLoading();
   const { confirm } = Modal;
   const { t } = useTranslation();
-  const [pagination, setPagination] = useState<TablePaginationConfig>({
-    current: 1,
-    pageSize: 10,
-    total: 20,
-    simple: false
-  });
+  const data = useParams();
 
   const columns: ColumnsType<A> = [
     {
@@ -91,18 +93,32 @@ function DataTable(props: IProps) {
   ];
 
   const handleTableChange = (pagination: TablePaginationConfig) => {
-    setPagination(pagination);
-    props.refreshList();
+    props.setPage(pagination.current ?? 1);
   };
 
   const onSearch = (val: A) => {
-    props.refreshList();
-    console.log(val);
+    props.onSearch(val);
   };
 
   const rowSelection: TableRowSelection<A> = {
     onChange: (selectedRowKeys, selectedRows) => {
       setSelectedItem(selectedRows);
+    }
+  };
+
+  const confirmDelete = async (id?: string) => {
+    try {
+      showLoading();
+      console.log(data);
+      await service.departmentService.kickMember({ id: data.id ?? '', member: [id ?? ''] });
+      closeLoading();
+      props.refreshList();
+      notification.open({
+        message: t('Common_DeleteSuccess'),
+        type: 'success'
+      });
+    } catch (e) {
+      console.log(e);
     }
   };
 
@@ -115,14 +131,7 @@ function DataTable(props: IProps) {
       okText: t('Common_Delete'),
       cancelText: t('Common_Cancel'),
       onOk() {
-        props.refreshList();
-        notification.open({
-          message: t('Common_DeleteSuccess'),
-          type: 'success'
-        });
-      },
-      onCancel() {
-        console.log('Cancel');
+        confirmDelete();
       }
     });
   };
@@ -151,7 +160,12 @@ function DataTable(props: IProps) {
         rowSelection={{ ...rowSelection }}
         columns={columns}
         dataSource={props.data}
-        pagination={pagination}
+        pagination={{
+          current: param.pageInfor!.pageNumber,
+          pageSize: param.pageInfor!.pageSize,
+          total: param.pageInfor!.totalItems,
+          simple: false
+        }}
         scroll={{ x: 780 }}
         title={() => TableHeader()}
         locale={{

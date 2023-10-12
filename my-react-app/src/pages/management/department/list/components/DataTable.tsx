@@ -1,11 +1,13 @@
-import { EditOutlined, PlusOutlined, SmileOutlined, SolutionOutlined } from '@ant-design/icons';
-import { Button, Input, Table, Tooltip } from 'antd';
+import { DeleteOutlined, EditOutlined, PlusOutlined, SmileOutlined, SolutionOutlined } from '@ant-design/icons';
+import { Button, Input, Modal, Table, Tooltip, notification } from 'antd';
 import styles from '../Department.module.scss';
 import { ColumnsType, TablePaginationConfig } from 'antd/es/table';
 import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import dayjs from 'dayjs';
 import Paragraph from 'antd/es/typography/Paragraph';
+import { useLoading } from '@/common/context/useLoading';
+import { service } from '@/services/apis';
 
 interface IProps {
   data: A[];
@@ -14,11 +16,14 @@ interface IProps {
   onSearch: (value: string) => void;
   setPage: (paging: number) => void;
   param: Common.IDataGrid;
+  refreshList: () => void;
 }
 function DataTable(props: IProps) {
   const { loading, data, param } = props;
   const { Search } = Input;
   const { t } = useTranslation();
+  const { confirm } = Modal;
+  const { showLoading, closeLoading } = useLoading();
 
   const columns: ColumnsType<A> = [
     {
@@ -73,13 +78,41 @@ function DataTable(props: IProps) {
       key: 'action',
       className: 'actionCollumn',
       fixed: 'right',
-      width: 130,
+      width: 170,
       render: (_, record) => {
         const editClick = () => {
           props.openPanel(record);
         };
+        const confirmDelete = async (id: string) => {
+          try {
+            showLoading();
+            await service.departmentService.delete({ isHardDelete: true, id: [id] });
+            closeLoading();
+            props.refreshList();
+            notification.open({
+              message: t('Common_DeleteSuccess'),
+              type: 'success'
+            });
+          } catch (e) {
+            console.log(e);
+          }
+        };
+        const deleteDepartment = async (department: A) => {
+          confirm({
+            content: t('Department_Delete_Remind_Text').replace('{0}', department.title),
+            title: t('Common_Confirm'),
+            okText: t('Common_Delete'),
+            cancelText: t('Common_Cancel'),
+            onOk() {
+              confirmDelete(department.id);
+            }
+          });
+        };
         return (
           <div>
+            <Tooltip placement="bottom" title={t('Common_Delete')} color="#ffffff" arrow={true}>
+              <Button type="text" onClick={() => deleteDepartment(record)} icon={<DeleteOutlined />} />
+            </Tooltip>
             <Tooltip placement="bottom" title={t('Common_Edit')} color="#ffffff" arrow={true}>
               <Button type="text" onClick={editClick} icon={<EditOutlined />} />
             </Tooltip>

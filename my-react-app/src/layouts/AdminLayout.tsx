@@ -10,6 +10,7 @@ import { useState } from 'react';
 import logo from '@/assets/logo.png';
 import logoLarge from '@/assets/logoLarge.png';
 import Notification from './components/notification/Notification';
+import { useLoginManager } from '@/common/helpers/login-manager';
 
 export interface IProps {
   children?: React.ReactNode;
@@ -39,6 +40,10 @@ function AdminLayout(props: IProps) {
       )
     }
   ];
+
+  const test = useLoginManager().getLoginUser();
+  console.log(test.user.userRole2.permissions);
+
   return (
     <>
       <Layout className={styles.siteLayout}>
