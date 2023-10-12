@@ -113,7 +113,7 @@ function Panel(props: IProps, ref: A) {
           label: (
             <div style={{ marginRight: 10, display: 'flex', alignItems: 'center' }}>
               <Avatar size={40} src={element.photoUrl} style={{ marginRight: 10, backgroundColor: util.randomColor() }}>
-                {element.fullName.charAt(0)}
+                {element.fullName?.charAt(0)}
               </Avatar>
               {element.fullName}
             </div>
@@ -128,7 +128,7 @@ function Panel(props: IProps, ref: A) {
         label: (
           <div style={{ marginRight: 10, display: 'flex', alignItems: 'center' }}>
             <Avatar size={40} src={m.photoUrl} style={{ marginRight: 10, backgroundColor: util.randomColor() }}>
-              {m.fullName.charAt(0)}
+              {m.fullName?.charAt(0)}
             </Avatar>
             {m.fullName}
           </div>

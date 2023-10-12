@@ -63,7 +63,7 @@ function DataTable(props: IProps) {
                 src={record.photoUrl}
                 style={{ marginRight: 10, minWidth: 40, backgroundColor: util.randomColor() }}
               >
-                {record.fullName.charAt(0)}
+                {record.fullName?.charAt(0)}
               </Avatar>
               <Paragraph
                 ellipsis={{ rows: 1, expandable: false }}

@@ -72,7 +72,7 @@ function UserAvatar() {
                 src="https://top10tphcm.com/wp-content/uploads/2023/02/hinh-anh-meo.jpeg"
                 style={{ marginRight: '16px', backgroundColor: util.randomColor() }}
               >
-                {userLoged?.fullName.charAt(0)}
+                {userLoged?.fullName?.charAt(0)}
               </Avatar>
               <div className="avatar-header-content">
                 <div className="avatar-header-name">{userLoged?.fullName}</div>
@@ -89,7 +89,7 @@ function UserAvatar() {
           src="https://top10tphcm.com/wp-content/uploads/2023/02/hinh-anh-meo.jpeg"
           style={{ cursor: 'pointer', backgroundColor: util.randomColor() }}
         >
-          {userLoged?.fullName.charAt(0)}
+          {userLoged?.fullName?.charAt(0)}
         </Avatar>
       </Dropdown>
     </>

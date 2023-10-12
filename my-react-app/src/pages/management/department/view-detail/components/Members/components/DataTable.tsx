@@ -20,20 +20,17 @@ interface IProps {
   data: A[];
   openPanel: (data?: A) => void;
   openDetailPanel: (data?: A) => void;
+  setPage: (paging: number) => void;
+  onSearch: (value: string) => void;
   refreshList: () => void;
   loading: boolean;
+  param: Common.IDataGrid;
 }
 function DataTable(props: IProps) {
-  const { loading } = props;
+  const { loading, param } = props;
   const [selectedItem, setSelectedItem] = useState<A[]>([]);
   const { confirm } = Modal;
   const { t } = useTranslation();
-  const [pagination, setPagination] = useState<TablePaginationConfig>({
-    current: 1,
-    pageSize: 10,
-    total: 20,
-    simple: false
-  });
 
   const columns: ColumnsType<A> = [
     {
@@ -45,7 +42,7 @@ function DataTable(props: IProps) {
           <Tooltip placement="bottom" title={record.fullName} color="#ffffff" arrow={true}>
             <div style={{ display: 'flex', alignItems: 'center', minWidth: 250 }}>
               <Avatar size={40} src={record.photoUrl} style={{ marginRight: 10, backgroundColor: util.randomColor() }}>
-                {record.fullName.charAt(0)}
+                {record.fullName?.charAt(0)}
               </Avatar>
               <Paragraph ellipsis={{ rows: 1, expandable: false }} style={{ maxWidth: 150, minWidth: 30 }}>
                 {record.fullName}
@@ -106,13 +103,11 @@ function DataTable(props: IProps) {
   ];
 
   const handleTableChange = (pagination: TablePaginationConfig) => {
-    setPagination(pagination);
-    props.refreshList();
+    props.setPage(pagination.current ?? 1);
   };
 
   const onSearch = (val: A) => {
-    console.log(val);
-    props.refreshList();
+    props.onSearch(val);
   };
 
   const kickoutMembers = (user?: A) => {
@@ -172,7 +167,12 @@ function DataTable(props: IProps) {
         columns={columns}
         rowSelection={{ ...rowSelection }}
         dataSource={props.data}
-        pagination={pagination}
+        pagination={{
+          current: param.pageInfor!.pageNumber,
+          pageSize: param.pageInfor!.pageSize,
+          total: param.pageInfor!.totalItems,
+          simple: false
+        }}
         scroll={{ x: 780 }}
         locale={{
           emptyText: (

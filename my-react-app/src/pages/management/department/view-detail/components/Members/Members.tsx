@@ -60,6 +60,25 @@ function Members() {
     }
   };
 
+  const onSearch = (value: string) => {
+    const draftGrid = { ...param };
+    if (draftGrid.searchInfor) {
+      draftGrid.searchInfor.searchValue = value;
+    }
+    draftGrid.pageInfor!.pageNumber = 1;
+    setParam(draftGrid);
+    getMembers(draftGrid);
+  };
+
+  const setPage = (val: number) => {
+    const draftGrid = { ...param };
+    if (draftGrid.pageInfor) {
+      draftGrid.pageInfor.pageNumber = val;
+    }
+    setParam(draftGrid);
+    getMembers(draftGrid);
+  };
+
   return (
     <>
       <DataTable
@@ -68,6 +87,9 @@ function Members() {
         openDetailPanel={openDetailPanel}
         refreshList={getMembers}
         loading={loading}
+        setPage={setPage}
+        param={param}
+        onSearch={onSearch}
       />
       <DetailPanel refreshList={getMembers} openPanel={openPanel} ref={detailPanelRef} />
       <Panel refreshList={getMembers} ref={panelRef} />

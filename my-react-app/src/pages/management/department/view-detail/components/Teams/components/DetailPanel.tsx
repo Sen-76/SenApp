@@ -40,7 +40,7 @@ function DetailPanel(props: IProps, ref: A) {
           <Tooltip placement="bottom" title={record.name} color="#ffffff" arrow={true}>
             <div style={{ display: 'flex', alignItems: 'center' }}>
               <Avatar size={40} src={record.photoUrl} style={{ marginRight: 10, backgroundColor: util.randomColor() }}>
-                {record.fullName.charAt(0)}
+                {record.fullName?.charAt(0)}
               </Avatar>
               <Paragraph ellipsis={{ rows: 1, expandable: false }} style={{ maxWidth: 150, minWidth: 30 }}>
                 {record.fullName}

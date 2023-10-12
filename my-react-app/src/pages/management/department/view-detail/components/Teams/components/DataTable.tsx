@@ -50,7 +50,7 @@ function DataTable(props: IProps) {
           <Avatar.Group maxCount={2} maxStyle={{ color: '#f56a00', backgroundColor: '#fde3cf' }} size={40}>
             {record.members.map((user: A) => (
               <Avatar key={user.id} src={record.photoUrl} style={{ backgroundColor: util.randomColor() }}>
-                {user.fullName.charAt(0)}
+                {user.fullName?.charAt(0)}
               </Avatar>
             ))}
           </Avatar.Group>

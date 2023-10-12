@@ -11,7 +11,7 @@ import {
   UsergroupAddOutlined,
   WomanOutlined
 } from '@ant-design/icons';
-import { Button, Col, Drawer, Row } from 'antd';
+import { Button, Col, Drawer, Form, Row } from 'antd';
 import { forwardRef, useImperativeHandle, useState } from 'react';
 import styles from '../Member.module.scss';
 import { useTranslation } from 'react-i18next';
@@ -70,82 +70,84 @@ function DetailPanel(props: IProps, ref: A) {
         destroyOnClose={true}
         className={styles.detailPanel}
       >
-        <div className={styles.title}>General Information</div>
-        <Row className={styles.detailRow}>
-          <Col className={styles.keyCol}>
-            <UserOutlined /> {t('fullName')}
-          </Col>
-          <Col className={styles.valueCol}>{user.fullName}</Col>
-        </Row>
-        <Row className={styles.detailRow}>
-          <Col className={styles.keyCol}>
-            <MailOutlined /> {t('email')}
-          </Col>
-          <Col className={styles.valueCol}>
-            <Link to={`mailto:${user.email}`}>{user.userEmail}</Link>
-          </Col>
-        </Row>
-        <Row className={styles.detailRow}>
-          <Col className={styles.keyCol}>
-            <PhoneOutlined /> {t('phone')}
-          </Col>
-          <Col className={styles.valueCol}>{user.userPhone}</Col>
-        </Row>
-        <Row className={styles.detailRow}>
-          <Col className={styles.keyCol}>
-            <CalendarOutlined /> {t('date of birth')}
-          </Col>
-          <Col className={styles.valueCol}>{dayjs(user.dob).format('DD MMM YYYY')}</Col>
-        </Row>
-        <Row className={styles.detailRow}>
-          <Col className={styles.keyCol}>
-            {user.gender === EGender.Male ? <ManOutlined /> : <WomanOutlined />} {t('gender')}
-          </Col>
-          <Col className={styles.valueCol}>{user.gender === EGender.Male ? 'Male' : 'Female'}</Col>
-        </Row>
-        <div className={styles.title}>System Information</div>
-        <Row className={styles.detailRow}>
-          <Col className={styles.keyCol}>
-            <UserOutlined /> {t('username')}
-          </Col>
-          <Col className={styles.valueCol}>{user.userName}</Col>
-        </Row>
-        <Row className={styles.detailRow}>
-          <Col className={styles.keyCol}>
-            <CoffeeOutlined /> {t('job')}
-          </Col>
-          <Col className={styles.valueCol}>{user.jobTitle ?? 'N/A'}</Col>
-        </Row>
-        <Row className={styles.detailRow}>
-          <Col className={styles.keyCol}>
-            <ContactsOutlined /> {t('department')}
-          </Col>
-          <Col className={styles.valueCol}>{user.department ?? 'N/A'}</Col>
-        </Row>
-        <Row className={styles.detailRow}>
-          <Col className={styles.keyCol}>
-            <UsergroupAddOutlined /> {t('team')}
-          </Col>
-          <Col className={styles.valueCol}>{user.team ?? 'N/A'}</Col>
-        </Row>
-        <Row className={styles.detailRow}>
-          <Col className={styles.keyCol}>
-            <KeyOutlined /> {t('role')}
-          </Col>
-          <Col className={styles.valueCol}>{user.role ?? 'N/A'}</Col>
-        </Row>
-        <div className="actionBtnBottom">
-          <Button onClick={closeDrawer}>{t('Common_Cancel')}</Button>
-          <Button
-            type="primary"
-            onClick={() => {
-              props.openPanel(user);
-              setOpen(false);
-            }}
-          >
-            Update
-          </Button>
-        </div>
+        <Form>
+          <div className={styles.title}>General Information</div>
+          <Row className={styles.detailRow}>
+            <Col className={styles.keyCol}>
+              <UserOutlined /> {t('fullName')}
+            </Col>
+            <Col className={styles.valueCol}>{user.fullName}</Col>
+          </Row>
+          <Row className={styles.detailRow}>
+            <Col className={styles.keyCol}>
+              <MailOutlined /> {t('email')}
+            </Col>
+            <Col className={styles.valueCol}>
+              <Link to={`mailto:${user.email}`}>{user.userEmail}</Link>
+            </Col>
+          </Row>
+          <Row className={styles.detailRow}>
+            <Col className={styles.keyCol}>
+              <PhoneOutlined /> {t('phone')}
+            </Col>
+            <Col className={styles.valueCol}>{user.userPhone}</Col>
+          </Row>
+          <Row className={styles.detailRow}>
+            <Col className={styles.keyCol}>
+              <CalendarOutlined /> {t('date of birth')}
+            </Col>
+            <Col className={styles.valueCol}>{dayjs(user.dob).format('DD MMM YYYY')}</Col>
+          </Row>
+          <Row className={styles.detailRow}>
+            <Col className={styles.keyCol}>
+              {user.gender === EGender.Male ? <ManOutlined /> : <WomanOutlined />} {t('gender')}
+            </Col>
+            <Col className={styles.valueCol}>{user.gender === EGender.Male ? 'Male' : 'Female'}</Col>
+          </Row>
+          <div className={styles.title}>System Information</div>
+          <Row className={styles.detailRow}>
+            <Col className={styles.keyCol}>
+              <UserOutlined /> {t('username')}
+            </Col>
+            <Col className={styles.valueCol}>{user.userName}</Col>
+          </Row>
+          <Row className={styles.detailRow}>
+            <Col className={styles.keyCol}>
+              <CoffeeOutlined /> {t('job')}
+            </Col>
+            <Col className={styles.valueCol}>{user.jobTitle && user.jobTitle !== '' ? user.jobTitle : 'N/A'}</Col>
+          </Row>
+          <Row className={styles.detailRow}>
+            <Col className={styles.keyCol}>
+              <ContactsOutlined /> {t('department')}
+            </Col>
+            <Col className={styles.valueCol}>{user.userDepartment ?? 'N/A'}</Col>
+          </Row>
+          <Row className={styles.detailRow}>
+            <Col className={styles.keyCol}>
+              <UsergroupAddOutlined /> {t('team')}
+            </Col>
+            <Col className={styles.valueCol}>{user.team ?? 'N/A'}</Col>
+          </Row>
+          <Row className={styles.detailRow}>
+            <Col className={styles.keyCol}>
+              <KeyOutlined /> {t('role')}
+            </Col>
+            <Col className={styles.valueCol}>{user.userRole ?? 'N/A'}</Col>
+          </Row>
+          <div className="actionBtnBottom">
+            <Button onClick={closeDrawer}>{t('Common_Cancel')}</Button>
+            <Button
+              type="primary"
+              onClick={() => {
+                props.openPanel(user);
+                setOpen(false);
+              }}
+            >
+              Update
+            </Button>
+          </div>
+        </Form>
       </Drawer>
     </>
   );
