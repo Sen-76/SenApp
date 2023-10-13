@@ -122,7 +122,7 @@ function Panel(props: IProps, ref: A) {
       // const result = await service.accountService.getAccount(draftParam);
       setSearchUserValue('');
       form.setFieldValue('members', '');
-      const result = await service.accountService.getDetal(val);
+      const result = await service.accountService.getDetal(val.key);
       setMemberList([...memberList, result.data]);
       setSelectedUser([...selectedUser, result.data.id]);
       console.log([...selectedUser, result.data.id]);
@@ -177,8 +177,8 @@ function Panel(props: IProps, ref: A) {
               {x.fullName?.charAt(0)}
             </Avatar>
             <div>
-              <div>{x.fullName}</div>
-              <div>{x.jobDetail}</div>
+              <div style={{ lineHeight: '20px', fontWeight: 600 }}>{x.fullName}</div>
+              <div style={{ lineHeight: '16px', fontSize: 12 }}>{x.userEmail}</div>
             </div>
           </div>
         ),
@@ -209,7 +209,7 @@ function Panel(props: IProps, ref: A) {
           <Form.Item name="members">
             <Select
               style={{ width: '100%', marginBottom: 10 }}
-              // labelInValue
+              labelInValue
               size="large"
               onClick={() => {
                 setSelectLoading(true);

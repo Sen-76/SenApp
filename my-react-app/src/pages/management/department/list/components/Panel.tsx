@@ -55,7 +55,6 @@ function Panel(props: IProps, ref: A) {
       showLoading();
       const { data } = await service.departmentService.getDetail(id);
       setEditData(data);
-      console.log(data);
       data.owner = {
         value: data.manager.id,
         label: (
@@ -68,8 +67,8 @@ function Panel(props: IProps, ref: A) {
               {data.manager.fullName?.charAt(0)}
             </Avatar>
             <div>
-              <div>{data.manager.fullName}</div>
-              <div>{data.manager.jobDetail}</div>
+              <div style={{ lineHeight: '20px', fontWeight: 600 }}>{data.manager.fullName}</div>
+              <div style={{ lineHeight: '16px', fontSize: 12 }}>{data.manager.userEmail}</div>
             </div>
           </div>
         )
@@ -181,8 +180,8 @@ function Panel(props: IProps, ref: A) {
               {x.fullName?.charAt(0)}
             </Avatar>
             <div>
-              <div>{x.fullName}</div>
-              <div>{x.jobDetail}</div>
+              <div style={{ lineHeight: '20px', fontWeight: 600 }}>{x.fullName}</div>
+              <div style={{ lineHeight: '16px', fontSize: 12 }}>{x.userEmail}</div>
             </div>
           </div>
         ),
@@ -212,7 +211,7 @@ function Panel(props: IProps, ref: A) {
       // const result = await service.accountService.getAccount(draftParam);
       setSearchUserValue('');
       form.setFieldValue('members', '');
-      const result = await service.accountService.getDetal(val);
+      const result = await service.accountService.getDetal(val.key);
       setMemberList([...memberList, result.data]);
       setSelectedUser([...selectedUser, result.data.id]);
     } catch (e) {
@@ -223,7 +222,7 @@ function Panel(props: IProps, ref: A) {
   };
 
   const onManagerSelect = async (val: A) => {
-    setSelectedUser([...selectedUser.filter((x) => x !== selectedManager), val]);
+    setSelectedUser([...selectedUser.filter((x) => x !== selectedManager), val.key]);
     setSelectedManager(val);
     setSearchManagerValue('');
   };
@@ -329,18 +328,19 @@ function Panel(props: IProps, ref: A) {
                 className={customAlert?.title && 'customFieldAlert'}
               >
                 <Select
+                  labelInValue
                   showSearch
-                  // labelInValue
                   placeholder={t('Common_SearchNameAndEmail')}
                   onSelect={onManagerSelect}
                   disabled={tableLoading}
                   onClick={() => {
-                    getUsers(true);
+                    setUserMemberList([]);
                     setSelectLoading(true);
+                    getUsers(true);
                   }}
                   onSearch={(value) => {
                     setSelectLoading(true);
-                    setUserList([]);
+                    setUserMemberList([]);
                     setSearchManagerValue(value);
                   }}
                   notFoundContent={
@@ -375,15 +375,16 @@ function Panel(props: IProps, ref: A) {
             <>
               <Form.Item name="members" label={t('members')}>
                 <Select
+                  labelInValue
                   style={{ width: '100%', marginBottom: 10 }}
-                  // labelInValue
                   size="large"
-                  onClick={() => {
-                    getUsers(false);
-                    setSelectLoading(true);
-                  }}
                   showSearch
                   disabled={tableLoading}
+                  onClick={() => {
+                    setUserList([]);
+                    setSelectLoading(true);
+                    getUsers(false);
+                  }}
                   onSearch={(value) => {
                     setSelectLoading(true);
                     setUserList([]);
