@@ -70,9 +70,17 @@ function Panel(props: IProps, ref: A) {
               <Avatar size={40} src={record?.photoUrl} style={{ marginRight: 10, backgroundColor: util.randomColor() }}>
                 {record.fullName?.charAt(0)}
               </Avatar>
-              <Paragraph ellipsis={{ rows: 1, expandable: false }} style={{ maxWidth: 150, minWidth: 30 }}>
-                {record.fullName}
-              </Paragraph>
+              <div>
+                <Paragraph
+                  ellipsis={{ rows: 1, expandable: false }}
+                  style={{ maxWidth: 150, minWidth: 30, fontWeight: 600, fontSize: 16, lineHeight: '16px' }}
+                >
+                  {record.fullName}
+                </Paragraph>
+                <Paragraph ellipsis={{ rows: 1, expandable: false }} style={{ maxWidth: 150, minWidth: 30 }}>
+                  {record.userEmail}
+                </Paragraph>
+              </div>
             </div>
           </Tooltip>
         );
@@ -177,8 +185,18 @@ function Panel(props: IProps, ref: A) {
               {x.fullName?.charAt(0)}
             </Avatar>
             <div>
-              <div style={{ lineHeight: '20px', fontWeight: 600 }}>{x.fullName}</div>
-              <div style={{ lineHeight: '16px', fontSize: 12 }}>{x.userEmail}</div>
+              <Paragraph
+                ellipsis={{ rows: 1, expandable: false }}
+                style={{ maxWidth: 350, minWidth: 30, fontWeight: 600, fontSize: 16, lineHeight: '20px' }}
+              >
+                {x.fullName}
+              </Paragraph>
+              <Paragraph
+                ellipsis={{ rows: 1, expandable: false }}
+                style={{ maxWidth: 350, minWidth: 30, lineHeight: '16px', fontSize: 12 }}
+              >
+                {x.userEmail}
+              </Paragraph>
             </div>
           </div>
         ),

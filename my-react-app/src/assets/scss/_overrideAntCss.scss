@@ -113,5 +113,13 @@ td {
   }
 }
 .ant-table-title {
-  background-color: #fbfbfb;
+}
+.ant-tooltip-inner {
+  background-color: #fff !important;
+}
+
+.ant-tooltip-arrow {
+  &::before {
+    background-color: #fbfbfb !important;
+  }
 }
