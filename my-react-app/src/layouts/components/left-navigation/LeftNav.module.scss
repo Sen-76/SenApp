@@ -9,14 +9,13 @@
   background-color: #ffffff;
   color: #222222;
   font-size: 16px;
-  font-weight: 600;
+  font-weight: 500;
   padding: 10px;
   :global {
     li,
     .ant-menu-submenu-title {
-      min-height: 60px;
+      min-height: 50px;
       span {
-        color: #3b3737 !important;
         .anticon {
           svg {
             width: 16px;
@@ -28,34 +27,11 @@
           overflow: hidden;
         }
       }
-      .ant-menu-submenu-arrow {
-        color: #3b3737 !important;
-      }
     }
     .ant-menu-sub {
       li {
         padding-right: 24px;
       }
-    }
-  }
-}
-:global {
-  .ant-menu-item-selected {
-    background-color: #1677ffce !important;
-  }
-  .ant-menu-item,
-  .ant-menu-submenu-title {
-    &:hover {
-      background-color: #1677ffce !important;
-    }
-    &:active {
-      background-color: #1677ffce !important;
-    }
-  }
-  .ant-menu {
-    .ant-menu-sub .ant-menu-title-content,
-    svg {
-      color: #222222 !important;
     }
   }
 }

@@ -15,7 +15,7 @@ interface IProps {
 }
 function EditInformation(props: IProps) {
   const { userLoged, cancelEdit } = props;
-  const { showLoading, closeLoading } = useLoading();
+  const { showLoading } = useLoading();
   const [form] = Form.useForm();
   const { t } = useTranslation();
 

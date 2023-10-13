@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-non-null-assertion */
 import { DeleteOutlined, EditOutlined, PlusOutlined, SmileOutlined, SolutionOutlined } from '@ant-design/icons';
 import { Avatar, Button, Modal, Table, TablePaginationConfig, Tooltip, notification } from 'antd';
 import { ColumnsType } from 'antd/es/table';
@@ -10,7 +11,6 @@ import { TableRowSelection } from 'antd/es/table/interface';
 import { util } from '@/common/helpers/util';
 import { useLoading } from '@/common/context/useLoading';
 import { service } from '@/services/apis';
-import { useParams } from 'react-router';
 
 interface IProps {
   data: A[];
@@ -28,7 +28,6 @@ function DataTable(props: IProps) {
   const { showLoading, closeLoading } = useLoading();
   const { confirm } = Modal;
   const { t } = useTranslation();
-  const data = useParams();
 
   const columns: ColumnsType<A> = [
     {
@@ -38,7 +37,7 @@ function DataTable(props: IProps) {
       render: (_, record) => {
         return (
           <Paragraph ellipsis={{ rows: 1, expandable: false }} style={{ maxWidth: 150, minWidth: 30 }}>
-            {record.name}
+            {record.title}
           </Paragraph>
         );
       }
@@ -48,7 +47,7 @@ function DataTable(props: IProps) {
       dataIndex: 'gender',
       key: 'gender',
       render: (_, record) => {
-        return (
+        return record.member ? (
           <Avatar.Group maxCount={2} maxStyle={{ color: '#f56a00', backgroundColor: '#fde3cf' }} size={40}>
             {record.members.map((user: A) => (
               <Avatar key={user.id} src={record.photoUrl} style={{ backgroundColor: util.randomColor() }}>
@@ -56,13 +55,15 @@ function DataTable(props: IProps) {
               </Avatar>
             ))}
           </Avatar.Group>
+        ) : (
+          <>T cần trả về members</>
         );
       }
     },
     {
       title: t('Common_Description'),
-      dataIndex: 'job',
-      key: 'job',
+      dataIndex: 'description',
+      key: 'description',
       render: (_, record) => {
         return record.description;
       }
@@ -109,9 +110,7 @@ function DataTable(props: IProps) {
   const confirmDelete = async (id?: string) => {
     try {
       showLoading();
-      console.log(data);
-      await service.departmentService.kickMember({ id: data.id ?? '', member: [id ?? ''] });
-      closeLoading();
+      await service.teamService.delete({ isHardDelete: true, id: id ? [id] : selectedItem });
       props.refreshList();
       notification.open({
         message: t('Common_DeleteSuccess'),
@@ -119,6 +118,8 @@ function DataTable(props: IProps) {
       });
     } catch (e) {
       console.log(e);
+    } finally {
+      closeLoading();
     }
   };
 
@@ -127,11 +128,11 @@ function DataTable(props: IProps) {
       content: user.id
         ? t('Department_Team_DeleteSingle_Remind_Text').replace('{0}', user.name)
         : t('Department_Team_DeleteMultyple_Remind_Text'),
-      title: t('Common_Confirm'),
+      title: t('Common_Delete'),
       okText: t('Common_Delete'),
       cancelText: t('Common_Cancel'),
       onOk() {
-        confirmDelete();
+        confirmDelete(user.id);
       }
     });
   };

@@ -82,5 +82,14 @@ export const accountService = {
       console.error('An error occurred while updating the account:', error);
       throw error;
     }
+  },
+  async changePassword(userData: Account.IChangePasswordModel): Promise<Response.IDefaultResponse> {
+    try {
+      const response = await axiosInstance.post('/users/changePassword', userData);
+      return response.data;
+    } catch (error) {
+      console.error('An error occurred while updating the account:', error);
+      throw error;
+    }
   }
 };

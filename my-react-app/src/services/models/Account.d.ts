@@ -49,4 +49,10 @@ declare namespace Account {
     isHardDelete: boolean;
     id: string[];
   }
+  export interface IChangePasswordModel {
+    userId?: string;
+    currentPassword: string;
+    newPassword: string;
+    confirmPassword?: string;
+  }
 }

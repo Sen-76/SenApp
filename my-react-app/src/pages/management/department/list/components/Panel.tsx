@@ -56,7 +56,24 @@ function Panel(props: IProps, ref: A) {
       const { data } = await service.departmentService.getDetail(id);
       setEditData(data);
       console.log(data);
-      data.owner = { value: data.manager.id, label: data.manager.fullName };
+      data.owner = {
+        value: data.manager.id,
+        label: (
+          <div style={{ display: 'flex', alignItems: 'center' }}>
+            <Avatar
+              size={25}
+              src={data.manager?.photoUrl}
+              style={{ marginRight: 10, backgroundColor: util.randomColor() }}
+            >
+              {data.manager.fullName?.charAt(0)}
+            </Avatar>
+            <div>
+              <div>{data.manager.fullName}</div>
+              <div>{data.manager.jobDetail}</div>
+            </div>
+          </div>
+        )
+      };
       setMemberList(data.users);
       setSelectedUser(data.users?.map((x: A) => x.id));
       form.setFieldsValue(data);
@@ -160,7 +177,7 @@ function Panel(props: IProps, ref: A) {
       const optionsValue = result.data?.map((x: A) => ({
         label: (
           <div style={{ display: 'flex', alignItems: 'center' }}>
-            <Avatar size={30} style={{ marginRight: '16px', backgroundColor: util.randomColor() }}>
+            <Avatar size={25} src={x?.photoUrl} style={{ marginRight: 10, backgroundColor: util.randomColor() }}>
               {x.fullName?.charAt(0)}
             </Avatar>
             <div>
@@ -212,6 +229,7 @@ function Panel(props: IProps, ref: A) {
   };
 
   const onMemberRemove = (id: string) => {
+    setSelectedUser(selectedUser.filter((x: A) => x !== id));
     setMemberList(memberList.filter((x: A) => x.id !== id));
   };
 
@@ -238,7 +256,7 @@ function Panel(props: IProps, ref: A) {
         return (
           <Tooltip placement="bottom" title={record.name} color="#ffffff" arrow={true}>
             <div style={{ display: 'flex', alignItems: 'center', minWidth: 150 }}>
-              <Avatar size={40} src={record.photoUrl} style={{ marginRight: 10, backgroundColor: util.randomColor() }}>
+              <Avatar size={40} src={record?.photoUrl} style={{ marginRight: 10, backgroundColor: util.randomColor() }}>
                 {record.fullName?.charAt(0)}
               </Avatar>
               <Paragraph ellipsis={{ rows: 1, expandable: false }} style={{ maxWidth: 150, minWidth: 30 }}>

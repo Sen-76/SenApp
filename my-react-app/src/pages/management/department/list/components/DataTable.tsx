@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-non-null-assertion */
 import { DeleteOutlined, EditOutlined, PlusOutlined, SmileOutlined, SolutionOutlined } from '@ant-design/icons';
 import { Button, Input, Modal, Table, Tooltip, notification } from 'antd';
 import styles from '../Department.module.scss';

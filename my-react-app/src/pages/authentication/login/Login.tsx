@@ -7,6 +7,8 @@ import { useLoginManager } from '../../../common/helpers/login-manager';
 import { useEffect, useState } from 'react';
 import { cookie } from '../../../common/helpers/cookie/cookie';
 import { Rule } from 'antd/es/form';
+import LazyLoading from '@/components/lazy-loading/LazyLoading';
+import { useLoading } from '@/common/context/useLoading';
 
 function Login() {
   const { t } = useTranslation();
@@ -14,7 +16,7 @@ function Login() {
   const [form] = Form.useForm();
   const [customAlert, setCustomAlert] = useState<Authen.IUserLoginModel>();
   const { getLoginUser } = useLoginManager();
-  const [loading, setLoading] = useState<boolean>(false);
+  const { isLoading, showLoading, closeLoading } = useLoading();
 
   useEffect(() => {
     const saveUser = cookie.getCookie('userSave');
@@ -23,10 +25,15 @@ function Login() {
   }, []);
 
   const onFinish = async (values: A) => {
-    setLoading(true);
-    const result = await loginIn(values);
-    setCustomAlert(result);
-    setLoading(false);
+    try {
+      showLoading();
+      const result = await loginIn(values);
+      setCustomAlert(result);
+    } catch (e) {
+      console.log(e);
+    } finally {
+      closeLoading();
+    }
   };
 
   const formRule = {
@@ -39,6 +46,7 @@ function Login() {
 
   return (
     <div className={styles.login}>
+      {isLoading && <LazyLoading />}
       <Form
         initialValues={{ remember: true }}
         onFinish={onFinish}
@@ -88,7 +96,7 @@ function Login() {
         </Row>
 
         <Form.Item>
-          <Button type="primary" htmlType="submit" loading={loading}>
+          <Button type="primary" htmlType="submit" loading={isLoading}>
             {t('Common_Login')}
           </Button>
         </Form.Item>

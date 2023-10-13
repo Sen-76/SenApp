@@ -1,16 +1,21 @@
-import { Button, Checkbox, Col, Form, Input, Row } from 'antd';
+import { Button, Checkbox, Col, Form, Input, Row, notification } from 'antd';
 import { useTranslation } from 'react-i18next';
 import styles from './ChangePassword.module.scss';
 import { UserOutlined } from '@ant-design/icons';
 import { useBreadcrumb } from '@/components/breadcrum/Breadcrum';
 import { useEffect, useState } from 'react';
 import { useRule } from '@/common/rule/rule';
+import { useLoading } from '@/common/context/useLoading';
+import { service } from '@/services/apis';
+import { useLoginManager } from '@/common/helpers/login-manager';
 
 function ChangePassword() {
   const { t } = useTranslation();
   const { setBreadcrumb } = useBreadcrumb();
-  const [isValid, setIsValid] = useState<A>(['eightCharacters']);
+  const [isValid, setIsValid] = useState<A>();
+  const { showLoading, closeLoading } = useLoading();
   const [customAlert, setCustomAlert] = useState<A>();
+  const { getLoginUser, loginOut } = useLoginManager();
   const [form] = Form.useForm();
   const validPassList = [
     {
@@ -72,13 +77,31 @@ function ChangePassword() {
   };
 
   const onFinish = async () => {
-    const validate = await form.validateFields();
-    if (validate) {
-      if (form.getFieldValue('newPass') !== form.getFieldValue('rePassword')) {
-        setCustomAlert({ rePassword: 'Password_Are_Not_Match' });
-      }
+    try {
+      showLoading();
+      const validate = await form.validateFields();
+      if (validate) {
+        if (form.getFieldValue('newPass') !== form.getFieldValue('rePassword')) {
+          setCustomAlert({ rePassword: 'Password_Are_Not_Match' });
+          return;
+        }
+        await service.accountService.changePassword({
+          userId: getLoginUser().user.id,
+          currentPassword: form.getFieldValue('oldPass'),
+          newPassword: form.getFieldValue('newPass'),
+          confirmPassword: form.getFieldValue('rePassword')
+        });
 
-      console.log(form.getFieldsValue());
+        notification.open({
+          message: t('Common_ChangePassSuccess'),
+          type: 'success'
+        });
+        // loginOut();
+      }
+    } catch (e) {
+      console.log(e);
+    } finally {
+      closeLoading();
     }
   };
 

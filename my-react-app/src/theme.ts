@@ -1,6 +1,6 @@
 export default {
   token: {
-    colorPrimary: '#0f90a0',
+    colorPrimary: '#3762ea',
     fontFamily: 'Open Sans, Segoe UI, Helvetica Neue, Arial, sans-serif',
     colorText: '#222222',
     colorTextSecondary: '#4B5566'
@@ -10,9 +10,9 @@ export default {
       itemColor: '#fff',
       colorText: 'rgba(255, 255, 255)',
       itemHoverColor: '#fff',
-      controlItemBgActive: '#0f90a0',
+      controlItemBgActive: '#3762ea',
       colorSplit: 'rgba(5, 5, 5, 0.06)',
-      itemHoverBg: '#0f90a0',
+      itemHoverBg: '#3762ea',
       itemBg: '#0E2554',
       dropdownWidth: 220
     },

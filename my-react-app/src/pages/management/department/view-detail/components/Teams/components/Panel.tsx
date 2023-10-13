@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-non-null-assertion */
 import { CloseOutlined, DeleteOutlined, SearchOutlined } from '@ant-design/icons';
 import { Avatar, Button, Drawer, Empty, Form, Input, Select, Spin, Steps, Table, Tooltip, notification } from 'antd';
 import { forwardRef, useEffect, useImperativeHandle, useState } from 'react';
@@ -10,92 +11,11 @@ import { EState } from '@/pages/management/account/AccountManagement.Model';
 import useDebounce from '@/common/helpers/useDebounce';
 import { ColumnsType } from 'antd/es/table';
 import Paragraph from 'antd/es/typography/Paragraph';
+import { useParams } from 'react-router';
 
 interface IProps {
   refreshList: () => void;
 }
-// const draftUserList = [
-//   {
-//     id: 1,
-//     fullName: 'Sen 1',
-//     job: 'Developer',
-//     gender: 'Male',
-//     photoUrl: 'https://top10tphcm.com/wp-content/uploads/2023/02/hinh-anh-meo.jpeg',
-//     description: 'N/A'
-//   },
-//   {
-//     id: 2,
-//     fullName: 'Sen 2',
-//     job: 'Developer',
-//     gender: 'Male',
-//     photoUrl: 'https://top10tphcm.com/wp-content/uploads/2023/02/hinh-anh-meo.jpeg',
-//     description: 'N/A'
-//   },
-//   {
-//     id: 3,
-//     fullName: 'Sen 3',
-//     job: 'Developer',
-//     gender: 'Male',
-//     photoUrl: 'https://top10tphcm.com/wp-content/uploads/2023/02/hinh-anh-meo.jpeg',
-//     description: 'N/A'
-//   },
-//   {
-//     id: 4,
-//     fullName: 'Sen 4',
-//     job: 'Developer',
-//     gender: 'Male',
-//     photoUrl: 'https://top10tphcm.com/wp-content/uploads/2023/02/hinh-anh-meo.jpeg',
-//     description: 'N/A'
-//   },
-//   {
-//     id: 5,
-//     fullName: 'Sen 5',
-//     job: 'Developer',
-//     gender: 'Male',
-//     photoUrl: 'https://top10tphcm.com/wp-content/uploads/2023/02/hinh-anh-meo.jpeg',
-//     description: 'N/A'
-//   },
-//   {
-//     id: '6',
-//     fullName: 'Sen 6',
-//     job: 'Developer',
-//     gender: 'Male',
-//     photoUrl: 'https://top10tphcm.com/wp-content/uploads/2023/02/hinh-anh-meo.jpeg',
-//     description: 'N/A'
-//   },
-//   {
-//     id: '7',
-//     fullName: 'Sen 7',
-//     job: 'Developer',
-//     gender: 'Male',
-//     photoUrl: 'https://top10tphcm.com/wp-content/uploads/2023/02/hinh-anh-meo.jpeg',
-//     description: 'N/A'
-//   },
-//   {
-//     id: '8',
-//     fullName: 'Sen 8',
-//     job: 'Developer',
-//     gender: 'Male',
-//     photoUrl: 'https://top10tphcm.com/wp-content/uploads/2023/02/hinh-anh-meo.jpeg',
-//     description: 'N/A'
-//   },
-//   {
-//     id: '9',
-//     fullName: 'Sen 9',
-//     job: 'Developer',
-//     gender: 'Male',
-//     photoUrl: 'https://top10tphcm.com/wp-content/uploads/2023/02/hinh-anh-meo.jpeg',
-//     description: 'N/A'
-//   },
-//   {
-//     id: '10',
-//     fullName: 'Sen 10',
-//     job: 'Developer',
-//     gender: 'Male',
-//     photoUrl: 'https://top10tphcm.com/wp-content/uploads/2023/02/hinh-anh-meo.jpeg',
-//     description: 'N/A'
-//   }
-// ];
 function Panel(props: IProps, ref: A) {
   const [open, setOpen] = useState<boolean>(false);
   const [isEdit, setIsEdit] = useState<boolean>(false);
@@ -115,6 +35,7 @@ function Panel(props: IProps, ref: A) {
   const [form] = Form.useForm();
   const [step, setStep] = useState<number>(0);
   const [editData, setEditData] = useState<A>();
+  const data = useParams();
 
   useImperativeHandle(ref, () => ({
     openDrawer
@@ -123,36 +44,7 @@ function Panel(props: IProps, ref: A) {
   const openDrawer = (data?: A) => {
     setOpen(true);
     setIsEdit(false);
-    // draftUserList.forEach((element) => {
-    //   setUserOptions((prevOptions: A) => [
-    //     ...prevOptions,
-    //     {
-    //       key: element.id,
-    //       label: (
-    //         <div style={{ marginRight: 10, display: 'flex', alignItems: 'center' }}>
-    //           <Avatar size={40} src={element.photoUrl} style={{ marginRight: 10, backgroundColor: util.randomColor() }}>
-    //             {element.fullName?.charAt(0)}
-    //           </Avatar>
-    //           {element.fullName}
-    //         </div>
-    //       ),
-    //       value: element.id
-    //     }
-    //   ]);
-    // });
     if (data) {
-      // data.members = data.members.map((m: A) => ({
-      //   key: m.id,
-      //   label: (
-      //     <div style={{ marginRight: 10, display: 'flex', alignItems: 'center' }}>
-      //       <Avatar size={40} src={m.photoUrl} style={{ marginRight: 10, backgroundColor: util.randomColor() }}>
-      //         {m.fullName?.charAt(0)}
-      //       </Avatar>
-      //       {m.fullName}
-      //     </div>
-      //   ),
-      //   value: m.id
-      // }));
       getTeamDetail(data.id);
       setIsEdit(true);
     }
@@ -163,7 +55,26 @@ function Panel(props: IProps, ref: A) {
       showLoading();
       const { data } = await service.teamService.getDetail(id);
       setEditData(data);
-      data.manager = { value: data.manager.id, label: data.manager.fullName };
+      data.owner = {
+        value: data.manager.id,
+        label: (
+          <div style={{ display: 'flex', alignItems: 'center' }}>
+            <Avatar
+              size={25}
+              src={data.manager?.photoUrl}
+              style={{ marginRight: 10, backgroundColor: util.randomColor() }}
+            >
+              {data.manager.fullName?.charAt(0)}
+            </Avatar>
+            <div>
+              <div>{data.manager.fullName}</div>
+              <div>{data.manager.jobDetail}</div>
+            </div>
+          </div>
+        )
+      };
+      setSelectedUser(data.users.map((x: A) => x.id));
+      setMemberList(data.users);
       data.members = data.users;
       form.setFieldsValue(data);
       closeLoading();
@@ -175,6 +86,9 @@ function Panel(props: IProps, ref: A) {
   };
 
   const closeDrawer = () => {
+    setMemberList([]);
+    setSelectedUser([]);
+    setStep(0);
     setOpen(false);
     form.resetFields();
   };
@@ -182,16 +96,6 @@ function Panel(props: IProps, ref: A) {
   const onMemberSelect = async (val: A) => {
     try {
       setTableLoading(true);
-      // const draftParam = { ...initDataGrid };
-      // if (draftParam.searchInfor) {
-      //   const id = draftParam.filter?.findIndex((x) => x.key === 'Id');
-      //   id !== -1 && draftParam.filter?.splice(id as number, 1);
-      //   draftParam.filter?.push({
-      //     key: 'Id',
-      //     value: [val]
-      //   });
-      // }
-      // const result = await service.accountService.getAccount(draftParam);
       setSearchUserValue('');
       form.setFieldValue('members', '');
       const result = await service.accountService.getDetal(val);
@@ -221,33 +125,6 @@ function Panel(props: IProps, ref: A) {
     title: [{ required: true, message: t('Common_Require_Field') }]
   };
 
-  const onFinish = (val: A) => {
-    showLoading();
-    if (isEdit) {
-      const timeout = setTimeout(() => {
-        closeLoading();
-        clearTimeout(timeout);
-        notification.open({
-          message: t('Common_UpdateSuccess'),
-          type: 'success'
-        });
-        closeDrawer();
-        props.refreshList();
-      }, 2000);
-    } else {
-      const timeout = setTimeout(() => {
-        closeLoading();
-        clearTimeout(timeout);
-        notification.open({
-          message: t('Common_CreateSuccess'),
-          type: 'success'
-        });
-        closeDrawer();
-        props.refreshList();
-      }, 2000);
-    }
-  };
-
   const onStepChange = async (value: number) => {
     try {
       const generalCheck = await form.validateFields();
@@ -268,7 +145,10 @@ function Panel(props: IProps, ref: A) {
       searchValue: '',
       searchColumn: ['FullName', 'UserEmail']
     },
-    filter: [{ key: 'Status', value: [EState.Activate] }, { key: 'ownerDepartmentId' }, { key: 'userDepartment' }]
+    filter: [
+      { key: 'Status', value: [EState.Activate] },
+      { key: 'userDepartment', value: [data.id] }
+    ]
   };
 
   const getUsers = async (isSearchManager?: boolean) => {
@@ -280,7 +160,7 @@ function Panel(props: IProps, ref: A) {
       const optionsValue = result.data?.map((x: A) => ({
         label: (
           <div style={{ display: 'flex', alignItems: 'center' }}>
-            <Avatar size={30} style={{ marginRight: '16px', backgroundColor: util.randomColor() }}>
+            <Avatar size={25} src={x.photoUrl} style={{ marginRight: 10, backgroundColor: util.randomColor() }}>
               {x.fullName?.charAt(0)}
             </Avatar>
             <div>
@@ -302,8 +182,48 @@ function Panel(props: IProps, ref: A) {
   const backStep = () => {
     setStep(step - 1);
   };
-  const onConfirm = () => {
-    console.log('confirm');
+
+  const onConfirm = async () => {
+    const formCheck = await form.validateFields();
+    setEditData({ ...editData, ...form.getFieldsValue() });
+    formCheck && setStep(1);
+    if (step == 1 && formCheck) {
+      try {
+        showLoading();
+        if (isEdit) {
+          const timeout = setTimeout(() => {
+            clearTimeout(timeout);
+            notification.open({
+              message: t('Common_UpdateSuccess'),
+              type: 'success'
+            });
+            closeDrawer();
+            props.refreshList();
+          }, 2000);
+        } else {
+          await service.teamService.create({
+            ...editData,
+            ...form.getFieldsValue(),
+            departmentId: data.id,
+            members: memberList.map((x) => x.id),
+            owner:
+              typeof form.getFieldValue('owner') === 'string'
+                ? form.getFieldValue('owner')
+                : form.getFieldValue('owner').value
+          });
+          notification.open({
+            message: t('Common_CreateSuccess'),
+            type: 'success'
+          });
+          closeDrawer();
+          props.refreshList();
+        }
+      } catch (e) {
+        console.log(e);
+      } finally {
+        closeLoading();
+      }
+    }
   };
 
   const columns: ColumnsType<A> = [
@@ -342,6 +262,7 @@ function Panel(props: IProps, ref: A) {
       className: 'actionCollumn',
       render: (_, record) => {
         const onMemberRemove = (id: string) => {
+          setSelectedUser(selectedUser.filter((x: A) => x !== id));
           setMemberList(memberList.filter((x: A) => x.id !== id));
         };
         return (
@@ -372,14 +293,13 @@ function Panel(props: IProps, ref: A) {
           current={step}
           items={[{ title: t('Manage_Team_Info') }, { title: t('Common_AssignMember') }]}
         />
-        <Form layout="vertical" form={form} onFinish={onFinish}>
+        <Form layout="vertical" form={form}>
           {step === 0 && (
             <>
-              <Form.Item name="name" label={t('Common_Title')} rules={formRule.title}>
+              <Form.Item name="title" label={t('Common_Title')} rules={formRule.title}>
                 <Input maxLength={250} showCount size="large" />
               </Form.Item>
-              <Form.Item name="leader" label="Leader">
-                {/* <Form.Item name="leader" label="Leader" rules={formRule.title}> */}
+              <Form.Item name="owner" label="Leader" rules={formRule.title}>
                 <Select
                   showSearch
                   // labelInValue

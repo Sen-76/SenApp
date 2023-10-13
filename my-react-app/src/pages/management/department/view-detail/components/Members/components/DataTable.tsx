@@ -14,7 +14,6 @@ import styles from '../Member.module.scss';
 import { useTranslation } from 'react-i18next';
 import Paragraph from 'antd/es/typography/Paragraph';
 import Search from 'antd/es/input/Search';
-import { TableRowSelection } from 'antd/es/table/interface';
 import { util } from '@/common/helpers/util';
 import { useLoading } from '@/common/context/useLoading';
 import { service } from '@/services/apis';
@@ -141,7 +140,7 @@ function DataTable(props: IProps) {
       content: user.id
         ? t('Department_Member_KickDepartmentSingle_Remind_Text').replace('{0}', user.name)
         : t('Department_Member_KickDepartmentMultiple_Remind_Text'),
-      title: t('Common_Confirm'),
+      title: t('Common_Kick'),
       okText: t('Common_Kick'),
       cancelText: t('Common_Cancel'),
       onOk() {

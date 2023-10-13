@@ -1,66 +1,11 @@
+/* eslint-disable @typescript-eslint/no-non-null-assertion */
 import { useRef, useEffect, useState } from 'react';
 import DataTable from './components/DataTable';
 import DetailPanel from './components/DetailPanel';
 import Panel from './components/Panel';
-import { useLoading } from '@/common/context/useLoading';
 import { useParams } from 'react-router';
 import { service } from '@/services/apis';
 
-const draftTeams = [
-  {
-    id: 1,
-    name: 'Team no hope',
-    description: 'N/A',
-    members: [
-      {
-        id: 1,
-        fullName: 'Sen 1',
-        job: 'Developer',
-        gender: 'Male',
-        photoUrl: 'https://top10tphcm.com/wp-content/uploads/2023/02/hinh-anh-meo.jpeg',
-        description: 'N/A'
-      },
-      {
-        id: 2,
-        fullName: 'Sen 2',
-        job: 'Developer',
-        gender: 'Male',
-        photoUrl: 'https://top10tphcm.com/wp-content/uploads/2023/02/hinh-anh-meo.jpeg',
-        description: 'N/A'
-      },
-      {
-        id: 3,
-        fullName: 'Sen 3',
-        job: 'Developer',
-        gender: 'Male',
-        photoUrl: 'https://top10tphcm.com/wp-content/uploads/2023/02/hinh-anh-meo.jpeg',
-        description: 'N/A'
-      },
-      {
-        id: 4,
-        fullName: 'Sen 4',
-        job: 'Developer',
-        gender: 'Male',
-        photoUrl: 'https://top10tphcm.com/wp-content/uploads/2023/02/hinh-anh-meo.jpeg',
-        description: 'N/A'
-      },
-      {
-        id: 5,
-        fullName: 'Sen 5',
-        job: 'Developer',
-        gender: 'Male',
-        photoUrl: 'https://top10tphcm.com/wp-content/uploads/2023/02/hinh-anh-meo.jpeg',
-        description: 'N/A'
-      }
-    ]
-  },
-  {
-    id: 2,
-    name: 'Team hope less',
-    description: 'N/A',
-    members: []
-  }
-];
 function Teams() {
   const panelRef = useRef();
   const detailPanelRef = useRef();
@@ -137,7 +82,7 @@ function Teams() {
   return (
     <>
       <DataTable
-        data={draftTeams}
+        data={teamList}
         openPanel={openPanel}
         openDetailPanel={openDetailPanel}
         refreshList={getTeams}

@@ -1,15 +1,16 @@
 .ant-table-content {
   border: 1px solid #d3b6c154;
-  border-radius: 10px;
+  border-radius: 5px;
   border-bottom: none;
 }
 td {
   vertical-align: middle !important;
 }
 .ant-table-thead {
-  border-radius: 10px;
+  border-radius: 5px;
   border: 1px solid transparent;
   .ant-table-cell {
+    background: #f3f3f3 !important;
     border: 1px solid transparent;
     &::before {
       display: none;
@@ -59,7 +60,7 @@ td {
   }
 }
 .ant-btn-primary {
-  background-color: #004cac;
+  background-color: #3762ea;
 }
 .ant-input-number {
   width: 100%;
@@ -86,4 +87,31 @@ td {
   font-size: 14px;
   line-height: 18px;
   padding: 9px 8px !important;
+}
+
+.ant-menu-item-selected {
+  background-color: #3762ea26 !important;
+  .ant-menu-title-content,
+  .ant-menu-submenu-arrow,
+  .ant-menu-item-icon {
+    color: #3762ea !important;
+  }
+}
+.ant-menu-title-content,
+.ant-menu-submenu-arrow,
+.ant-menu-item-icon {
+  color: #7c7f90 !important;
+}
+.ant-menu-item,
+.ant-menu-submenu-title {
+  border-radius: 4px !important;
+  &:hover {
+    background-color: #3762ea26 !important;
+  }
+  &:active {
+    background-color: #3762ea26 !important;
+  }
+}
+.ant-table-title {
+  background-color: #fbfbfb;
 }

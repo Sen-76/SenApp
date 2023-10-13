@@ -16,6 +16,10 @@ declare namespace Team {
   }
   export interface IKickMemberModel {
     id: string;
-    member: string[];
+    members: string[];
+  }
+  export interface ITeamDeleteModel {
+    isHardDelete: boolean;
+    id: string[];
   }
 }

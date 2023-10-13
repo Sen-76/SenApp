@@ -14,8 +14,8 @@
       align-items: center;
       flex-direction: column;
       padding: 20px;
-      box-shadow: rgba(0, 0, 0, 0.16) 0px 10px 36px 0px, rgba(0, 0, 0, 0.06) 0px 0px 0px 1px;
-      border-radius: 8px;
+      box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px;
+      border-radius: 4px;
       .processInfo {
         display: flex;
         justify-content: space-between;
@@ -44,12 +44,12 @@
       gap: 20px;
       width: calc((100% - 80px) / 4);
       .callendar {
-        box-shadow: rgba(0, 0, 0, 0.16) 0px 10px 36px 0px, rgba(0, 0, 0, 0.06) 0px 0px 0px 1px;
+        box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px;
       }
       .todoList {
-        box-shadow: rgba(0, 0, 0, 0.16) 0px 10px 36px 0px, rgba(0, 0, 0, 0.06) 0px 0px 0px 1px;
+        box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px;
         background-color: #ffffff;
-        border-radius: 8px;
+        border-radius: 4px;
         :global {
           .ant-list-header {
             padding: 0 !important;
@@ -57,9 +57,9 @@
         }
       }
       .timeLine {
-        box-shadow: rgba(0, 0, 0, 0.16) 0px 10px 36px 0px, rgba(0, 0, 0, 0.06) 0px 0px 0px 1px;
+        box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px;
         background-color: #ffffff;
-        border-radius: 8px;
+        border-radius: 4px;
         .timeContent {
           padding: 25px;
         }
@@ -72,10 +72,10 @@
 
       align-content: flex-start;
       align-items: flex-start;
-      gap: 10px 13px;
+      gap: 20px 13px;
       .draft {
-        box-shadow: rgba(0, 0, 0, 0.16) 0px 10px 36px 0px, rgba(0, 0, 0, 0.06) 0px 0px 0px 1px;
-        border-radius: 8px;
+        box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px;
+        border-radius: 4px;
         width: 100%;
         min-height: 200px;
       }
@@ -86,8 +86,8 @@
         gap: 10px;
         width: 100%;
         .draftHalf {
-          box-shadow: rgba(0, 0, 0, 0.16) 0px 10px 36px 0px, rgba(0, 0, 0, 0.06) 0px 0px 0px 1px;
-          border-radius: 8px;
+          box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px;
+          border-radius: 4px;
           width: 49%;
         }
       }

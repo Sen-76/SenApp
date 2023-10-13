@@ -55,5 +55,14 @@ export const teamService = {
       console.error('An error occurred while get:', error);
       throw error;
     }
+  },
+  async delete(param: Team.ITeamDeleteModel): Promise<Response.IDefaultResponse> {
+    try {
+      const response = await axiosInstance.post('/team/delete', param);
+      return response.data;
+    } catch (error) {
+      console.error('An error occurred while get:', error);
+      throw error;
+    }
   }
 };
