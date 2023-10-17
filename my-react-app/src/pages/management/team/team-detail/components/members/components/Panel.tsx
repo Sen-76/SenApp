@@ -23,10 +23,11 @@ function Panel(props: IProps, ref: A) {
   const [tableLoading, setTableLoading] = useState<boolean>();
   const [searchUserValue, setSearchUserValue] = useState<string>('');
   const [selectedUser, setSelectedUser] = useState<string[]>([]);
+  const [departmentId, setDepartmentId] = useState<string>();
   const { showLoading, closeLoading } = useLoading();
   const { t } = useTranslation();
   const [form] = Form.useForm();
-  const dataIdDepartment = useParams();
+  const teamId = useParams();
   const userDebounced = useDebounce(searchUserValue, 300);
 
   useImperativeHandle(ref, () => ({
@@ -35,15 +36,16 @@ function Panel(props: IProps, ref: A) {
 
   const openDrawer = () => {
     setOpen(true);
-    getUserDetail(dataIdDepartment.id ?? '');
+    getTeamDetail(teamId.id ?? '');
   };
 
-  const getUserDetail = async (id: string) => {
+  const getTeamDetail = async (id: string) => {
     try {
       showLoading();
-      const { data } = await service.departmentService.getDetail(id);
-      setMemberList(data.users);
-      setSelectedUser(data.users?.map((x: A) => x.id));
+      const { data } = await service.teamService.getDetail(id);
+      setMemberList(data.members);
+      setDepartmentId(data.departmentId);
+      setSelectedUser(data.members?.map((x: A) => x.id));
     } catch (e) {
       console.log(e);
     } finally {
@@ -118,16 +120,6 @@ function Panel(props: IProps, ref: A) {
   const onMemberSelect = async (val: A) => {
     try {
       setTableLoading(true);
-      // const draftParam = { ...initDataGrid };
-      // if (draftParam.searchInfor) {
-      //   const id = draftParam.filter?.findIndex((x) => x.key === 'Id');
-      //   id !== -1 && draftParam.filter?.splice(id as number, 1);
-      //   draftParam.filter?.push({
-      //     key: 'Id',
-      //     value: [val]
-      //   });
-      // }
-      // const result = await service.accountService.getAccount(draftParam);
       setSearchUserValue('');
       form.setFieldValue('members', '');
       const result = await service.accountService.getDetal(val.key);
@@ -144,7 +136,7 @@ function Panel(props: IProps, ref: A) {
   const assignCLick = async () => {
     try {
       showLoading();
-      await service.departmentService.assignMember({ id: dataIdDepartment.id ?? '', members: selectedUser ?? [] });
+      await service.teamService.assignMember({ id: teamId.id ?? '', members: selectedUser ?? [] });
       closeDrawer();
       props.refreshList();
       notification.open({
@@ -168,8 +160,10 @@ function Panel(props: IProps, ref: A) {
       searchValue: '',
       searchColumn: ['FullName', 'UserEmail']
     },
-    filter: [{ key: 'Status', value: [EState.Activate] }, { key: 'userDepartment' }]
-    // filter: [{ key: 'Status', value: [EState.Activate] }, { key: 'ownerDepartmentId' }, { key: 'userDepartment' }]
+    filter: [
+      { key: 'Status', value: [EState.Activate] },
+      { key: 'userDepartment', value: [departmentId] }
+    ]
   };
 
   const getUsers = async () => {
@@ -263,7 +257,7 @@ function Panel(props: IProps, ref: A) {
               options={userList}
               suffixIcon={<SearchOutlined />}
               onSelect={onMemberSelect}
-              placeholder={t('Manage_Deparment_Assign_member_to_department')}
+              placeholder={t('Manage_Team_Assign_members_to_team')}
             />
           </Form.Item>
           <div>

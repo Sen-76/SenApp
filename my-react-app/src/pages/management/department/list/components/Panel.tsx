@@ -83,8 +83,9 @@ function Panel(props: IProps, ref: A) {
           </div>
         )
       };
+      setSelectedUser([...(data.users?.map((x: A) => x.id) ?? []), data.manager.id]);
       setMemberList(data.users);
-      setSelectedUser(data.users?.map((x: A) => x.id));
+      data.members = data.users;
       form.setFieldsValue(data);
     } catch (e) {
       console.log(e);
@@ -129,7 +130,10 @@ function Panel(props: IProps, ref: A) {
           await service.departmentService.create({
             ...editData,
             members: memberList.map((x) => x.id),
-            owner: form.getFieldValue('owner')
+            owner:
+              typeof form.getFieldValue('owner') === 'string'
+                ? form.getFieldValue('owner')
+                : form.getFieldValue('owner').value
           });
           closeLoading();
           closeDrawer();
@@ -218,16 +222,6 @@ function Panel(props: IProps, ref: A) {
   const onMemberSelect = async (val: A) => {
     try {
       setTableLoading(true);
-      // const draftParam = { ...initDataGrid };
-      // if (draftParam.searchInfor) {
-      //   const id = draftParam.filter?.findIndex((x) => x.key === 'Id');
-      //   id !== -1 && draftParam.filter?.splice(id as number, 1);
-      //   draftParam.filter?.push({
-      //     key: 'Id',
-      //     value: [val]
-      //   });
-      // }
-      // const result = await service.accountService.getAccount(draftParam);
       setSearchUserValue('');
       form.setFieldValue('members', '');
       const result = await service.accountService.getDetal(val.key);
@@ -242,7 +236,7 @@ function Panel(props: IProps, ref: A) {
 
   const onManagerSelect = async (val: A) => {
     setSelectedUser([...selectedUser.filter((x) => x !== selectedManager), val.key]);
-    setSelectedManager(val);
+    setSelectedManager(val.key);
     setSearchManagerValue('');
   };
 
@@ -298,7 +292,7 @@ function Panel(props: IProps, ref: A) {
       dataIndex: 'job',
       key: 'job',
       render: (_, record) => {
-        return record.job;
+        return record.jobTitle;
       }
     },
     {

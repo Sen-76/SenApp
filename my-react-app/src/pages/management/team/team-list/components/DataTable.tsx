@@ -1,28 +1,21 @@
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
-import {
-  LogoutOutlined,
-  ManOutlined,
-  PlusOutlined,
-  SmileOutlined,
-  SolutionOutlined,
-  WomanOutlined
-} from '@ant-design/icons';
+import { DeleteOutlined, EditOutlined, PlusOutlined, SmileOutlined, SolutionOutlined } from '@ant-design/icons';
 import { Avatar, Button, Modal, Table, TablePaginationConfig, Tooltip, notification } from 'antd';
 import { ColumnsType } from 'antd/es/table';
 import { useState } from 'react';
-import styles from '../Member.module.scss';
+import styles from '../Team.module.scss';
 import { useTranslation } from 'react-i18next';
 import Paragraph from 'antd/es/typography/Paragraph';
 import Search from 'antd/es/input/Search';
+import { TableRowSelection } from 'antd/es/table/interface';
 import { util } from '@/common/helpers/util';
 import { useLoading } from '@/common/context/useLoading';
 import { service } from '@/services/apis';
-import { useParams } from 'react-router';
+import { Link } from 'react-router-dom';
 
 interface IProps {
   data: A[];
   openPanel: (data?: A) => void;
-  openDetailPanel: (data?: A) => void;
   setPage: (paging: number) => void;
   onSearch: (value: string) => void;
   refreshList: () => void;
@@ -31,75 +24,85 @@ interface IProps {
 }
 function DataTable(props: IProps) {
   const { loading, param } = props;
-  const [selectedRowKeys, setSelectedRowKeys] = useState<React.Key[]>([]);
+  const [selectedItem, setSelectedItem] = useState<A[]>([]);
   const { showLoading, closeLoading } = useLoading();
-  const data = useParams();
   const { confirm } = Modal;
   const { t } = useTranslation();
 
   const columns: ColumnsType<A> = [
     {
       title: t('name'),
-      dataIndex: 'fullName',
-      key: 'fullName',
+      dataIndex: 'name',
+      key: 'name',
       render: (_, record) => {
         return (
-          <Tooltip placement="bottom" title={record.fullName} color="#ffffff" arrow={true}>
-            <div style={{ display: 'flex', alignItems: 'center', minWidth: 250 }}>
-              <Avatar size={40} src={record.photoUrl} style={{ marginRight: 10, backgroundColor: util.randomColor() }}>
-                {record.fullName?.charAt(0)}
-              </Avatar>
-              <Paragraph ellipsis={{ rows: 1, expandable: false }} style={{ maxWidth: 150, minWidth: 30 }}>
-                {record.fullName}
-              </Paragraph>
-            </div>
-          </Tooltip>
+          <Paragraph ellipsis={{ rows: 1, expandable: false }} style={{ maxWidth: 150, minWidth: 30 }}>
+            {record.title}
+          </Paragraph>
         );
       }
     },
     {
-      title: t('gender'),
+      title: t('members'),
       dataIndex: 'gender',
       key: 'gender',
       render: (_, record) => {
-        return record.gender === 'Male' ? (
-          <Tooltip placement="bottom" title={t('man')} color="#ffffff" arrow={true}>
-            <ManOutlined />
-          </Tooltip>
-        ) : (
-          <Tooltip placement="bottom" title={t('woman')} color="#ffffff" arrow={true}>
-            <WomanOutlined />
-          </Tooltip>
+        return (
+          <Avatar.Group
+            key={record.id}
+            maxCount={2}
+            maxStyle={{ color: '#f56a00', backgroundColor: '#fde3cf' }}
+            size={40}
+          >
+            {record.members.map((user: A) => (
+              <Avatar key={user.id} src={record.photoUrl} style={{ backgroundColor: util.randomColor() }}>
+                {user.fullName?.charAt(0)}
+              </Avatar>
+            ))}
+          </Avatar.Group>
         );
       }
     },
     {
-      title: t('job'),
-      dataIndex: 'job',
-      key: 'job',
+      title: t('department'),
+      dataIndex: 'department',
+      key: 'department',
       render: (_, record) => {
-        return record.jobTitle;
+        return (
+          <Paragraph ellipsis={{ rows: 1, expandable: false }} style={{ maxWidth: 150, minWidth: 30 }}>
+            {record.department.title}
+          </Paragraph>
+        );
+      }
+    },
+    {
+      title: t('Common_Description'),
+      dataIndex: 'description',
+      key: 'description',
+      render: (_, record) => {
+        return record.description;
       }
     },
     {
       title: t('Common_Action'),
       dataIndex: 'action',
       key: 'action',
-      className: 'actionCollumn',
       fixed: 'right',
-      width: 130,
+      className: 'actionCollumn',
+      width: 200,
       render: (_, record) => {
-        const viewDetailCLick = () => {
-          props.openDetailPanel(record);
-        };
-
         return (
           <div>
             <Tooltip placement="bottom" title={t('Common_ViewDetail')} color="#ffffff" arrow={true}>
-              <Button type="text" onClick={viewDetailCLick} icon={<SolutionOutlined />} />
+              <Link to={`/management/team-management/team-detail/${record.title}/${record.id}`}>
+                <Button type="text" icon={<SolutionOutlined />} />
+              </Link>
             </Tooltip>
-            <Tooltip placement="bottom" title={t('Common_Kick')} color="#ffffff" arrow={true}>
-              <Button type="text" onClick={() => kickoutMembers(record)} icon={<LogoutOutlined />} />
+            <Tooltip placement="bottom" title={t('Common_Edit')} color="#ffffff" arrow={true}>
+              <Button type="text" onClick={() => props.openPanel(record)} icon={<EditOutlined />} />
+            </Tooltip>
+            <Tooltip placement="bottom" title={t('Common_Delete')} color="#ffffff" arrow={true}>
+              <Button type="text" onClick={() => deleteTeam(record)} icon={<DeleteOutlined />} />
             </Tooltip>
           </div>
         );
@@ -115,15 +118,17 @@ function DataTable(props: IProps) {
     props.onSearch(val);
   };
 
+  const rowSelection: TableRowSelection<A> = {
+    onChange: (selectedRowKeys, selectedRows) => {
+      setSelectedItem(selectedRows);
+    }
+  };
+
   const confirmDelete = async (id?: string) => {
     try {
       showLoading();
-      await service.departmentService.kickMember({
-        id: data.id ?? '',
-        members: id ? [id] : (selectedRowKeys as string[])
-      });
+      await service.teamService.delete({ isHardDelete: true, id: id ? [id] : selectedItem });
       props.refreshList();
-      setSelectedRowKeys([]);
       notification.open({
         message: t('Common_DeleteSuccess'),
         type: 'success'
@@ -135,16 +140,16 @@ function DataTable(props: IProps) {
     }
   };
 
-  const kickoutMembers = (user?: A) => {
+  const deleteTeam = (user?: A) => {
     confirm({
       content: user.id
-        ? t('Department_Member_KickDepartmentSingle_Remind_Text').replace('{0}', user.fullName)
-        : t('Department_Member_KickDepartmentMultiple_Remind_Text'),
-      title: t('Common_Kick'),
-      okText: t('Common_Kick'),
+        ? t('Department_Team_DeleteSingle_Remind_Text').replace('{0}', user.title)
+        : t('Department_Team_DeleteMultyple_Remind_Text'),
+      title: t('Common_Delete'),
+      okText: t('Common_Delete'),
       cancelText: t('Common_Cancel'),
       onOk() {
-        confirmDelete(user && user.id);
+        confirmDelete(user.id);
       }
     });
   };
@@ -154,16 +159,10 @@ function DataTable(props: IProps) {
       <>
         <div className={styles.tableHeaderLeft}>
           <Button type="text" onClick={() => props.openPanel()} icon={<PlusOutlined />}>
-            {t('Common_AssignMember')}
+            {t('Common_AddNew')}
           </Button>
-          <Button
-            onClick={kickoutMembers}
-            loading={loading}
-            type="text"
-            icon={<LogoutOutlined />}
-            disabled={selectedRowKeys.length === 0}
-          >
-            {t('Common_Kick')}
+          <Button onClick={deleteTeam} type="text" icon={<DeleteOutlined />} disabled={selectedItem.length === 0}>
+            {t('Common_DeleteSelected')}
           </Button>
         </div>
         <div className={styles.tableHeaderRight}>
@@ -173,20 +172,11 @@ function DataTable(props: IProps) {
     );
   };
 
-  const onSelectChange = (newSelectedRowKeys: React.Key[]) => {
-    setSelectedRowKeys(newSelectedRowKeys);
-  };
-
-  const rowSelection = {
-    selectedRowKeys,
-    onChange: onSelectChange
-  };
-
   return (
     <div className={styles.members}>
       <Table
-        columns={columns}
         rowSelection={{ ...rowSelection }}
+        columns={columns}
         dataSource={props.data}
         pagination={{
           current: param.pageInfor!.pageNumber,
@@ -195,6 +185,7 @@ function DataTable(props: IProps) {
           simple: false
         }}
         scroll={{ x: 780 }}
+        title={() => TableHeader()}
         locale={{
           emptyText: (
             <>
@@ -204,7 +195,6 @@ function DataTable(props: IProps) {
         }}
         loading={loading}
         onChange={handleTableChange}
-        title={() => TableHeader()}
         rowKey={(record) => record.id}
       />
     </div>

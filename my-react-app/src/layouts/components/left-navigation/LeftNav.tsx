@@ -126,6 +126,12 @@ function LeftNav(props: IProps) {
           key: 'department-management'
         },
         {
+          label: t('Manage_Team'),
+          path: '/management/team-management',
+          icon: renderIcon(ArrowRightOutlined),
+          key: 'team-management'
+        },
+        {
           label: t('Manage_Account'),
           path: '/management/account-management',
           icon: renderIcon(ArrowRightOutlined),
@@ -138,12 +144,6 @@ function LeftNav(props: IProps) {
           key: 'role-management'
         }
       ]
-    },
-    {
-      label: 'Kanban',
-      path: '/kanban',
-      icon: renderIcon(HddOutlined),
-      key: 'kanban'
     },
     {
       label: t('configuration'),

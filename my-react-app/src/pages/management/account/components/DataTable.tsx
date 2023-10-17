@@ -1,10 +1,25 @@
+/* eslint-disable @typescript-eslint/no-non-null-assertion */
 import { useEffect, useState } from 'react';
-import { Avatar, Button, Input, Modal, Radio, RadioChangeEvent, Switch, Table, Tooltip, notification } from 'antd';
+import {
+  Avatar,
+  Button,
+  Input,
+  Modal,
+  Radio,
+  RadioChangeEvent,
+  Switch,
+  Table,
+  Tooltip,
+  Upload,
+  UploadProps,
+  notification
+} from 'antd';
 import type { ColumnsType } from 'antd/es/table';
 import type { TablePaginationConfig } from 'antd/es/table/interface';
 import styles from '../AccountManagement.module.scss';
 import {
   DeleteOutlined,
+  DownloadOutlined,
   EditOutlined,
   ExclamationCircleFilled,
   ExportOutlined,
@@ -254,12 +269,49 @@ function DataTable(props: IProps) {
     });
   };
 
-  const importExcel = () => {
-    notification.open({
-      message: t('Common_ImportSuccess'),
-      type: 'success'
-    });
-    props.refreshList();
+  const fileProps: UploadProps = {
+    beforeUpload: async (file: A) => {
+      try {
+        showLoading();
+        const formData = new FormData();
+        formData.append('file', file, file.name);
+        formData.append('outletId', 'la cai d gi');
+        formData.append('comment', 'comment làm cái đúng gì');
+        await service.accountService.importExcel(formData);
+        props.refreshList();
+      } catch (e) {
+        console.log(e);
+      } finally {
+        closeLoading();
+      }
+    },
+    showUploadList: false
+  };
+
+  const downloadTemplate = async () => {
+    try {
+      showLoading();
+      const result = await service.downloadService.downloadTemplate('Create_User_Teamplate');
+      const blob = new Blob([result], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+      if (blob instanceof Blob) {
+        const url = window.URL.createObjectURL(blob);
+        console.log(url);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = 'Create_User_Teamplate.xlsx'; // Ensure the file extension matches the content type
+        document.body.appendChild(a);
+        a.click();
+        window.URL.revokeObjectURL(url);
+      }
+      notification.open({
+        message: t('Common_DownloadSuccess'),
+        type: 'success'
+      });
+    } catch (e) {
+      console.log(e);
+    } finally {
+      closeLoading();
+    }
   };
 
   const TableHeader = () => {
@@ -280,12 +332,17 @@ function DataTable(props: IProps) {
               >
                 {t('Common_DeleteSelected')}
               </Button>
+              <Button type="text" onClick={downloadTemplate} icon={<DownloadOutlined />}>
+                {t('Common_Download_Template')}
+              </Button>
               <Button type="text" onClick={exportExcel} icon={<ExportOutlined />}>
                 {t('Common_ExportExcel')}
               </Button>
-              <Button type="text" onClick={importExcel} icon={<ImportOutlined />}>
-                {t('Common_ImportExcel')}
-              </Button>
+              <Upload {...fileProps}>
+                <Button type="text" icon={<ImportOutlined />}>
+                  {t('Common_ImportExcel')}
+                </Button>
+              </Upload>
             </>
           )}
           {tabStatus == EState.Deleted && (

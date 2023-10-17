@@ -3,7 +3,7 @@ import { Button, DatePicker, Drawer, Form, Input, Select, Steps, notification } 
 import { forwardRef, useImperativeHandle, useState } from 'react';
 import styles from '../AccountManagement.module.scss';
 import dayjs from 'dayjs';
-import { GenderOptions, DepartmentOptions } from '../AccountManagement.Model';
+import { GenderOptions, EGender } from '../AccountManagement.Model';
 import { useTranslation } from 'react-i18next';
 import { service } from '@/services/apis';
 import { Rule } from 'antd/es/form';
@@ -22,6 +22,7 @@ function Panel(props: IProps, ref: A) {
   const [editData, setEditData] = useState<A>();
   const [roleList, setRoleList] = useState<A>();
   const [departmentList, setDepartmentList] = useState<A>();
+  const [teamList, setTeamList] = useState<A>([]);
   const { t } = useTranslation();
   const [generalForm] = Form.useForm();
   const [systemForm] = Form.useForm();
@@ -33,6 +34,7 @@ function Panel(props: IProps, ref: A) {
   const openDrawer = async (data?: A) => {
     try {
       showLoading();
+      generalForm.setFieldValue('gender', EGender.Male);
       setIsEdit(false);
       setOpen(true);
       await getRoleList();
@@ -77,12 +79,37 @@ function Panel(props: IProps, ref: A) {
           totalItems: 0
         }
       });
-      setDepartmentList(
-        result.data.map((department: A) => ({
+      setDepartmentList([
+        { label: 'Common_None', value: null },
+        ...result.data.map((department: A) => ({
           label: department.title,
           value: department.id
         }))
-      );
+      ]);
+    } catch (e) {
+      console.log(e);
+    }
+  };
+
+  const getTeam = async (departmentId: string) => {
+    try {
+      showLoading();
+      const result = await service.teamService.get({
+        pageInfor: {
+          pageSize: 100,
+          pageNumber: 1,
+          totalItems: 0
+        },
+        filter: [{ key: 'DepartmentId', value: [departmentId] }]
+      });
+      setTeamList([
+        { label: 'Common_None', value: null },
+        ...result.data.map((team: A) => ({
+          label: team.title,
+          value: team.id
+        }))
+      ]);
+      closeLoading();
     } catch (e) {
       console.log(e);
     }
@@ -132,7 +159,7 @@ function Panel(props: IProps, ref: A) {
             dob: dayjs(generalForm.getFieldValue('dob')).format('YYYY-MM-DD'),
             userDepartment: systemForm.getFieldValue('userDepartmentId'),
             userRole: systemForm.getFieldValue('userRoleId'),
-            gender: systemForm.getFieldValue('gender') ?? 1
+            gender: generalForm.getFieldValue('gender') ?? 0
           });
           notification.open({
             message: t('Common_UpdateSuccess'),
@@ -149,7 +176,7 @@ function Panel(props: IProps, ref: A) {
             dob: dayjs(generalForm.getFieldValue('dob')).format('YYYY-MM-DD'),
             userDepartment: systemForm.getFieldValue('userDepartmentId'),
             userRole: systemForm.getFieldValue('userRoleId'),
-            gender: systemForm.getFieldValue('gender') ?? 1
+            gender: generalForm.getFieldValue('gender') ?? 0
           });
           notification.open({
             message: t('Common_CreateSuccess'),
@@ -242,7 +269,7 @@ function Panel(props: IProps, ref: A) {
                 name="userPhone"
                 label={t('phone')}
                 rules={formRule.userPhone}
-                className={customAlert?.userEmail && 'customFieldAlert'}
+                className={customAlert?.userPhone && 'customFieldAlert'}
               >
                 <Input onChange={() => setCustomAlert({ ...customAlert, userPhone: '' })} />
               </Form.Item>
@@ -251,7 +278,7 @@ function Panel(props: IProps, ref: A) {
                 <DatePicker format={'DD MMM YYYY'} disabledDate={disabledDate} />
               </Form.Item>
               <Form.Item name="gender" label={t('gender')}>
-                <Select options={GenderOptions} defaultValue={0} />
+                <Select options={GenderOptions} />
               </Form.Item>
             </Form>
           </>
@@ -272,10 +299,16 @@ function Panel(props: IProps, ref: A) {
                 <Input maxLength={250} showCount />
               </Form.Item>
               <Form.Item name="userDepartmentId" label={t('department')}>
-                <Select options={departmentList} />
+                <Select
+                  options={departmentList}
+                  onSelect={(val) => {
+                    systemForm.setFieldValue('userTeam', '');
+                    getTeam(val);
+                  }}
+                />
               </Form.Item>
               <Form.Item name="userTeam" label={t('team')}>
-                <Select options={DepartmentOptions} />
+                <Select options={teamList} />
               </Form.Item>
               <Form.Item name="userRoleId" label={t('role')} rules={formRule.userRole}>
                 <Select options={roleList} />

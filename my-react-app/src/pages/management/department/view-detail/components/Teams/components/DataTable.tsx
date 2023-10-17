@@ -47,16 +47,19 @@ function DataTable(props: IProps) {
       dataIndex: 'gender',
       key: 'gender',
       render: (_, record) => {
-        return record.member ? (
-          <Avatar.Group maxCount={2} maxStyle={{ color: '#f56a00', backgroundColor: '#fde3cf' }} size={40}>
+        return (
+          <Avatar.Group
+            key={record.id}
+            maxCount={2}
+            maxStyle={{ color: '#f56a00', backgroundColor: '#fde3cf' }}
+            size={40}
+          >
             {record.members.map((user: A) => (
               <Avatar key={user.id} src={record.photoUrl} style={{ backgroundColor: util.randomColor() }}>
                 {user.fullName?.charAt(0)}
               </Avatar>
             ))}
           </Avatar.Group>
-        ) : (
-          <>T cần trả về members</>
         );
       }
     },
@@ -126,7 +129,7 @@ function DataTable(props: IProps) {
   const deleteTeam = (user?: A) => {
     confirm({
       content: user.id
-        ? t('Department_Team_DeleteSingle_Remind_Text').replace('{0}', user.name)
+        ? t('Department_Team_DeleteSingle_Remind_Text').replace('{0}', user.title)
         : t('Department_Team_DeleteMultyple_Remind_Text'),
       title: t('Common_Delete'),
       okText: t('Common_Delete'),

@@ -21,6 +21,7 @@ td {
   width: 100%;
 }
 .ant-table-title {
+  background-color: #f7f7f785;
   display: flex;
   justify-content: space-between;
   padding: 5px 0 !important;
@@ -87,6 +88,7 @@ td {
   font-size: 14px;
   line-height: 18px;
   padding: 9px 8px !important;
+  background-color: #fff !important;
 }
 
 .ant-menu-item-selected {
@@ -111,11 +113,6 @@ td {
   &:active {
     background-color: #3762ea26 !important;
   }
-}
-.ant-table-title {
-}
-.ant-tooltip-inner {
-  background-color: #fff !important;
 }
 
 .ant-tooltip-arrow {

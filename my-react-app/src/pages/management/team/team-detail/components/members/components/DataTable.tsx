@@ -118,7 +118,7 @@ function DataTable(props: IProps) {
   const confirmDelete = async (id?: string) => {
     try {
       showLoading();
-      await service.departmentService.kickMember({
+      await service.teamService.kickMember({
         id: data.id ?? '',
         members: id ? [id] : (selectedRowKeys as string[])
       });
@@ -144,7 +144,7 @@ function DataTable(props: IProps) {
       okText: t('Common_Kick'),
       cancelText: t('Common_Cancel'),
       onOk() {
-        confirmDelete(user && user.id);
+        confirmDelete(user.id);
       }
     });
   };

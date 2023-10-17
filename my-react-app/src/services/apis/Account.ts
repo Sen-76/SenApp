@@ -91,5 +91,15 @@ export const accountService = {
       console.error('An error occurred while updating the account:', error);
       throw error;
     }
+  },
+  async importExcel(userData: A): Promise<A> {
+    try {
+      console.log(userData);
+      const response = await axiosInstance.post('/users/excel', userData);
+      return response.data;
+    } catch (error) {
+      console.error('An error occurred while import files:', error);
+      throw error;
+    }
   }
 };

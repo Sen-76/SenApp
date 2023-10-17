@@ -111,16 +111,16 @@ function DataTable(props: IProps) {
         };
         return (
           <div>
+            <Tooltip placement="bottom" title={t('Common_ViewDetail')} color="#ffffff" arrow={true}>
+              <Link to={`/management/department-management/department-detail/${record.title}/${record.id}`}>
+                <Button type="text" icon={<SolutionOutlined />} />
+              </Link>
+            </Tooltip>
             <Tooltip placement="bottom" title={t('Common_Delete')} color="#ffffff" arrow={true}>
               <Button type="text" onClick={() => deleteDepartment(record)} icon={<DeleteOutlined />} />
             </Tooltip>
             <Tooltip placement="bottom" title={t('Common_Edit')} color="#ffffff" arrow={true}>
               <Button type="text" onClick={editClick} icon={<EditOutlined />} />
-            </Tooltip>
-            <Tooltip placement="bottom" title={t('Common_ViewDetail')} color="#ffffff" arrow={true}>
-              <Link to={`/management/department-management/department-detail/${record.title}/${record.id}`}>
-                <Button type="text" icon={<SolutionOutlined />} />
-              </Link>
             </Tooltip>
           </div>
         );

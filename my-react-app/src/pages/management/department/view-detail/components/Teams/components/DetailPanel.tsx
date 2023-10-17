@@ -97,7 +97,7 @@ function DetailPanel(props: IProps, ref: A) {
         </Row>
         <Row className={styles.detailRow}>
           <Col className={styles.keyCol}>{t('Department_Team_Leader')}</Col>
-          <Col className={styles.valueCol}>{editData?.team}</Col>
+          <Col className={styles.valueCol}>{editData?.manager.fullName}</Col>
         </Row>
         <Row className={styles.detailRow}>
           <Col className={styles.keyCol}>{t('Common_Description')}</Col>

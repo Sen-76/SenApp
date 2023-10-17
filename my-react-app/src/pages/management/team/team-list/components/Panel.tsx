@@ -11,7 +11,6 @@ import { EState } from '@/pages/management/account/AccountManagement.Model';
 import useDebounce from '@/common/helpers/useDebounce';
 import { ColumnsType } from 'antd/es/table';
 import Paragraph from 'antd/es/typography/Paragraph';
-import { useParams } from 'react-router';
 
 interface IProps {
   refreshList: () => void;
@@ -29,14 +28,27 @@ function Panel(props: IProps, ref: A) {
   const [searchManageValue, setSearchManagerValue] = useState<string>('');
   const [tableLoading, setTableLoading] = useState<boolean>();
   const [memberList, setMemberList] = useState<A[]>([]);
+  const [departmentList, setDepartmentList] = useState<A>();
   const userDebounced = useDebounce(searchUserValue, 300);
   const userDebouncedManager = useDebounce(searchManageValue, 300);
   const [customAlert, setCustomAlert] = useState<A>();
+  const initDataGrid: Common.IDataGrid = {
+    pageInfor: {
+      pageSize: 10,
+      pageNumber: 1,
+      totalItems: 0
+    },
+    searchInfor: {
+      searchValue: '',
+      searchColumn: ['FullName', 'UserEmail']
+    },
+    filter: [{ key: 'Status', value: [EState.Activate] }]
+  };
+  const [param, setParam] = useState<A>(initDataGrid);
   const { t } = useTranslation();
   const [form] = Form.useForm();
   const [step, setStep] = useState<number>(0);
   const [editData, setEditData] = useState<A>();
-  const data = useParams();
 
   useImperativeHandle(ref, () => ({
     openDrawer
@@ -45,6 +57,7 @@ function Panel(props: IProps, ref: A) {
   const openDrawer = (data?: A) => {
     setOpen(true);
     setIsEdit(false);
+    getDepartmentList();
     if (data) {
       getTeamDetail(data.id);
       setIsEdit(true);
@@ -84,6 +97,7 @@ function Panel(props: IProps, ref: A) {
           </div>
         )
       };
+      data.departmentId = data.department.id;
       setSelectedUser([...(data.users?.map((x: A) => x.id) ?? []), data.manager.id]);
       setMemberList(data.members);
       form.setFieldsValue(data);
@@ -91,6 +105,26 @@ function Panel(props: IProps, ref: A) {
       console.log(e);
     } finally {
       closeLoading();
+    }
+  };
+
+  const getDepartmentList = async () => {
+    try {
+      const result = await service.departmentService.get({
+        pageInfor: {
+          pageSize: 100,
+          pageNumber: 1,
+          totalItems: 0
+        }
+      });
+      setDepartmentList([
+        ...result.data.map((department: A) => ({
+          label: department.title,
+          value: department.id
+        }))
+      ]);
+    } catch (e) {
+      console.log(e);
     }
   };
 
@@ -146,25 +180,9 @@ function Panel(props: IProps, ref: A) {
     }
   };
 
-  const initDataGrid: Common.IDataGrid = {
-    pageInfor: {
-      pageSize: 10,
-      pageNumber: 1,
-      totalItems: 0
-    },
-    searchInfor: {
-      searchValue: '',
-      searchColumn: ['FullName', 'UserEmail']
-    },
-    filter: [
-      { key: 'Status', value: [EState.Activate] },
-      { key: 'userDepartment', value: [data.id] }
-    ]
-  };
-
   const getUsers = async (isSearchManager?: boolean) => {
     try {
-      const draftParam = { ...initDataGrid };
+      const draftParam = { ...param };
       draftParam.searchInfor!.searchValue = isSearchManager ? userDebouncedManager : userDebounced ?? '';
       selectedUser?.length > 0 && draftParam.filter!.push({ key: 'id', value: selectedUser, operators: 'not in' });
       const result = await service.accountService.getAccount(draftParam);
@@ -216,7 +234,6 @@ function Panel(props: IProps, ref: A) {
             ...editData,
             ...form.getFieldsValue(),
             id: editData.id ?? '',
-            departmentId: data.id,
             members: memberList.map((x) => x.id),
             owner:
               typeof form.getFieldValue('owner') === 'string'
@@ -233,7 +250,6 @@ function Panel(props: IProps, ref: A) {
           await service.teamService.create({
             ...editData,
             ...form.getFieldsValue(),
-            departmentId: data.id,
             members: memberList.map((x) => x.id),
             owner:
               typeof form.getFieldValue('owner') === 'string'
@@ -292,7 +308,7 @@ function Panel(props: IProps, ref: A) {
       dataIndex: 'job',
       key: 'job',
       render: (_, record) => {
-        return record.job;
+        return record.jobTitle;
       }
     },
     {
@@ -351,6 +367,19 @@ function Panel(props: IProps, ref: A) {
                 />
               </Form.Item>
               {customAlert?.title && <div className="customAlert">{t('Manage_Team_Exist_Title')}</div>}
+              <Form.Item name="departmentId" label={t('department')} rules={formRule.title}>
+                <Select
+                  options={departmentList}
+                  onSelect={(val) => {
+                    form.setFieldValue('owner', null);
+                    const draftParam = { ...param };
+                    const dpm = draftParam.filter.findIndex((x: A) => x.key === 'userDepartment');
+                    dpm !== -1 && draftParam.filter.splice(dpm, 1);
+                    draftParam.filter.push({ key: 'userDepartment', value: [val] });
+                    setParam(draftParam);
+                  }}
+                />
+              </Form.Item>
               <Form.Item name="owner" label="Leader" rules={formRule.title}>
                 <Select
                   showSearch
