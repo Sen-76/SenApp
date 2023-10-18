@@ -5,6 +5,7 @@ const FileConfiguration = lazy(() => import('../../pages/configuration/file/File
 const EmailConfiguration = lazy(() => import('../../pages/configuration/email/EmailConfiguration'));
 const SmtpConfiguration = lazy(() => import('../../pages/configuration/smtp/Smtp'));
 const StarConfiguration = lazy(() => import('../../pages/configuration/star/StarConfiguration'));
+const TaskStatusConfiguration = lazy(() => import('../../pages/configuration/task-status/TaskStatusConfiguration'));
 
 const routes: IRouter.IRoute<'/configuration'>[] = [
   {
@@ -34,6 +35,13 @@ const routes: IRouter.IRoute<'/configuration'>[] = [
     exact: true,
     element: StarConfiguration,
     meta: { role: [ERole.Admin], pageTitle: 'Star Configuration' }
+  },
+  {
+    path: '/configuration/task-status-configuration',
+    name: 'taskstatusconfiguration',
+    exact: true,
+    element: TaskStatusConfiguration,
+    meta: { role: [ERole.Admin], pageTitle: 'Task Status Configuration' }
   }
 ];
 

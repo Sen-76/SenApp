@@ -1,0 +1,38 @@
+.taskstatus {
+  margin: 0 10px;
+  .list {
+    background-color: #fff;
+    .itemContent {
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+    }
+    :global {
+      .ant-list-header {
+        padding: 5px 10px;
+      }
+      .ant-row {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+      .ant-col {
+        margin: 0;
+
+        button {
+          width: 30px !important;
+          height: 30px !important;
+          padding: 0 !important;
+        }
+
+        button + button {
+          margin-left: 10px;
+        }
+
+        button + span {
+          margin-left: 10px;
+        }
+      }
+    }
+  }
+}

@@ -4,6 +4,7 @@ import { Avatar, message, Upload } from 'antd';
 import type { UploadChangeParam } from 'antd/es/upload';
 import type { RcFile, UploadFile, UploadProps } from 'antd/es/upload/interface';
 import { util } from '@/common/helpers/util';
+import ImgCrop from 'antd-img-crop';
 
 const getBase64 = (img: RcFile, callback: (url: string) => void) => {
   const reader = new FileReader();
@@ -53,28 +54,30 @@ const EditAvatar = (props: IProps) => {
 
   return (
     <>
-      <Upload
-        name="avatar"
-        listType="picture-circle"
-        className="avatar-uploader"
-        showUploadList={false}
-        action="https://www.mocky.io/v2/5cc8019d300000980a055e76"
-        beforeUpload={beforeUpload}
-        onChange={handleChange}
-      >
-        {imageUrl ? (
-          <>
-            <Avatar
-              src={imageUrl ?? imageLink}
-              style={{ width: '100%', height: '100%', backgroundColor: util.randomColor(), position: 'absolute' }}
-            >
-              {name?.charAt(0) ?? 'N/A'}
-            </Avatar>
-          </>
-        ) : (
-          uploadButton
-        )}
-      </Upload>
+      <ImgCrop rotationSlider>
+        <Upload
+          name="avatar"
+          listType="picture-circle"
+          className="avatar-uploader"
+          showUploadList={false}
+          // action="https://www.mocky.io/v2/5cc8019d300000980a055e76"
+          beforeUpload={beforeUpload}
+          onChange={handleChange}
+        >
+          {imageUrl ? (
+            <>
+              <Avatar
+                src={imageUrl ?? imageLink}
+                style={{ width: '100%', height: '100%', backgroundColor: util.randomColor(), position: 'absolute' }}
+              >
+                {name?.charAt(0) ?? 'N/A'}
+              </Avatar>
+            </>
+          ) : (
+            uploadButton
+          )}
+        </Upload>
+      </ImgCrop>
     </>
   );
 };

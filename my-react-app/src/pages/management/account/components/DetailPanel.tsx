@@ -59,7 +59,7 @@ function DetailPanel(props: IProps, ref: A) {
   return (
     <>
       <Drawer
-        title="User Details"
+        title={t('User_Detail_Panel_Title')}
         placement="right"
         open={open}
         extra={<CloseOutlined onClick={closeDrawer} />}

@@ -6,6 +6,7 @@ import { useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import DataTable from './components/DataTable';
 import Panel from './components/Panel';
+import styles from './Team.module.scss';
 
 function Team() {
   const { t } = useTranslation();
@@ -77,7 +78,7 @@ function Team() {
   }, [t]);
 
   return (
-    <>
+    <div className={styles.team}>
       <DataTable
         data={teamList}
         openPanel={openPanel}
@@ -88,7 +89,7 @@ function Team() {
         setPage={setPage}
       />
       <Panel refreshList={getTeams} ref={panelRef} />
-    </>
+    </div>
   );
 }
 

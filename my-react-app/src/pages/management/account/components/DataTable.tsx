@@ -292,13 +292,12 @@ function DataTable(props: IProps) {
     try {
       showLoading();
       const result = await service.downloadService.downloadTemplate('Create_User_Teamplate');
-      const blob = new Blob([result], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+      const blob = new Blob([result], { type: 'application/octet-stream' });
       if (blob instanceof Blob) {
         const url = window.URL.createObjectURL(blob);
-        console.log(url);
         const a = document.createElement('a');
         a.href = url;
-        a.download = 'Create_User_Teamplate.xlsx'; // Ensure the file extension matches the content type
+        a.download = 'Create_User_Teamplate.xlsx';
         document.body.appendChild(a);
         a.click();
         window.URL.revokeObjectURL(url);

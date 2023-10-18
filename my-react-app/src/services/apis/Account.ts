@@ -1,4 +1,3 @@
-/* eslint-disable no-useless-catch */
 import axiosInstance from '../axios-instance/index';
 
 export const accountService = {

@@ -5,6 +5,7 @@ import { rolesService } from './Role';
 import { departmentService } from './Department';
 import { permissionService } from './Permission';
 import { teamService } from './Team';
+import { projectService } from './Project';
 import { downloadService } from './Download';
 
 export const service = {
@@ -15,5 +16,6 @@ export const service = {
   departmentService,
   permissionService,
   teamService,
+  projectService,
   downloadService
 };

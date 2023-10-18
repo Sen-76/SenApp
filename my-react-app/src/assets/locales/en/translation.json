@@ -86,7 +86,7 @@
     "Common_NoRecord": "There is no record to display.",
     "Common_TitleExist": "This title already exist.",
     "configuration": "Settings",
-    "Manage_Account": "Account Management",
+    "Manage_Account": "User Management",
     "Manage_Department": "Department Management",
     "Manage_Deparment_Info": "Department Info",
     "Manage_Role": "Role Management",
@@ -198,5 +198,14 @@
     "Permission_View_all_roles": "View all roles",
     "Permission_Delete_role": "Delete role",
     "Permission_Create_role": "Create role",
-    "Permission_Assign_permission_for_role": "Assign permission for role"
+    "Permission_Assign_permission_for_role": "Assign permission for role",
+    "Manage_Team" : "Team Management",
+    "Manage_Project" : "Project Management",
+    "Common_DownloadSuccess" : "Download successfully!",
+    "Common_Download_Template" : "Download template",
+    "Manage_Team_Info" : "Team Info",
+    "Department_Team_Leader" : "Team leader",
+    "User_Detail_Panel_Title" : "User Detail",
+    "Team_Detail_Panel_Title" : "Team Detail",
+    "General_Information" : "General Information"
 }

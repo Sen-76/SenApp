@@ -86,7 +86,7 @@
     "Common_NoRecord": "Hiện tại không có dữ liệu nào.",
     "Common_TitleExist": "Tên này đã tồn tại.",
     "configuration": "Cấu hình",
-    "Manage_Account": "Quản lý tài khoản",
+    "Manage_Account": "Quản lý người dùng",
     "Manage_Department": "Quản lý phòng",
     "Manage_Deparment_Info": "Thông tin phòng",
     "Manage_Role": "Quản lý quyền",
@@ -195,5 +195,14 @@
     "Permission_View_all_roles": "Xem tất cả vai trò",
     "Permission_Delete_role": "Xóa vai trò",
     "Permission_Create_role": "Tạo vai trò",
-    "Permission_Assign_permission_for_role": "Gán quyền cho vai trò"
+    "Permission_Assign_permission_for_role": "Gán quyền cho vai trò",
+    "Manage_Team" : "Quản lý nhóm",
+    "Manage_Project" : "Quản lý dự án",
+    "Common_DownloadSuccess" : "Tải thành công!",
+    "Common_Download_Template" : "Tải tệp mẫu",
+    "Manage_Team_Info" : "Thông tin nhóm",
+    "Department_Team_Leader" : "Nhóm trưởng",
+    "User_Detail_Panel_Title" : "Thông tin chi tiết người dùng",
+    "Team_Detail_Panel_Title" : "Thông tin chi tiết nhóm",
+    "General_Information" : "Thông tin chung"
 }

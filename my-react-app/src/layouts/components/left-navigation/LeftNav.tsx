@@ -3,7 +3,6 @@ import React, { useState, useEffect } from 'react';
 import {
   ArrowRightOutlined,
   BulbOutlined,
-  HddOutlined,
   SettingOutlined,
   AppstoreOutlined,
   SnippetsOutlined,
@@ -142,6 +141,12 @@ function LeftNav(props: IProps) {
           path: '/management/role-management',
           icon: renderIcon(ArrowRightOutlined),
           key: 'role-management'
+        },
+        {
+          label: t('Manage_Project'),
+          path: '/management/project-management',
+          icon: renderIcon(ArrowRightOutlined),
+          key: 'project-management'
         }
       ]
     },
@@ -173,6 +178,12 @@ function LeftNav(props: IProps) {
           path: '/configuration/star-configuration',
           icon: renderIcon(ArrowRightOutlined),
           key: 'star-configuration'
+        },
+        {
+          label: t('Configuration_Task_Status'),
+          path: '/configuration/task-status-configuration',
+          icon: renderIcon(ArrowRightOutlined),
+          key: 'task-status-configuration'
         }
       ]
     }

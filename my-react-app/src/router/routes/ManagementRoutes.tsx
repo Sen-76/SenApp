@@ -5,6 +5,7 @@ const AccountManagement = lazy(() => import('../../pages/management/account/Acco
 const DepartmentManagement = lazy(() => import('../../pages/management/department/list/Department'));
 const DepartmentDetail = lazy(() => import('../../pages/management/department/view-detail/ViewDetail'));
 const RoleManagement = lazy(() => import('../../pages/management/role/Role'));
+const ProjectManagement = lazy(() => import('../../pages/management/project/list/Project'));
 const TeamManagement = lazy(() => import('../../pages/management/team/team-list/Team'));
 const TeamManagementDetail = lazy(() => import('../../pages/management/team/team-detail/TeamDetail'));
 
@@ -43,6 +44,13 @@ const routes: IRouter.IRoute<'/management'>[] = [
     exact: true,
     element: TeamManagement,
     meta: { role: [ERole.Admin], pageTitle: 'Team Management' }
+  },
+  {
+    path: '/management/project-management',
+    name: 'project-management',
+    exact: true,
+    element: ProjectManagement,
+    meta: { role: [ERole.Admin], pageTitle: 'Project Management' }
   },
   {
     path: '/management/team-management/team-detail/:name/:id',

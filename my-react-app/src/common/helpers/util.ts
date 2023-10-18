@@ -75,5 +75,18 @@ export const util = {
       color += letters[Math.floor(Math.random() * 16)];
     }
     return color;
+  },
+  rgbaToHex(rgba: A) {
+    const r = Math.round(rgba.r * 255);
+    const g = Math.round(rgba.g * 255);
+    const b = Math.round(rgba.b * 255);
+    const a = Math.round(rgba.a * 255);
+
+    const alphaHex = a.toString(16).padStart(2, '0');
+    const redHex = r.toString(16).padStart(2, '0');
+    const greenHex = g.toString(16).padStart(2, '0');
+    const blueHex = b.toString(16).padStart(2, '0');
+
+    return `#${redHex}${greenHex}${blueHex}${alphaHex}`;
   }
 };

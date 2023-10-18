@@ -14,7 +14,7 @@ function Login() {
   const { t } = useTranslation();
   const { loginIn } = useLoginManager();
   const [form] = Form.useForm();
-  const [customAlert, setCustomAlert] = useState<Authen.IUserLoginModel>();
+  const [customAlert, setCustomAlert] = useState<A>();
   const { getLoginUser } = useLoginManager();
   const { isLoading, showLoading, closeLoading } = useLoading();
 
@@ -28,6 +28,7 @@ function Login() {
     try {
       showLoading();
       const result = await loginIn(values);
+      console.log(result);
       setCustomAlert(result);
     } catch (e) {
       console.log(e);
@@ -59,32 +60,21 @@ function Login() {
           <UserOutlined />
           <label>{t('Common_Login')}</label>
         </div>
-        <Form.Item
-          label={t('username')}
-          name="userEmail"
-          rules={formRule.userEmail}
-          className={customAlert?.userEmail ? 'customFieldAlert' : ''}
-        >
+        <Form.Item label={t('username')} name="userEmail" rules={formRule.userEmail}>
           <Input
             size="large"
             prefix={<UserOutlined style={{ marginRight: 5 }} />}
-            onChange={() => setCustomAlert({ ...customAlert, userEmail: '' })}
+            onChange={() => setCustomAlert(null)}
           />
         </Form.Item>
-        {customAlert?.userEmail && <div className="customAlert">{t('Common_Login_EmailNotExist_Alert')}</div>}
-        <Form.Item
-          label={t('password')}
-          name="password"
-          rules={formRule.password}
-          className={customAlert?.password ? 'customFieldAlert' : ''}
-        >
+        <Form.Item label={t('password')} name="password" rules={formRule.password}>
           <Input.Password
             size="large"
             prefix={<LockOutlined style={{ marginRight: 5 }} />}
-            onChange={() => setCustomAlert({ ...customAlert, password: '' })}
+            onChange={() => setCustomAlert(null)}
           />
         </Form.Item>
-        {customAlert?.password && <span className="customAlert">{t('Common_Login_PasswordNotCorrect_Alert')}</span>}
+        {customAlert && <span className="customAlert">{t('Common_Login_Failed')}</span>}
 
         <Row>
           <Form.Item name="remember" valuePropName="checked">
