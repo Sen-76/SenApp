@@ -371,6 +371,7 @@ function Panel(props: IProps, ref: A) {
                 <Select
                   options={departmentList}
                   onSelect={(val) => {
+                    setSelectedUser([...selectedUser.filter((x) => x !== selectedManager)]);
                     form.setFieldValue('owner', null);
                     const draftParam = { ...param };
                     const dpm = draftParam.filter.findIndex((x: A) => x.key === 'userDepartment');
@@ -426,7 +427,7 @@ function Panel(props: IProps, ref: A) {
           )}
           {step === 1 && (
             <>
-              <Form.Item label={t('members')}>
+              <Form.Item name="members" label={t('members')}>
                 <Select
                   style={{ width: '100%', marginBottom: 10 }}
                   labelInValue

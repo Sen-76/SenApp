@@ -1,7 +1,8 @@
 import { ERole } from '../../common/ERole';
 import { lazy } from 'react';
 
-const Projects = lazy(() => import('../../pages/projects/Projects'));
+const Projects = lazy(() => import('../../pages/projects/list/Projects'));
+const ProjectDetail = lazy(() => import('../../pages/projects/detail/ProjectDetail'));
 
 const routes: IRouter.IRoute<'/projects'>[] = [
   {
@@ -10,6 +11,13 @@ const routes: IRouter.IRoute<'/projects'>[] = [
     exact: true,
     element: Projects,
     meta: { role: [ERole.Admin], pageTitle: 'Projects' }
+  },
+  {
+    path: '/projects/detail/:id/:name',
+    name: 'projectdetail',
+    exact: true,
+    element: ProjectDetail,
+    meta: { role: [ERole.Admin], pageTitle: 'Project Detail' }
   }
 ];
 

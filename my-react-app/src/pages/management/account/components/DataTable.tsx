@@ -144,9 +144,7 @@ function DataTable(props: IProps) {
       render: (_, record) => {
         return (
           <Tooltip placement="bottom" title={record.jobTitle} color="#ffffff" arrow={true}>
-            <Paragraph ellipsis={{ rows: 1, expandable: false }} style={{ maxWidth: 100 }}>
-              {record.jobTitle}
-            </Paragraph>
+            <Paragraph ellipsis={{ rows: 1, expandable: false }}>{record.jobTitle}</Paragraph>
           </Tooltip>
         );
       }

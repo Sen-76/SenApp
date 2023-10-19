@@ -7,7 +7,8 @@ import { permissionService } from './Permission';
 import { teamService } from './Team';
 import { projectService } from './Project';
 import { downloadService } from './Download';
-
+import { taskStatusService } from './TaskStatus';
+import { milestoneService } from './Milestone';
 export const service = {
   accountService,
   globalSettingsService,
@@ -17,5 +18,7 @@ export const service = {
   permissionService,
   teamService,
   projectService,
-  downloadService
+  downloadService,
+  taskStatusService,
+  milestoneService
 };

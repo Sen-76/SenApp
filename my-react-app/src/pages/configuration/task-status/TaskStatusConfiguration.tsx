@@ -1,28 +1,30 @@
+/* eslint-disable @typescript-eslint/no-non-null-assertion */
 import { useBreadcrumb } from '@/components/breadcrum/Breadcrum';
 import { SettingOutlined } from '@ant-design/icons';
 import { useTranslation } from 'react-i18next';
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import styles from './TaskStatusConfiguration.module.scss';
 import DataList from './components/DataList';
 import Panel from './components/Panel';
+import { service } from '@/services/apis';
 
-const drafStatus = [
-  {
-    title: 'ok',
-    description: 'cc',
-    color: '#CA9595',
-    deleteable: false
-  },
-  {
-    title: 'dm',
-    description: 'cc',
-    color: '#F7F600',
-    deleteable: true
-  }
-];
 function TaskStatus() {
+  const initDataGrid: Common.IDataGrid = {
+    pageInfor: {
+      pageSize: 100,
+      pageNumber: 1,
+      totalItems: 0
+    },
+    searchInfor: {
+      searchValue: '',
+      searchColumn: ['Title']
+    }
+  };
   const { t } = useTranslation();
   const { setBreadcrumb } = useBreadcrumb();
+  const [loading, setLoading] = useState<boolean>(false);
+  const [taskStatusList, setTaskStatusList] = useState<TaskStatus.ITaskStatusModel[]>([]);
+  const [param, setParam] = useState<Common.IDataGrid>(initDataGrid);
   const panelRef = useRef();
 
   useEffect(() => {
@@ -32,14 +34,45 @@ function TaskStatus() {
     ]);
   }, [t]);
 
+  useEffect(() => {
+    getFileList();
+  }, []);
+
+  const getFileList = async (draftParam?: Common.IDataGrid) => {
+    try {
+      setLoading(true);
+      const result = await service.taskStatusService.get(draftParam ?? param);
+      setTaskStatusList(result.data);
+      setLoading(false);
+    } catch (e) {
+      console.log(e);
+    }
+  };
+
   const openPanel = (data?: A) => {
     (panelRef.current as A).openDrawer(data);
   };
 
+  const onSearch = (value: string) => {
+    const draftGrid = { ...param };
+    if (draftGrid.searchInfor) {
+      draftGrid.searchInfor.searchValue = value;
+    }
+    draftGrid.pageInfor!.pageNumber = 1;
+    setParam(draftGrid);
+    getFileList(draftGrid);
+  };
+
   return (
     <div className={styles.taskstatus}>
-      <DataList data={drafStatus} openPanel={openPanel} />
-      <Panel ref={panelRef} refreshList={() => console.log('dm')} />
+      <DataList
+        data={taskStatusList}
+        openPanel={openPanel}
+        listLoading={loading}
+        refreshList={getFileList}
+        onSearch={onSearch}
+      />
+      <Panel ref={panelRef} refreshList={getFileList} />
     </div>
   );
 }

@@ -1,9 +1,11 @@
 import { CloseOutlined } from '@ant-design/icons';
-import { Button, ColorPicker, Drawer, Form, Input } from 'antd';
+import { Button, ColorPicker, Drawer, Form, Input, notification } from 'antd';
 import { forwardRef, useImperativeHandle, useState } from 'react';
 import styles from '../TaskStatusConfiguration.module.scss';
 import { useTranslation } from 'react-i18next';
 import { util } from '@/common/helpers/util';
+import { useLoading } from '@/common/context/useLoading';
+import { service } from '@/services/apis';
 
 interface IProps {
   refreshList: () => void;
@@ -12,7 +14,9 @@ function Panel(props: IProps, ref: A) {
   const [open, setOpen] = useState<boolean>(false);
   const { t } = useTranslation();
   const [isEdit, setIsEdit] = useState<boolean>(false);
+  const [editData, setEditData] = useState<TaskStatus.ITaskStatusModel>();
   const [form] = Form.useForm();
+  const { showLoading, closeLoading } = useLoading();
 
   useImperativeHandle(ref, () => ({
     openDrawer
@@ -24,6 +28,7 @@ function Panel(props: IProps, ref: A) {
     if (data) {
       setIsEdit(true);
       form.setFieldsValue(data);
+      setEditData(data);
     }
   };
 
@@ -33,14 +38,44 @@ function Panel(props: IProps, ref: A) {
   };
 
   const onFinish = async () => {
-    const checkValid = await form.validateFields();
-    if (checkValid) {
-      console.log(form.getFieldsValue());
-      console.log(
-        typeof form.getFieldValue('color') === 'string'
-          ? form.getFieldValue('color').toString()
-          : util.rgbaToHex(form.getFieldValue('color').metaColor)
-      );
+    try {
+      console.log(form.getFieldValue('color'));
+      const checkValid = await form.validateFields();
+      if (checkValid) {
+        showLoading();
+        if (isEdit) {
+          await service.taskStatusService.update({
+            ...editData,
+            ...form.getFieldsValue(),
+            color:
+              typeof form.getFieldValue('color') === 'string'
+                ? form.getFieldValue('color').toString()
+                : util.rgbToHex(form.getFieldValue('color').metaColor)
+          });
+          notification.open({
+            message: t('Common_UpdateSuccess'),
+            type: 'success'
+          });
+        } else {
+          await service.taskStatusService.create({
+            ...form.getFieldsValue(),
+            color:
+              typeof form.getFieldValue('color') === 'string'
+                ? form.getFieldValue('color').toString()
+                : util.rgbToHex(form.getFieldValue('color').metaColor)
+          });
+          notification.open({
+            message: t('Common_CreateSuccess'),
+            type: 'success'
+          });
+        }
+        closeDrawer();
+        props.refreshList();
+      }
+    } catch (e) {
+      console.log(e);
+    } finally {
+      closeLoading();
     }
   };
 

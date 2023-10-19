@@ -220,7 +220,7 @@ function Panel(props: IProps, ref: A) {
               </Form.Item>
               {customAlert?.title && <div className="customAlert">{t('Common_TitleExist')}</div>}
               <Form.Item name="description" label={t('Common_Description')}>
-                <TextArea maxLength={1000} showCount />
+                <TextArea maxLength={1000} rows={5} showCount />
               </Form.Item>
             </Form>
           </>

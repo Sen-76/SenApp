@@ -1,11 +1,11 @@
 import { CloseOutlined } from '@ant-design/icons';
 import { Button, Checkbox, Col, Collapse, CollapseProps, Drawer, Form, Row, Typography } from 'antd';
 import { forwardRef, useEffect, useImperativeHandle, useState } from 'react';
-import styles from '../AccountManagement.module.scss';
-import { DepartmentOptions, GenderOptions } from '../AccountManagement.Model';
+import styles from '../Project.module.scss';
 import { useTranslation } from 'react-i18next';
 import { service } from '@/services/apis';
 import { useLoading } from '@/common/context/useLoading';
+import { StatusOptions } from '../Project.model';
 
 interface IProps {
   filterAccount: (val: A) => void;
@@ -15,31 +15,11 @@ function FilterPanel(props: IProps, ref: A) {
   const [open, setOpen] = useState<boolean>(false);
   const [items, setItems] = useState<CollapseProps['items']>([]);
   const { showLoading, closeLoading } = useLoading();
-  const [roleList, setRoleList] = useState<A>();
   const [departmentList, setDepartmentList] = useState<A>();
+  const [teamList, setTeamList] = useState<A>([]);
   const { t } = useTranslation();
   const [form] = Form.useForm();
   const { Paragraph } = Typography;
-
-  const getRoleList = async () => {
-    try {
-      const result = await service.rolesService.get({
-        pageInfor: {
-          pageSize: 100,
-          pageNumber: 1,
-          totalItems: 0
-        }
-      });
-      setRoleList(
-        result.data.map((role: A) => ({
-          label: role.title,
-          value: role.id
-        }))
-      );
-    } catch (e) {
-      console.log(e);
-    } 
-  };
 
   const getDepartmentList = async () => {
     try {
@@ -61,14 +41,38 @@ function FilterPanel(props: IProps, ref: A) {
     }
   };
 
+  const getTeam = async () => {
+    try {
+      const department = await form.getFieldValue('department');
+      showLoading();
+      const result = await service.teamService.get({
+        pageInfor: {
+          pageSize: 100,
+          pageNumber: 1,
+          totalItems: 0
+        },
+        filter: [{ key: 'DepartmentId', value: department }]
+      });
+      setTeamList([
+        ...result.data.map((team: A) => ({
+          label: team.title,
+          value: team.id
+        }))
+      ]);
+      closeLoading();
+    } catch (e) {
+      console.log(e);
+    }
+  };
+
   useEffect(() => {
     getFilterValue();
-  }, [roleList, departmentList]);
+  }, [teamList, departmentList]);
 
   const getFilterValue = () => {
     const DepartmentElement = (
       <Form.Item name="department">
-        <Checkbox.Group>
+        <Checkbox.Group onChange={getTeam}>
           <Row>
             {departmentList?.map((item: A) => (
               <Col span={12} key={item.value} className={styles.col}>
@@ -81,11 +85,11 @@ function FilterPanel(props: IProps, ref: A) {
         </Checkbox.Group>
       </Form.Item>
     );
-    const GenderElement = (
-      <Form.Item name="gender">
+    const TeamElement = (
+      <Form.Item name="team">
         <Checkbox.Group>
           <Row>
-            {GenderOptions.map((item: A) => (
+            {teamList?.map((item: A) => (
               <Col span={12} key={item.value} className={styles.col}>
                 <Checkbox value={item.value}>
                   <Paragraph ellipsis={{ rows: 4, expandable: false }}>{item.label}</Paragraph>
@@ -96,11 +100,11 @@ function FilterPanel(props: IProps, ref: A) {
         </Checkbox.Group>
       </Form.Item>
     );
-    const RoleElement = (
-      <Form.Item name="role">
+    const StatusElement = (
+      <Form.Item name="team">
         <Checkbox.Group>
           <Row>
-            {roleList?.map((item: A) => (
+            {StatusOptions?.map((item: A) => (
               <Col span={12} key={item.value} className={styles.col}>
                 <Checkbox value={item.value}>
                   <Paragraph ellipsis={{ rows: 4, expandable: false }}>{item.label}</Paragraph>
@@ -113,8 +117,8 @@ function FilterPanel(props: IProps, ref: A) {
     );
     const item = [
       { key: 'department', label: t('department'), children: DepartmentElement },
-      { key: 'gender', label: t('gender'), children: GenderElement },
-      { key: 'role', label: t('role'), children: RoleElement }
+      { key: 'team', label: t('team'), children: TeamElement },
+      { key: 'status', label: t('Common_Status'), children: StatusElement }
     ];
     setItems(item);
   };
@@ -126,12 +130,9 @@ function FilterPanel(props: IProps, ref: A) {
   const openDrawer = async (data?: A) => {
     try {
       showLoading();
-      await getRoleList();
       await getDepartmentList();
       const dataTable: A = {
-        gender: data?.find((x: A) => x.key == 'Gender')?.value,
-        department: data?.find((x: A) => x.key == 'UserDepartment')?.value,
-        role: data?.find((x: A) => x.key == 'UserRole')?.value
+        department: data?.find((x: A) => x.key == 'UserDepartment')?.value
       };
       form.setFieldsValue(dataTable);
       setOpen(true);
@@ -174,7 +175,7 @@ function FilterPanel(props: IProps, ref: A) {
           <Collapse
             items={items}
             bordered={false}
-            defaultActiveKey={['department', 'gender', 'status', 'role']}
+            defaultActiveKey={['department', 'team', 'status']}
             ghost
             size="large"
             expandIconPosition="end"

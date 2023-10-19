@@ -9,9 +9,12 @@ import {
 import { Button, Table, Tag, Tooltip, notification } from 'antd';
 import { ColumnsType } from 'antd/es/table';
 import { useTranslation } from 'react-i18next';
-import styles from '../Task.module.scss';
+import styles from '../Project.module.scss';
 import Search from 'antd/es/input/Search';
 import Paragraph from 'antd/es/typography/Paragraph';
+import dayjs from 'dayjs';
+import { EStatus } from '../Project.model';
+import { Link } from 'react-router-dom';
 
 interface IProps {
   data: A[];
@@ -19,7 +22,6 @@ interface IProps {
   param: Common.IDataGrid;
   openPanel: (data?: A) => void;
   openFilterPanel: (data?: A) => void;
-  openDetailPanel: (data?: A) => void;
 }
 function DataTable(props: IProps) {
   const { loading, param, data } = props;
@@ -38,33 +40,49 @@ function DataTable(props: IProps) {
       }
     },
     {
-      title: t('Task_Prioty'),
-      dataIndex: 'description',
-      key: 'description',
+      title: t('team'),
+      dataIndex: 'team',
+      key: 'team',
       render: (_, record) => {
-        return <Tag>Bloker</Tag>;
+        return record.team;
       }
     },
     {
-      title: t('Task_Assignee'),
-      dataIndex: 'modifiedOn',
-      key: 'modifiedOn',
+      title: t('department'),
+      dataIndex: 'department',
+      key: 'department',
       render: (_, record) => {
-        return record.assignee;
+        return record.department;
       }
     },
     {
-      title: t('Task_ReportTo'),
-      dataIndex: 'modifiedBy',
-      key: 'modifiedBy',
-      render: (_, record) => record.reportTo
+      title: t('Project_StartDate'),
+      dataIndex: 'startdate',
+      key: 'startdate',
+      render: (_, record) => {
+        return dayjs(record.startdate).format('DD MMM YYYY');
+      }
     },
     {
-      title: t('Task_Status'),
-      dataIndex: 'description',
-      key: 'description',
+      title: t('Project_DueDate'),
+      dataIndex: 'duedate',
+      key: 'duedate',
       render: (_, record) => {
-        return <Tag>Done</Tag>;
+        return dayjs(record.duedate).format('DD MMM YYYY');
+      }
+    },
+    {
+      title: t('Project_Status'),
+      dataIndex: 'status',
+      key: 'status',
+      render: (_, record) => {
+        return (
+          <>
+            {record.status === EStatus.InProgress && <Tag color="blue">In Progress</Tag>}
+            {record.status === EStatus.Closed && <Tag color="black">Closed</Tag>}
+            {record.status === EStatus.Done && <Tag color="green">Done</Tag>}
+          </>
+        );
       }
     },
     {
@@ -75,13 +93,18 @@ function DataTable(props: IProps) {
       className: 'actionCollumn',
       width: 180,
       render: (_, record) => {
+        const editClick = () => {
+          props.openPanel(record);
+        };
         return (
           <div>
             <Tooltip placement="bottom" title={t('Common_ViewDetail')} color="#ffffff" arrow={true}>
-              <Button type="text" onClick={() => props.openDetailPanel(record)} icon={<SolutionOutlined />} />
+              <Link to={`/projects/detail/${record.id}/${record.title}`}>
+                <Button type="text" icon={<SolutionOutlined />} />
+              </Link>
             </Tooltip>
             <Tooltip placement="bottom" title={t('Common_Edit')} color="#ffffff" arrow={true}>
-              <Button type="text" onClick={() => props.openPanel(record)} icon={<EditOutlined />} />
+              <Button type="text" onClick={editClick} icon={<EditOutlined />} />
             </Tooltip>
           </div>
         );
@@ -97,7 +120,7 @@ function DataTable(props: IProps) {
     return (
       <>
         <div className={styles.tableHeaderLeft}>
-          <Button type="text" icon={<PlusOutlined />} onClick={() => props.openPanel()}>
+          <Button type="text" onClick={props.openPanel} icon={<PlusOutlined />}>
             {t('Common_AddNew')}
           </Button>
           <Button type="text" onClick={exportExcel} icon={<ExportOutlined />}>

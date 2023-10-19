@@ -27,7 +27,7 @@ function Panel(props: IProps, ref: A) {
     setIsEdit(false);
     if (data) {
       setIsEdit(true);
-      form.setFieldsValue({ ...data });
+      form.setFieldsValue({ ...data, fileAccept: data.fileAccept.split(', ') });
     }
   };
 
@@ -41,7 +41,10 @@ function Panel(props: IProps, ref: A) {
       showLoading();
       await service.globalSettingsService.updateFileConfig({
         id: props.all.id,
-        fileSting: [...props.all.detail.filter((x: A) => x.title !== val.title), val]
+        fileSting: [
+          ...props.all.detail.filter((x: A) => x.title !== val.title),
+          { ...val, fileAccept: form.getFieldValue('fileAccept').join(', ') }
+        ]
       });
       props.refreshList();
       notification.open({

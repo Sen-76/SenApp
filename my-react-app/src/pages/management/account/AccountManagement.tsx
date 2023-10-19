@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-non-null-assertion */
 import { useBreadcrumb } from '../../../components/breadcrum/Breadcrum';
 import { BulbOutlined } from '@ant-design/icons';
 import { useEffect, useRef, useState } from 'react';

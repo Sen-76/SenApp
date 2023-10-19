@@ -3,36 +3,59 @@ import { Button, Col, ColorPicker, List, Modal, Row, Tooltip } from 'antd';
 import { useTranslation } from 'react-i18next';
 import styles from '../TaskStatusConfiguration.module.scss';
 import Paragraph from 'antd/es/typography/Paragraph';
+import { service } from '@/services/apis';
+import { useState } from 'react';
+import Search from 'antd/es/input/Search';
 
 interface IProps {
-  data: A[];
-  openPanel: (data?: A) => void;
+  data: TaskStatus.ITaskStatusModel[];
+  openPanel: (data?: TaskStatus.ITaskStatusModel) => void;
+  refreshList: () => void;
+  onSearch: (value: string) => void;
+  listLoading: boolean;
 }
 function DataList(props: IProps) {
   const { t } = useTranslation();
   const { confirm } = Modal;
+  const [loading, setLoading] = useState<boolean>(props.listLoading);
 
-  const deleteTaskStatus = async (item: A) => {
+  const deleteTaskStatus = async (item: TaskStatus.ITaskStatusModel) => {
     confirm({
-      content: t('Department_Delete_Remind_Text').replace('{0}', item.title),
+      content: t('Task_Status_Delete_Remind_Text').replace('{0}', item.title),
       title: t('Common_Confirm'),
       okText: t('Common_Delete'),
       cancelText: t('Common_Cancel'),
       onOk() {
-        // confirmDelete(item.id);
+        confirmDelete(item.id);
       }
     });
   };
 
+  const confirmDelete = async (id: string) => {
+    try {
+      setLoading(true);
+      await service.taskStatusService.delete({ isHardDelete: true, id: [id] });
+      props.refreshList();
+    } catch (e) {
+      console.log(e);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const onSearch = (val: A) => {
+    props.onSearch(val);
+  };
+
   const TableHeader = (
-    <>
+    <div className={styles.listheader}>
       <Button type="text" onClick={() => props.openPanel()} icon={<PlusOutlined />}>
         {t('Common_AddNew')}
       </Button>
-    </>
+      <Search placeholder={t('Common_SearchByTitle')} allowClear onSearch={onSearch} style={{ width: 250 }} />
+    </div>
   );
-
-  const item = (item: A) => (
+  const item = (item: TaskStatus.ITaskStatusModel) => (
     <List.Item>
       <List.Item.Meta
         title={
@@ -40,7 +63,7 @@ function DataList(props: IProps) {
             <Col style={{ width: '80%' }}>
               <div className={styles.itemContent}>
                 <Col>
-                  <ColorPicker defaultValue={item.color} disabled size="small" style={{ marginRight: 20 }} />
+                  <ColorPicker value={item.color} disabled size="small" style={{ marginRight: 20 }} />
                 </Col>
                 <Col style={{ maxWidth: '80%' }}>
                   <Paragraph ellipsis={{ rows: 1, expandable: false }} style={{ width: 'auto', maxWidth: '100%' }}>
@@ -63,7 +86,7 @@ function DataList(props: IProps) {
               </Tooltip>
               <Tooltip placement="bottom" title={t('Common_Delete')} color="#ffffff" arrow={true}>
                 <Button
-                  disabled={!item.deleteable}
+                  disabled={!!item.isDefault}
                   type="text"
                   onClick={() => deleteTaskStatus(item)}
                   icon={<DeleteOutlined />}
@@ -85,6 +108,7 @@ function DataList(props: IProps) {
         bordered
         renderItem={item}
         header={TableHeader}
+        loading={loading}
       />
     </>
   );

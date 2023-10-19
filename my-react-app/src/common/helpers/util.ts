@@ -88,5 +88,21 @@ export const util = {
     const blueHex = b.toString(16).padStart(2, '0');
 
     return `#${redHex}${greenHex}${blueHex}${alphaHex}`;
+  },
+  rgbToHex(rgba: A): string {
+    rgba.r = Math.max(0, Math.min(255, rgba.r));
+    rgba.g = Math.max(0, Math.min(255, rgba.g));
+    rgba.b = Math.max(0, Math.min(255, rgba.b));
+    rgba.a = Math.max(0, Math.min(1, rgba.a));
+
+    const redHex = Math.round(rgba.r).toString(16).padStart(2, '0');
+    const greenHex = Math.round(rgba.g).toString(16).padStart(2, '0');
+    const blueHex = Math.round(rgba.b).toString(16).padStart(2, '0');
+    const alphaHex = Math.round(rgba.a * 255)
+      .toString(16)
+      .padStart(2, '0');
+
+    const hexColor = `#${redHex}${greenHex}${blueHex}${alphaHex}`;
+    return hexColor;
   }
 };

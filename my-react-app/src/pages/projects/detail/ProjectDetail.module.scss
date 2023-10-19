@@ -1,0 +1,52 @@
+.projectdetail {
+  margin: 0 10px;
+  :global {
+    .ant-tree-treenode {
+      width: 100%;
+      .ant-tree-node-content-wrapper {
+        width: 100%;
+        border-radius: 4px;
+      }
+    }
+    .ant-col {
+      margin: 0;
+    }
+    .ant-progress {
+      width: 300px;
+      margin: 0;
+      margin-right: 30px;
+      .ant-progress-inner {
+        height: 13px;
+        div {
+          height: 13px !important;
+        }
+      }
+    }
+    .anticon-more {
+      font-size: 20px;
+    }
+  }
+  .milestoneItem {
+    width: 100%;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 20px;
+    .title {
+      font-size: 19px;
+      line-height: 1.5;
+      font-weight: 600;
+    }
+    .progressCol {
+      display: flex;
+      align-items: center;
+    }
+  }
+}
+.menuitem {
+  min-width: 200px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 16px;
+}

@@ -49,7 +49,7 @@ function DataTable(props: IProps) {
       width: 300,
       render: (_, record) => {
         return (
-          <Tooltip placement="bottom" title={record.userEmail} color="#ffffff" arrow={true}>
+          <Tooltip placement="bottom" title={record.description} color="#ffffff" arrow={true}>
             <Paragraph ellipsis={{ rows: 1, expandable: false }} style={{ minWidth: 100 }}>
               {record.description}
             </Paragraph>

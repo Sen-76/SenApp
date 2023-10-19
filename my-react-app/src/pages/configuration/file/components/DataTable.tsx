@@ -43,7 +43,7 @@ function DataTable(props: IProps) {
       width: 110,
       key: 'fileAccept',
       render: (_, record) => {
-        return record.fileAccept.join(', ');
+        return record.fileAccept;
       }
     },
     {
@@ -64,6 +64,7 @@ function DataTable(props: IProps) {
       width: 80,
       render: (_, record) => {
         const editClick = () => {
+          console.log(record);
           props.openPanel(record);
         };
         return (

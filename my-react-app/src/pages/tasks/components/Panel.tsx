@@ -118,7 +118,7 @@ function Panel(props: IProps, ref: A) {
             <DatePicker disabledDate={disabledDate} />
           </Form.Item>
           <Form.Item name="title" label={t('Common_Description')}>
-            <TextArea rows={5} />
+            <TextArea maxLength={1000} rows={5} showCount />
           </Form.Item>
           <Form.Item name="attachment" label={t('Task_Attachment')}>
             <Upload
