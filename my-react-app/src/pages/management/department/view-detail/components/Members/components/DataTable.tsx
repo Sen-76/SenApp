@@ -7,7 +7,7 @@ import {
   SolutionOutlined,
   WomanOutlined
 } from '@ant-design/icons';
-import { Avatar, Button, Modal, Table, TablePaginationConfig, Tooltip, notification } from 'antd';
+import { Avatar, Button, Modal, Table, TablePaginationConfig, Tag, Tooltip, notification } from 'antd';
 import { ColumnsType } from 'antd/es/table';
 import { useState } from 'react';
 import styles from '../Member.module.scss';
@@ -49,8 +49,13 @@ function DataTable(props: IProps) {
               <Avatar size={40} src={record.photoUrl} style={{ marginRight: 10, backgroundColor: util.randomColor() }}>
                 {record.fullName?.charAt(0)}
               </Avatar>
-              <Paragraph ellipsis={{ rows: 1, expandable: false }} style={{ maxWidth: 150, minWidth: 30 }}>
+              <Paragraph ellipsis={{ rows: 1, expandable: false }} style={{ display: 'flex', flexDirection: 'column' }}>
                 {record.fullName}
+                {record.isManager && (
+                  <Tag style={{ width: '64px' }} color="red">
+                    {t('Manager')}
+                  </Tag>
+                )}
               </Paragraph>
             </div>
           </Tooltip>
@@ -99,7 +104,12 @@ function DataTable(props: IProps) {
               <Button type="text" onClick={viewDetailCLick} icon={<SolutionOutlined />} />
             </Tooltip>
             <Tooltip placement="bottom" title={t('Common_Kick')} color="#ffffff" arrow={true}>
-              <Button type="text" onClick={() => kickoutMembers(record)} icon={<LogoutOutlined />} />
+              <Button
+                disabled={record.isManager}
+                type="text"
+                onClick={() => kickoutMembers(record)}
+                icon={<LogoutOutlined />}
+              />
             </Tooltip>
           </div>
         );

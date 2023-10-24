@@ -28,7 +28,7 @@ function DataTable(props: IProps) {
 
   const columns: ColumnsType<A> = [
     {
-      title: t('Common_Title'),
+      title: t('Department_Name'),
       dataIndex: 'title',
       key: 'title',
       width: 200,
@@ -116,11 +116,11 @@ function DataTable(props: IProps) {
                 <Button type="text" icon={<SolutionOutlined />} />
               </Link>
             </Tooltip>
-            <Tooltip placement="bottom" title={t('Common_Delete')} color="#ffffff" arrow={true}>
-              <Button type="text" onClick={() => deleteDepartment(record)} icon={<DeleteOutlined />} />
-            </Tooltip>
             <Tooltip placement="bottom" title={t('Common_Edit')} color="#ffffff" arrow={true}>
               <Button type="text" onClick={editClick} icon={<EditOutlined />} />
+            </Tooltip>
+            <Tooltip placement="bottom" title={t('Common_Delete')} color="#ffffff" arrow={true}>
+              <Button type="text" onClick={() => deleteDepartment(record)} icon={<DeleteOutlined />} />
             </Tooltip>
           </div>
         );

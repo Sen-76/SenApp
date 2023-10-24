@@ -9,6 +9,7 @@ import { projectService } from './Project';
 import { downloadService } from './Download';
 import { taskStatusService } from './TaskStatus';
 import { milestoneService } from './Milestone';
+import { taskPriotyService } from './TaskPrioty';
 export const service = {
   accountService,
   globalSettingsService,
@@ -20,5 +21,6 @@ export const service = {
   projectService,
   downloadService,
   taskStatusService,
-  milestoneService
+  milestoneService,
+  taskPriotyService
 };

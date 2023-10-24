@@ -150,6 +150,20 @@ function DataTable(props: IProps) {
       }
     },
     {
+      title: t('department'),
+      dataIndex: 'department',
+      key: 'department',
+      render: (_, record) => {
+        return (
+          <Tooltip placement="bottom" title={record?.userDepartment2?.title} color="#ffffff" arrow={true}>
+            <Paragraph ellipsis={{ rows: 1, expandable: false }}>
+              {record.userDepartment2 === null ? 'N/A' : record.userDepartment2.title}
+            </Paragraph>
+          </Tooltip>
+        );
+      }
+    },
+    {
       title: t('Common_Action'),
       dataIndex: 'action',
       key: 'action',
@@ -180,11 +194,9 @@ function DataTable(props: IProps) {
                 </Tooltip>
               </>
             ) : (
-              <>
-                <Tooltip placement="bottom" title={t('Common_Restore')} color="#ffffff" arrow={true}>
-                  <Button type="text" onClick={() => restoreUser(record)} icon={<UndoOutlined />} />
-                </Tooltip>
-              </>
+              <Tooltip placement="bottom" title={t('Common_Restore')} color="#ffffff" arrow={true}>
+                <Button type="text" onClick={() => restoreUser(record)} icon={<UndoOutlined />} />
+              </Tooltip>
             )}
           </div>
         );
@@ -273,12 +285,19 @@ function DataTable(props: IProps) {
         showLoading();
         const formData = new FormData();
         formData.append('file', file, file.name);
-        formData.append('outletId', 'la cai d gi');
-        formData.append('comment', 'comment làm cái đúng gì');
+        formData.append('outletId', 'outletId');
+        formData.append('comment', 'comment');
         await service.accountService.importExcel(formData);
         props.refreshList();
+        notification.open({
+          message: t('Common_ImportSuccess'),
+          type: 'success'
+        });
       } catch (e) {
-        console.log(e);
+        notification.open({
+          message: t('Common_ImportFailed'),
+          type: 'error'
+        });
       } finally {
         closeLoading();
       }

@@ -41,8 +41,8 @@ function AdminLayout(props: IProps) {
     }
   ];
 
-  const test = useLoginManager().getLoginUser();
-  console.log(test.user.userRole2.permissions);
+  // const test = useLoginManager().getLoginUser();
+  // console.log(test.user.userRole2.permissions);
 
   return (
     <>

@@ -19,10 +19,7 @@ function Members() {
       searchValue: '',
       searchColumn: ['FullName']
     },
-    filter: [
-      { key: 'Status', value: [EState.Activate] },
-      { key: 'teamId', value: [data.id] }
-    ]
+    filter: [{ key: 'Status', value: [EState.Activate] }]
   };
   const detailPanelRef = useRef();
   const panelRef = useRef();
@@ -45,7 +42,8 @@ function Members() {
   const getMembers = async (draftParam?: Common.IDataGrid) => {
     try {
       setLoading(true);
-      const result = await service.accountService.getAccount(draftParam ?? param);
+      const result = await service.teamService.getMembersDetail(data.id, draftParam ?? param);
+      // const result = await service.teamService.getMembers(data.id ?? '');
       setParam({
         ...param,
         pageInfor: {

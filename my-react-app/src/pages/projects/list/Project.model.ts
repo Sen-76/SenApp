@@ -1,10 +1,14 @@
 export enum EStatus {
-  Done = 1,
-  InProgress = 0,
-  Closed = 2
+  Active = 0,
+  Pause = 1,
+  Done = 2,
+  Inactive = 3,
+  Closed = 4
 }
 export const StatusOptions = [
+  { label: 'Active', value: EStatus.Active },
+  { label: 'Pause', value: EStatus.Pause },
   { label: 'Done', value: EStatus.Done },
-  { label: ' In Progress', value: EStatus.InProgress },
-  { label: 'Closed', value: EStatus.Closed }
+  { label: 'Inactive', value: EStatus.Inactive },
+  { label: 'Closed', value: EStatus.Closed },
 ];

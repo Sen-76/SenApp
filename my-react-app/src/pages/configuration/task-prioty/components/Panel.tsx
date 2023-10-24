@@ -1,11 +1,12 @@
 import { CloseOutlined } from '@ant-design/icons';
-import { Button, ColorPicker, Drawer, Form, Input, notification, Checkbox } from 'antd';
+import { Button, ColorPicker, Drawer, Form, Input, notification } from 'antd';
 import { forwardRef, useImperativeHandle, useState } from 'react';
-import styles from '../TaskStatusConfiguration.module.scss';
+import styles from '../TaskPriotyConfiguration.module.scss';
 import { useTranslation } from 'react-i18next';
 import { util } from '@/common/helpers/util';
 import { useLoading } from '@/common/context/useLoading';
 import { service } from '@/services/apis';
+import IconPicker from './Icon';
 
 interface IProps {
   refreshList: () => void;
@@ -14,9 +15,8 @@ function Panel(props: IProps, ref: A) {
   const [open, setOpen] = useState<boolean>(false);
   const { t } = useTranslation();
   const [isEdit, setIsEdit] = useState<boolean>(false);
-  const [editData, setEditData] = useState<TaskStatus.ITaskStatusModel>();
+  const [editData, setEditData] = useState<TaskPrioty.ITaskPriotyModel>();
   const [form] = Form.useForm();
-  const [isDefaultStatus, setIsDefaultStatus] = useState<boolean>();
   const { showLoading, closeLoading } = useLoading();
 
   useImperativeHandle(ref, () => ({
@@ -29,7 +29,6 @@ function Panel(props: IProps, ref: A) {
     form.setFieldValue('color', '#3762EA');
     if (data) {
       setIsEdit(true);
-      setIsDefaultStatus(data.isDefault);
       form.setFieldsValue(data);
       setEditData(data);
     }
@@ -42,32 +41,30 @@ function Panel(props: IProps, ref: A) {
 
   const onFinish = async () => {
     try {
-      const hiddenInKanban = form.getFieldValue('isHiden') || false;
+      console.log(form.getFieldValue('iconUrl'));
       const checkValid = await form.validateFields();
       if (checkValid) {
         showLoading();
         if (isEdit) {
-          await service.taskStatusService.update({
+          await service.taskPriotyService.update({
             ...editData,
             ...form.getFieldsValue(),
-            hiddenInKanban,
-            color:
-              typeof form.getFieldValue('color') === 'string'
-                ? form.getFieldValue('color').toString()
-                : util.rgbToHex(form.getFieldValue('color').metaColor)
+            iconUrl:
+              typeof form.getFieldValue('iconUrl') === 'string'
+                ? form.getFieldValue('iconUrl').toString()
+                : util.rgbToHex(form.getFieldValue('iconUrl').metaColor)
           });
           notification.open({
             message: t('Common_UpdateSuccess'),
             type: 'success'
           });
         } else {
-          await service.taskStatusService.create({
+          await service.taskPriotyService.create({
             ...form.getFieldsValue(),
-            hiddenInKanban,
-            color:
-              typeof form.getFieldValue('color') === 'string'
-                ? form.getFieldValue('color').toString()
-                : util.rgbToHex(form.getFieldValue('color').metaColor)
+            iconUrl:
+              typeof form.getFieldValue('iconUrl') === 'string'
+                ? form.getFieldValue('iconUrl').toString()
+                : util.rgbToHex(form.getFieldValue('iconUrl').metaColor)
           });
           notification.open({
             message: t('Common_CreateSuccess'),
@@ -85,14 +82,14 @@ function Panel(props: IProps, ref: A) {
   };
 
   const formRule = {
-    title: [{ required: true, message: t('Common_Require_Field') }],
-    color: [{ required: true, message: t('Common_Require_Field') }]
+    pname: [{ required: true, message: t('Common_Require_Field') }],
+    iconUrl: [{ required: true, message: t('Common_Require_Field') }]
   };
 
   return (
     <>
       <Drawer
-        title={isEdit ? t('Configuration_Status_Edit') : t('Configuration_Status_Create')}
+        title={isEdit ? t('Configuration_Prioty_Edit') : t('Configuration_Prioty_Create')}
         placement="right"
         open={open}
         extra={<CloseOutlined onClick={closeDrawer} />}
@@ -103,17 +100,17 @@ function Panel(props: IProps, ref: A) {
         destroyOnClose={true}
       >
         <Form form={form} onFinish={onFinish} layout="vertical" className={styles.panelform}>
-          <Form.Item name="title" label={t('Common_Title')} rules={formRule.title}>
-            <Input disabled={isDefaultStatus} maxLength={250} showCount />
+          <Form.Item name="pname" label={t('Common_Name')} rules={formRule.pname}>
+            <Input maxLength={250} showCount />
           </Form.Item>
-          <Form.Item name="color" label={t('Common_Color')} rules={formRule.color}>
+          <Form.Item name="iconUrl" label={t('Common_Icon')} rules={formRule.iconUrl}>
+            <IconPicker />
+          </Form.Item>
+          <Form.Item name="colorIcon" label={t('Common_Color_Icon')}>
             <ColorPicker />
           </Form.Item>
           <Form.Item name="description" label={t('Common_Description')}>
             <Input.TextArea maxLength={1000} showCount rows={5} />
-          </Form.Item>
-          <Form.Item name="isHiden" valuePropName="checked">
-            <Checkbox>{t('Status_Field_HiddenInKanbanBoard_Entry')}</Checkbox>
           </Form.Item>
         </Form>
         <div className="actionBtnBottom">

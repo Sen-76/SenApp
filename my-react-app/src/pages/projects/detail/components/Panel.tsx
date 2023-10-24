@@ -1,14 +1,13 @@
 import { CloseOutlined } from '@ant-design/icons';
-import { Button, Checkbox, Col, DatePicker, Drawer, Form, Input, Row, Select, message, notification } from 'antd';
+import { Button, DatePicker, Drawer, Form, Input, notification } from 'antd';
 import { forwardRef, useImperativeHandle, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import styles from '../Project.module.scss';
+import styles from '../ProjectDetail.module.scss';
 import TextArea from 'antd/es/input/TextArea';
 import { service } from '@/services/apis';
 import { useLoading } from '@/common/context/useLoading';
-import Paragraph from 'antd/es/typography/Paragraph';
 import dayjs from 'dayjs';
-import { StatusOptions } from '../Project.model';
+import { useParams } from 'react-router';
 
 interface IProps {
   refreshList: () => void;
@@ -21,8 +20,7 @@ function Panel(props: IProps, ref: A) {
   const [editData, setEditData] = useState<Role.IRoleCreateModel>();
   const { showLoading, closeLoading } = useLoading();
   const [customAlert, setCustomAlert] = useState<A>();
-  const [departmentList, setDepartmentList] = useState<A>([]);
-  const [teamList, setTeamList] = useState<A>([]);
+  const dataLocation = useParams();
 
   useImperativeHandle(ref, () => ({
     openDrawer
@@ -33,9 +31,7 @@ function Panel(props: IProps, ref: A) {
       showLoading();
       setOpen(true);
       setIsEdit(false);
-      await getDepartmentList();
       if (data?.id) {
-        await getTeam(data.departmentId);
         form.setFieldsValue({ ...data, startDate: dayjs(data.startDate), dueDate: dayjs(data.dueDate) });
         setEditData(data);
         setIsEdit(true);
@@ -47,56 +43,14 @@ function Panel(props: IProps, ref: A) {
     }
   };
 
-  const getDepartmentList = async () => {
-    try {
-      const result = await service.departmentService.get({
-        pageInfor: {
-          pageSize: 100,
-          pageNumber: 1,
-          totalItems: 0
-        }
-      });
-      setDepartmentList([
-        ...result.data.map((department: A) => ({
-          label: department.title,
-          value: department.id
-        }))
-      ]);
-    } catch (e) {
-      console.log(e);
-    }
-  };
-
-  const getTeam = async (departmentId: string) => {
-    try {
-      showLoading();
-      const result = await service.teamService.get({
-        pageInfor: {
-          pageSize: 100,
-          pageNumber: 1,
-          totalItems: 0
-        },
-        filter: [{ key: 'DepartmentId', value: [departmentId] }]
-      });
-      setTeamList([
-        ...result.data.map((team: A) => ({
-          label: team.title,
-          value: team.id
-        }))
-      ]);
-      closeLoading();
-    } catch (e) {
-      console.log(e);
-    }
-  };
-
   const onFinish = async (val: A) => {
     try {
       showLoading();
       if (isEdit) {
-        await service.projectService.update({
+        await service.milestoneService.update({
           ...editData,
           ...val,
+          projectId: dataLocation.id,
           startDate: dayjs(val.startDate).format('YYYY-MM-DD'),
           dueDate: dayjs(val.dueDate).format('YYYY-MM-DD')
         });
@@ -105,8 +59,9 @@ function Panel(props: IProps, ref: A) {
           type: 'success'
         });
       } else {
-        await service.projectService.create({
+        await service.milestoneService.create({
           ...val,
+          projectId: dataLocation.id,
           startDate: dayjs(val.startDate).format('YYYY-MM-DD'),
           dueDate: dayjs(val.dueDate).format('YYYY-MM-DD')
         });
@@ -130,16 +85,12 @@ function Panel(props: IProps, ref: A) {
   const closeDrawer = () => {
     form.resetFields();
     setCustomAlert([]);
-    setTeamList([]);
     setOpen(false);
     setIsEdit(false);
   };
 
   const formRule = {
     title: [{ required: true, message: t('Common_Require_Field') }],
-    status: [{ required: true, message: t('Common_Require_Field') }],
-    department: [{ required: true, message: t('Common_Require_Field') }],
-    team: [{ required: true, message: t('Common_Require_Field') }],
     startDate: [{ required: true, message: t('Common_Require_Field') }],
     dueDate: [{ required: true, message: t('Common_Require_Field') }]
   };
@@ -158,7 +109,7 @@ function Panel(props: IProps, ref: A) {
   return (
     <>
       <Drawer
-        title={isEdit ? `${t('Manage_Project_Edit')}` : `${t('Manage_Project_Add')}`}
+        title={isEdit ? `${t('Milestone_Edit_Entry')}` : `${t('Milestone_AddNew_Entry')}`}
         placement="right"
         open={open}
         extra={<CloseOutlined onClick={closeDrawer} />}
@@ -178,30 +129,10 @@ function Panel(props: IProps, ref: A) {
             <Input maxLength={250} showCount onChange={() => setCustomAlert({ ...customAlert, title: '' })} />
           </Form.Item>
           {customAlert?.title && <div className="customAlert">{t('Common_TitleExist')}</div>}
-          {isEdit && (
-            <Form.Item name="status" label={t('Common_Status')} rules={formRule.status}>
-              <Select options={StatusOptions} />
-            </Form.Item>
-          )}
-          <Form.Item name="departmentId" label={t('department')} rules={formRule.department}>
-            <Select
-              options={departmentList}
-              onSelect={(val) => {
-                form.setFieldValue('teamId', '');
-                getTeam(val);
-              }}
-              disabled={isEdit}
-            />
-          </Form.Item>
-          {teamList.length !== 0 && (
-            <Form.Item name="teamId" label={t('team')} rules={formRule.team}>
-              <Select disabled={isEdit} options={teamList} />
-            </Form.Item>
-          )}
-          <Form.Item name="startDate" label={t('Project_StartDate')} rules={formRule.startDate}>
+          <Form.Item name="startDate" label={t('Milestone_StartDate')} rules={formRule.startDate}>
             <DatePicker format={'DD MMM YYYY'} disabledDate={disabledStartDate} />
           </Form.Item>
-          <Form.Item name="dueDate" label={t('Project_DueDate')} rules={formRule.dueDate}>
+          <Form.Item name="dueDate" label={t('Milestone_DueDate')} rules={formRule.dueDate}>
             <DatePicker format={'DD MMM YYYY'} disabledDate={disabledDueDate} />
           </Form.Item>
           <Form.Item name="description" label={t('Common_Description')}>

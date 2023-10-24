@@ -5,6 +5,9 @@ import type { UploadChangeParam } from 'antd/es/upload';
 import type { RcFile, UploadFile, UploadProps } from 'antd/es/upload/interface';
 import { util } from '@/common/helpers/util';
 import ImgCrop from 'antd-img-crop';
+import { service } from '@/services/apis';
+import { useLoading } from '@/common/context/useLoading';
+import { useLoginManager } from '@/common/helpers/login-manager';
 
 const getBase64 = (img: RcFile, callback: (url: string) => void) => {
   const reader = new FileReader();
@@ -12,25 +15,47 @@ const getBase64 = (img: RcFile, callback: (url: string) => void) => {
   reader.readAsDataURL(img);
 };
 
-const beforeUpload = (file: RcFile) => {
-  const isJpgOrPng = file.type === 'image/jpeg' || file.type === 'image/png';
-  if (!isJpgOrPng) {
-    message.error('You can only upload JPG/PNG file!');
-  }
-  const isLt2M = file.size / 1024 / 1024 < 2;
-  if (!isLt2M) {
-    message.error('Image must smaller than 2MB!');
-  }
-  return isJpgOrPng && isLt2M;
-};
 interface IProps {
   imageLink: string;
   name: string;
+  id: string;
+  refreshList: () => void;
 }
 const EditAvatar = (props: IProps) => {
+  const { showLoading, closeLoading } = useLoading();
   const { imageLink, name } = props;
   const [loading, setLoading] = useState(false);
   const [imageUrl, setImageUrl] = useState<string>(imageLink);
+
+  const fileProps: UploadProps = {
+    beforeUpload: async (file: A) => {
+      try {
+        const isJpgOrPng = file.type === 'image/jpeg' || file.type === 'image/png';
+        if (!isJpgOrPng) {
+          message.error('You can only upload JPG/PNG file!');
+        }
+        const isLt2M = file.size / 1024 / 1024 < 2;
+        if (!isLt2M) {
+          message.error('Image must smaller than 2MB!');
+          closeLoading();
+          return;
+        }
+        showLoading();
+        const formData = new FormData();
+        formData.append('file', file, file.name);
+        formData.append('outletId', 'la cai d gi');
+        formData.append('comment', 'comment làm cái đúng gì');
+        formData.append('id', props.id.toString());
+        await service.accountService.uploadAvatar(formData);
+        props.refreshList();
+      } catch (e) {
+        console.log(e);
+      } finally {
+        closeLoading();
+      }
+    },
+    showUploadList: false
+  };
 
   const handleChange: UploadProps['onChange'] = (info: UploadChangeParam<UploadFile>) => {
     if (info.file.status === 'uploading') {
@@ -56,12 +81,11 @@ const EditAvatar = (props: IProps) => {
     <>
       <ImgCrop rotationSlider>
         <Upload
+          {...fileProps}
           name="avatar"
           listType="picture-circle"
           className="avatar-uploader"
           showUploadList={false}
-          // action="https://www.mocky.io/v2/5cc8019d300000980a055e76"
-          beforeUpload={beforeUpload}
           onChange={handleChange}
         >
           {imageUrl ? (

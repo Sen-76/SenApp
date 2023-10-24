@@ -1,22 +1,21 @@
 import { Avatar, Divider, Dropdown, MenuProps } from 'antd';
 import { ImportOutlined, RedoOutlined, UserOutlined } from '@ant-design/icons';
 import styles from './UserAvatar.module.scss';
-import React from 'react';
 import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { util } from '@/common/helpers/util';
 import { useLoginManager } from '@/common/helpers/login-manager';
+import React from 'react';
 
 function UserAvatar() {
   const { t } = useTranslation();
   const { loginOut } = useLoginManager();
   const { getLoginUser } = useLoginManager();
-  const userLoged = getLoginUser()?.user;
+  const userLoged = getLoginUser().user;
 
   const menuStyle = {
     boxShadow: 'none'
   };
-
   const dropdownItem = () => {
     const items: MenuProps['items'] = [
       {
@@ -69,14 +68,14 @@ function UserAvatar() {
             <div className={styles.avatarHeader}>
               <Avatar
                 size={50}
-                src="https://top10tphcm.com/wp-content/uploads/2023/02/hinh-anh-meo.jpeg"
+                src={localStorage.getItem('avatar')}
                 style={{ marginRight: '16px', backgroundColor: util.randomColor() }}
               >
                 {userLoged?.fullName?.charAt(0)}
               </Avatar>
               <div className="avatar-header-content">
                 <div className="avatar-header-name">{userLoged?.fullName}</div>
-                <div className="avatar-header-role">Admin đấy</div>
+                <div className="avatar-header-role">{userLoged?.userRole}</div>
               </div>
             </div>
             <Divider style={{ margin: 0 }} />
@@ -86,7 +85,7 @@ function UserAvatar() {
       >
         <Avatar
           size={40}
-          src="https://top10tphcm.com/wp-content/uploads/2023/02/hinh-anh-meo.jpeg"
+          src={localStorage.getItem('avatar')}
           style={{ cursor: 'pointer', backgroundColor: util.randomColor() }}
         >
           {userLoged?.fullName?.charAt(0)}

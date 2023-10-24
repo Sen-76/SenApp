@@ -98,7 +98,7 @@ function DataTable(props: IProps) {
         const deleteProject = async (project: A) => {
           confirm({
             content: t('Project_Delete_Remind_Text').replace('{0}', project.title),
-            title: t('Common_Confirm'),
+            title: t('Project_Delete_Title_Confirm'),
             okText: t('Common_Delete'),
             cancelText: t('Common_Cancel'),
             onOk() {

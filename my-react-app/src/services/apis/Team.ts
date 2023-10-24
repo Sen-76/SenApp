@@ -64,5 +64,23 @@ export const teamService = {
       console.error('An error occurred while get:', error);
       throw error;
     }
+  },
+  async getMembers(param: string): Promise<Response.IDefaultResponse> {
+    try {
+      const response = await axiosInstance.post('/team/member/' + param);
+      return response.data;
+    } catch (error) {
+      console.error('An error occurred while get:', error);
+      throw error;
+    }
+  },
+  async getMembersDetail(id: string | undefined, param: Common.IDataGrid): Promise<Response.IDefaultResponse> {
+    try {
+      const response = await axiosInstance.post('/team/member/' + id, param);
+      return response.data;
+    } catch (error) {
+      console.error('An error occurred while get:', error);
+      throw error;
+    }
   }
 };

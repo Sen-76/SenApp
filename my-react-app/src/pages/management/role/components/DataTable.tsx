@@ -1,5 +1,5 @@
 import { DeleteOutlined, EditOutlined, PlusOutlined, SmileOutlined } from '@ant-design/icons';
-import { Button, Input, Modal, Tooltip, notification } from 'antd';
+import { Badge, Button, Card, Input, Modal, Tag, Tooltip, notification } from 'antd';
 import Table, { ColumnsType, TablePaginationConfig } from 'antd/es/table';
 import dayjs from 'dayjs';
 import { useTranslation } from 'react-i18next';
@@ -29,7 +29,16 @@ function DataTable(props: IProps) {
       key: 'title',
       width: 200,
       render: (_, record) => {
-        return record.title;
+        return record.isDefault ? (
+          <>
+            {record.title}{' '}
+            <Tag style={{ marginLeft: 5 }} color="red">
+              {t('default')}
+            </Tag>
+          </>
+        ) : (
+          <>{record.title}</>
+        );
       }
     },
     {
@@ -53,7 +62,7 @@ function DataTable(props: IProps) {
       key: 'modifiedOn',
       width: 150,
       render: (_, record) => {
-        return <div style={{ minWidth: 90 }}>{dayjs(record.updatedDate).format('DD MMM YYYY HH:mm')}</div>;
+        return <div style={{ minWidth: 90 }}>{dayjs(record.updateDate).format('DD MMM YYYY HH:mm')}</div>;
       }
     },
     {
@@ -90,10 +99,15 @@ function DataTable(props: IProps) {
         return (
           <div>
             <Tooltip placement="bottom" title={t('Common_Edit')} color="#ffffff" arrow={true}>
-              <Button type="text" onClick={() => openPanel(record)} icon={<EditOutlined />} />
+              <Button
+                disabled={record.isDefault}
+                type="text"
+                onClick={() => openPanel(record)}
+                icon={<EditOutlined />}
+              />
             </Tooltip>
             <Tooltip placement="bottom" title={t('Common_Delete')} color="#ffffff" arrow={true}>
-              <Button type="text" onClick={deleteHandle} icon={<DeleteOutlined />} />
+              <Button disabled={record.isDefault} type="text" onClick={deleteHandle} icon={<DeleteOutlined />} />
             </Tooltip>
           </div>
         );

@@ -27,10 +27,6 @@ function ChangePassword() {
       value: 'number'
     },
     {
-      label: t('At_Least_1_Special_Character'),
-      value: 'special'
-    },
-    {
       label: t('At_Least_1_Lowercase_Character'),
       value: 'lowerCase'
     },
@@ -46,8 +42,7 @@ function ChangePassword() {
       /[A-Z]/.test(newPassword) && 'upperCase',
       /[a-z]/.test(newPassword) && 'lowerCase',
       newPassword.length >= 8 && 'eightCharacters',
-      /\d/.test(newPassword) && 'number',
-      /[!@#$%^&*()_+{}[\]:;<>,.?~\\-]/.test(newPassword) && 'special'
+      /\d/.test(newPassword) && 'number'
     ]);
   };
 
@@ -57,9 +52,6 @@ function ChangePassword() {
     }
     if (!/[a-z]/.test(value)) {
       return Promise.reject('At_Least_1_Lowercase_Character');
-    }
-    if (!/[!@#$%^&*()_+{}[\]:;<>,.?~\\-]/.test(value)) {
-      return Promise.reject('At_Least_1_Special_Character');
     }
     if (!/\d/.test(value)) {
       return Promise.reject('At_Least_1_Digit');

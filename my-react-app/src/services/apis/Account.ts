@@ -100,5 +100,15 @@ export const accountService = {
       console.error('An error occurred while import files:', error);
       throw error;
     }
+  },
+  async uploadAvatar(userData: A): Promise<A> {
+    try {
+      console.log(userData);
+      const response = await axiosInstance.post('/users/uploadAvatar', userData);
+      return response.data;
+    } catch (error) {
+      console.error('An error occurred while import files:', error);
+      throw error;
+    }
   }
 };

@@ -5,10 +5,11 @@ import styles from '../Project.module.scss';
 import { useTranslation } from 'react-i18next';
 import { service } from '@/services/apis';
 import { useLoading } from '@/common/context/useLoading';
-import { StatusOptions } from '../Project.model';
+import { EStatus, StatusOptions } from '../Project.model';
 
 interface IProps {
-  filterAccount: (val: A) => void;
+  filterProject: (val: A) => void;
+  tabStatus: number;
 }
 
 function FilterPanel(props: IProps, ref: A) {
@@ -101,10 +102,10 @@ function FilterPanel(props: IProps, ref: A) {
       </Form.Item>
     );
     const StatusElement = (
-      <Form.Item name="team">
+      <Form.Item name="status">
         <Checkbox.Group>
           <Row>
-            {StatusOptions?.map((item: A) => (
+            {StatusOptions?.filter((x) => x.value !== EStatus.Inactive).map((item: A) => (
               <Col span={12} key={item.value} className={styles.col}>
                 <Checkbox value={item.value}>
                   <Paragraph ellipsis={{ rows: 4, expandable: false }}>{item.label}</Paragraph>
@@ -117,9 +118,10 @@ function FilterPanel(props: IProps, ref: A) {
     );
     const item = [
       { key: 'department', label: t('department'), children: DepartmentElement },
-      { key: 'team', label: t('team'), children: TeamElement },
-      { key: 'status', label: t('Common_Status'), children: StatusElement }
+      { key: 'team', label: t('team'), children: TeamElement }
     ];
+    if (props.tabStatus == EStatus.Active)
+      item.push({ key: 'status', label: t('Common_Status'), children: StatusElement });
     setItems(item);
   };
 
@@ -132,7 +134,9 @@ function FilterPanel(props: IProps, ref: A) {
       showLoading();
       await getDepartmentList();
       const dataTable: A = {
-        department: data?.find((x: A) => x.key == 'UserDepartment')?.value
+        department: data?.find((x: A) => x.key == 'DepartmentId')?.value,
+        team: data?.find((x: A) => x.key == 'TeamId')?.value,
+        status: data?.find((x: A) => x.key == 'Status')?.value
       };
       form.setFieldsValue(dataTable);
       setOpen(true);
@@ -154,7 +158,7 @@ function FilterPanel(props: IProps, ref: A) {
   };
 
   const onFinish = (val: A) => {
-    props.filterAccount(val);
+    props.filterProject(val);
     closeDrawer();
   };
 

@@ -4,10 +4,12 @@ import {
   FilterOutlined,
   PlusOutlined,
   SmileOutlined,
-  SolutionOutlined
+  SolutionOutlined,
+  DeleteOutlined,
+  UndoOutlined
 } from '@ant-design/icons';
-import { Button, Table, Tag, Tooltip, notification } from 'antd';
-import { ColumnsType } from 'antd/es/table';
+import { Button, Table, Tag, Tooltip, notification, Modal } from 'antd';
+import { ColumnsType, TablePaginationConfig } from 'antd/es/table';
 import { useTranslation } from 'react-i18next';
 import styles from '../Project.module.scss';
 import Search from 'antd/es/input/Search';
@@ -15,17 +17,51 @@ import Paragraph from 'antd/es/typography/Paragraph';
 import dayjs from 'dayjs';
 import { EStatus } from '../Project.model';
 import { Link } from 'react-router-dom';
+import { service } from '@/services/apis';
+import { useLoading } from '@/common/context/useLoading';
 
 interface IProps {
-  data: A[];
+  data?: Project.IProjectModel[];
   loading: boolean;
   param: Common.IDataGrid;
+  tabStatus: number;
   openPanel: (data?: A) => void;
   openFilterPanel: (data?: A) => void;
+  setPage: (paging: number) => void;
+  onSearch: (value: string) => void;
+  refreshList: () => void;
 }
 function DataTable(props: IProps) {
   const { loading, param, data } = props;
   const { t } = useTranslation();
+  const { showLoading, closeLoading } = useLoading();
+  const { confirm } = Modal;
+  const confirmDelete = async (id: string) => {
+    try {
+      showLoading();
+      await service.projectService.delete({ isHardDelete: false, id: [id] });
+      props.refreshList();
+      notification.open({
+        message: t('Common_DeleteSuccess'),
+        type: 'success'
+      });
+    } catch (e) {
+      console.log(e);
+    } finally {
+      closeLoading();
+    }
+  };
+  const deleteProject = async (project: A) => {
+    confirm({
+      content: t('Project_Delete_Remind_Text').replace('{0}', project.title),
+      title: t('Project_Delete_Title_Confirm'),
+      okText: t('Common_Delete'),
+      cancelText: t('Common_Cancel'),
+      onOk() {
+        confirmDelete(project.id);
+      }
+    });
+  };
   const columns: ColumnsType<A> = [
     {
       title: t('Common_Title'),
@@ -40,19 +76,11 @@ function DataTable(props: IProps) {
       }
     },
     {
-      title: t('team'),
-      dataIndex: 'team',
-      key: 'team',
-      render: (_, record) => {
-        return record.team;
-      }
-    },
-    {
       title: t('department'),
       dataIndex: 'department',
       key: 'department',
       render: (_, record) => {
-        return record.department;
+        return record.department?.title;
       }
     },
     {
@@ -60,7 +88,7 @@ function DataTable(props: IProps) {
       dataIndex: 'startdate',
       key: 'startdate',
       render: (_, record) => {
-        return dayjs(record.startdate).format('DD MMM YYYY');
+        return dayjs(record.startDate).format('DD MMM YYYY');
       }
     },
     {
@@ -68,7 +96,7 @@ function DataTable(props: IProps) {
       dataIndex: 'duedate',
       key: 'duedate',
       render: (_, record) => {
-        return dayjs(record.duedate).format('DD MMM YYYY');
+        return dayjs(record.dueDate).format('DD MMM YYYY');
       }
     },
     {
@@ -78,9 +106,11 @@ function DataTable(props: IProps) {
       render: (_, record) => {
         return (
           <>
-            {record.status === EStatus.InProgress && <Tag color="blue">In Progress</Tag>}
-            {record.status === EStatus.Closed && <Tag color="black">Closed</Tag>}
-            {record.status === EStatus.Done && <Tag color="green">Done</Tag>}
+            {record.status === EStatus.Active && <Tag color="blue">{t('Active')}</Tag>}
+            {record.status === EStatus.Pause && <Tag color="orange">{t('Pause')}</Tag>}
+            {record.status === EStatus.Done && <Tag color="green">{t('Done')}</Tag>}
+            {record.status === EStatus.Inactive && <Tag color="red">{t('Inactive')}</Tag>}
+            {record.status === EStatus.Closed && <Tag color="black">{t('Closed')}</Tag>}
           </>
         );
       }
@@ -106,23 +136,49 @@ function DataTable(props: IProps) {
             <Tooltip placement="bottom" title={t('Common_Edit')} color="#ffffff" arrow={true}>
               <Button type="text" onClick={editClick} icon={<EditOutlined />} />
             </Tooltip>
+            {props.tabStatus != EStatus.Inactive ? (
+              <Tooltip placement="bottom" title={t('Common_Delete')} color="#ffffff" arrow={true}>
+                <Button type="text" onClick={() => deleteProject(record)} icon={<DeleteOutlined />} />
+              </Tooltip>
+            ) : (
+              <Tooltip placement="bottom" title={t('Common_Restore')} color="#ffffff" arrow={true}>
+                <Button type="text" onClick={() => restoreUser(record)} icon={<UndoOutlined />} />
+              </Tooltip>
+            )}
           </div>
         );
       }
     }
   ];
 
+  const restoreUser = async (user?: A) => {
+    try {
+      showLoading();
+      await service.accountService.restoreAccount([user.id]);
+      notification.open({
+        message: t('Common_RestoreSuccess'),
+        type: 'success'
+      });
+      props.refreshList();
+      closeLoading();
+    } catch (e) {
+      console.log(e);
+    }
+  };
+
   const onSearch = (val: A) => {
-    console.log(val);
+    props.onSearch(val);
   };
 
   const TableHeader = () => {
     return (
       <>
         <div className={styles.tableHeaderLeft}>
-          <Button type="text" onClick={props.openPanel} icon={<PlusOutlined />}>
-            {t('Common_AddNew')}
-          </Button>
+          {props.tabStatus != EStatus.Inactive && (
+            <Button type="text" onClick={props.openPanel} icon={<PlusOutlined />}>
+              {t('Common_AddNew')}
+            </Button>
+          )}
           <Button type="text" onClick={exportExcel} icon={<ExportOutlined />}>
             {t('Common_ExportExcel')}
           </Button>
@@ -144,13 +200,22 @@ function DataTable(props: IProps) {
     });
   };
 
+  const handleTableChange = (pagination: TablePaginationConfig) => {
+    props.setPage(pagination.current ?? 1);
+  };
+
   return (
     <>
       <Table
         columns={columns}
         dataSource={data}
-        pagination={false}
-        scroll={{ x: 780 }}
+        pagination={{
+          current: param.pageInfor!.pageNumber,
+          pageSize: param.pageInfor!.pageSize,
+          total: param.pageInfor!.totalItems,
+          simple: false
+        }}
+        scroll={{ x: 1230 }}
         locale={{
           emptyText: (
             <>
@@ -159,6 +224,7 @@ function DataTable(props: IProps) {
           )
         }}
         loading={loading}
+        onChange={handleTableChange}
         title={() => TableHeader()}
         rowKey={(record) => record.id}
       />

@@ -7,7 +7,7 @@ import {
   SolutionOutlined,
   WomanOutlined
 } from '@ant-design/icons';
-import { Avatar, Button, Modal, Table, TablePaginationConfig, Tooltip, notification } from 'antd';
+import { Avatar, Button, Modal, Table, TablePaginationConfig, Tag, Tooltip, notification } from 'antd';
 import { ColumnsType } from 'antd/es/table';
 import { useState } from 'react';
 import styles from '../Member.module.scss';
@@ -50,6 +50,11 @@ function DataTable(props: IProps) {
                 {record.fullName?.charAt(0)}
               </Avatar>
               <Paragraph ellipsis={{ rows: 1, expandable: false }} style={{ maxWidth: 150, minWidth: 30 }}>
+                {record.isLeader && (
+                  <Tag style={{ marginLeft: 5 }} color="red">
+                    {t('Leader')}
+                  </Tag>
+                )}
                 {record.fullName}
               </Paragraph>
             </div>

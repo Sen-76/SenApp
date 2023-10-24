@@ -14,6 +14,7 @@ import PieChart from '@/components/chart/pie-chart/PieChart';
 import { useLoginManager } from '@/common/helpers/login-manager';
 import { useLoading } from '@/common/context/useLoading';
 import { service } from '@/services/apis';
+import { cookie } from '@/common/helpers/cookie/cookie';
 
 const draftTask = [
   {
@@ -62,6 +63,12 @@ function Profile() {
     try {
       showLoading();
       const result = await service.accountService.getDetal(getLoginUser().user.id);
+      localStorage.setItem('avatar', result.data.photoUrl);
+      cookie.setCookie(
+        'userLogin',
+        JSON.stringify({ ...getLoginUser(), user: { ...getLoginUser().user, fullName: result.data.fullName } }),
+        1
+      );
       setUser(result.data);
     } catch (e: A) {
       console.log(e);

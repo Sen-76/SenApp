@@ -83,37 +83,6 @@ function LeftNav(props: IProps) {
       ]
     },
     {
-      label: t('test'),
-      icon: renderIcon(BulbOutlined),
-      key: 'test',
-      children: [
-        {
-          label: t('test page'),
-          path: '/test/test-page',
-          icon: renderIcon(ArrowRightOutlined),
-          key: 'testPage'
-        },
-        {
-          label: t('test table'),
-          path: '/test/test-table',
-          icon: renderIcon(ArrowRightOutlined),
-          key: 'testtable'
-        },
-        {
-          label: t('test sorted table'),
-          path: '/test/test-shortedtable',
-          icon: renderIcon(ArrowRightOutlined),
-          key: 'testshortedtable'
-        },
-        {
-          label: t('test image'),
-          path: '/test/test-image',
-          icon: renderIcon(ArrowRightOutlined),
-          key: 'testimage'
-        }
-      ]
-    },
-    {
       label: t('management'),
       icon: renderIcon(BulbOutlined),
       key: 'management',
@@ -141,12 +110,6 @@ function LeftNav(props: IProps) {
           path: '/management/role-management',
           icon: renderIcon(ArrowRightOutlined),
           key: 'role-management'
-        },
-        {
-          label: t('Manage_Project'),
-          path: '/management/project-management',
-          icon: renderIcon(ArrowRightOutlined),
-          key: 'project-management'
         }
       ]
     },
@@ -184,6 +147,12 @@ function LeftNav(props: IProps) {
           path: '/configuration/task-status-configuration',
           icon: renderIcon(ArrowRightOutlined),
           key: 'task-status-configuration'
+        },
+        {
+          label: t('Configuration_Task_Prioty'),
+          path: '/configuration/task-prioty-configuration',
+          icon: renderIcon(ArrowRightOutlined),
+          key: 'task-prioty-configuration'
         }
       ]
     }

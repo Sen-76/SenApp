@@ -3,12 +3,12 @@ import { useBreadcrumb } from '@/components/breadcrum/Breadcrum';
 import { SettingOutlined } from '@ant-design/icons';
 import { useTranslation } from 'react-i18next';
 import { useEffect, useRef, useState } from 'react';
-import styles from './TaskStatusConfiguration.module.scss';
+import styles from './TaskPriotyConfiguration.module.scss';
 import DataList from './components/DataList';
 import Panel from './components/Panel';
 import { service } from '@/services/apis';
 
-function TaskStatus() {
+function TaskPrioty() {
   const initDataGrid: Common.IDataGrid = {
     pageInfor: {
       pageSize: 100,
@@ -17,20 +17,20 @@ function TaskStatus() {
     },
     searchInfor: {
       searchValue: '',
-      searchColumn: ['Title']
+      searchColumn: ['pname']
     }
   };
   const { t } = useTranslation();
   const { setBreadcrumb } = useBreadcrumb();
   const [loading, setLoading] = useState<boolean>(false);
-  const [taskStatusList, setTaskStatusList] = useState<TaskStatus.ITaskStatusModel[]>([]);
+  const [taskPriotyList, setTaskPriotyList] = useState<TaskPrioty.ITaskPriotyModel[]>([]);
   const [param, setParam] = useState<Common.IDataGrid>(initDataGrid);
   const panelRef = useRef();
 
   useEffect(() => {
     setBreadcrumb([
       { icon: <SettingOutlined />, text: `${t('configuration')}` },
-      { text: `${t('Configuration_Task_Status')}` }
+      { text: `${t('Configuration_Task_Prioty')}` }
     ]);
   }, [t]);
 
@@ -41,8 +41,8 @@ function TaskStatus() {
   const getFileList = async (draftParam?: Common.IDataGrid) => {
     try {
       setLoading(true);
-      const result = await service.taskStatusService.get(draftParam ?? param);
-      setTaskStatusList(result.data ?? []);
+      const result = await service.taskPriotyService.get(draftParam ?? param);
+      setTaskPriotyList(result.data ?? []);
       setLoading(false);
     } catch (e) {
       console.log(e);
@@ -64,9 +64,9 @@ function TaskStatus() {
   };
 
   return (
-    <div className={styles.taskstatus}>
+    <div className={styles.taskPrioty}>
       <DataList
-        data={taskStatusList}
+        data={taskPriotyList}
         openPanel={openPanel}
         listLoading={loading}
         refreshList={getFileList}
@@ -77,4 +77,4 @@ function TaskStatus() {
   );
 }
 
-export default TaskStatus;
+export default TaskPrioty;

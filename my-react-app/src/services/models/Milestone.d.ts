@@ -1,11 +1,12 @@
 declare namespace Milestone {
-  export interface IMilestoneStatusModel {
+  export interface IMilestoneModel {
     id: string;
     title: string;
-    color: string;
     description: string;
-    isDefault: string;
-    order: number;
+    projectId: string;
+    dueDate: Date;
+    startDate: Date;
+    updateDate: DateTime;
     __entity: string;
   }
   export interface IMilestoneCreateModel {

@@ -60,7 +60,7 @@ function Login() {
           <UserOutlined />
           <label>{t('Common_Login')}</label>
         </div>
-        <Form.Item label={t('username')} name="userEmail" rules={formRule.userEmail}>
+        <Form.Item label={t('Common_Email_Entry')} name="userEmail" rules={formRule.userEmail}>
           <Input
             size="large"
             prefix={<UserOutlined style={{ marginRight: 5 }} />}

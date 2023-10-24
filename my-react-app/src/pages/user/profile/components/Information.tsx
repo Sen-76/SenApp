@@ -37,7 +37,7 @@ function Information(props: IProps) {
             <Image
               className={styles.avatar}
               width={100}
-              src="https://top10tphcm.com/wp-content/uploads/2023/02/hinh-anh-meo.jpeg"
+              src={userLoged.photoUrl}
             />
           ) : (
             <Avatar size={100} style={{ backgroundColor: util.randomColor() }}>

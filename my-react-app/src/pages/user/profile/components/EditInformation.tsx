@@ -36,14 +36,18 @@ function EditInformation(props: IProps) {
         message: t('Common_UpdateSuccess'),
         type: 'success'
       });
-      const timeout = setTimeout(() => {
-        props.refreshData();
-        props.cancelEdit();
-        clearTimeout(timeout);
-      }, 2000);
+      refreshList();
     } catch (e: A) {
       console.log(e);
     }
+  };
+
+  const refreshList = () => {
+    const timeout = setTimeout(() => {
+      props.refreshData();
+      props.cancelEdit();
+      clearTimeout(timeout);
+    }, 2000);
   };
 
   const formRule = {
@@ -62,7 +66,12 @@ function EditInformation(props: IProps) {
       </Row>
       <div className={styles.body}>
         <div style={{ marginBottom: 10 }}>
-          <EditAvatar imageLink={userLoged.photoUrl} name={userLoged.fullName} />
+          <EditAvatar
+            imageLink={userLoged.photoUrl}
+            name={userLoged.fullName}
+            id={userLoged.id}
+            refreshList={refreshList}
+          />
         </div>
         <Form layout="vertical" form={form} onFinish={onFinish}>
           <Form.Item label={t('fullName')} name="fullName" rules={formRule.fullName}>

@@ -84,7 +84,7 @@ function Panel(props: IProps, ref: A) {
         )
       };
       setSelectedUser([...(data.users?.map((x: A) => x.id) ?? []), data.manager.id]);
-      setMemberList(data.users);
+      setMemberList(data.users.filter((x: A) => x.id !== data.manager.id));
       data.members = data.users;
       form.setFieldsValue(data);
     } catch (e) {
@@ -212,10 +212,9 @@ function Panel(props: IProps, ref: A) {
       }));
       setUserList(optionsValue);
       isSearchManager && setUserMemberList(optionsValue);
+      setSelectLoading(false);
     } catch (e) {
       console.log(e);
-    } finally {
-      setSelectLoading(false);
     }
   };
 
@@ -341,7 +340,7 @@ function Panel(props: IProps, ref: A) {
               >
                 <Input maxLength={250} showCount onChange={() => setCustomAlert({ ...customAlert, title: '' })} />
               </Form.Item>
-              {customAlert?.title && <div className="customAlert">{t('Manage_Account_Exist_Email')}</div>}
+              {customAlert?.title && <div className="customAlert">{t('Manage_Department_Exist_Name')}</div>}
               <Form.Item
                 name="owner"
                 label="Manager"

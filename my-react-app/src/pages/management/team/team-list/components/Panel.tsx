@@ -99,7 +99,7 @@ function Panel(props: IProps, ref: A) {
       };
       data.departmentId = data.department.id;
       setSelectedUser([...(data.users?.map((x: A) => x.id) ?? []), data.manager.id]);
-      setMemberList(data.members);
+      setMemberList(data.members.filter((x: A) => x.id !== data.manager.id));
       form.setFieldsValue(data);
     } catch (e) {
       console.log(e);
@@ -355,7 +355,7 @@ function Panel(props: IProps, ref: A) {
             <>
               <Form.Item
                 name="title"
-                label={t('Common_Title')}
+                label={t('Department_Name')}
                 rules={formRule.title}
                 className={customAlert?.title ? 'customFieldAlert' : ''}
               >

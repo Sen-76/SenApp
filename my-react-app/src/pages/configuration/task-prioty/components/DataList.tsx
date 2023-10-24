@@ -1,19 +1,35 @@
-import { DeleteOutlined, EditOutlined, PlusOutlined } from '@ant-design/icons';
-import { Badge, Button, Col, ColorPicker, List, Modal, Row, Tag, Tooltip } from 'antd';
+import {
+  DeleteOutlined,
+  EditOutlined,
+  PlusOutlined,
+  MinusOutlined,
+  CloseOutlined,
+  StopOutlined
+} from '@ant-design/icons';
+import Icon from '@ant-design/icons';
+import { Badge, Button, Col, List, Modal, Row, Tag, Tooltip } from 'antd';
 import { useTranslation } from 'react-i18next';
-import styles from '../TaskStatusConfiguration.module.scss';
+import styles from '../TaskPriotyConfiguration.module.scss';
 import Paragraph from 'antd/es/typography/Paragraph';
 import { service } from '@/services/apis';
 import { useEffect, useState } from 'react';
 import Search from 'antd/es/input/Search';
+import React from 'react';
+import icons from '@/assets/icons';
 
 interface IProps {
-  data: TaskStatus.ITaskStatusModel[];
-  openPanel: (data?: TaskStatus.ITaskStatusModel) => void;
+  data: TaskPrioty.ITaskPriotyModel[];
+  openPanel: (data?: TaskPrioty.ITaskPriotyModel) => void;
   refreshList: () => void;
   onSearch: (value: string) => void;
   listLoading: boolean;
 }
+
+const IconShow = ({ value, ...props }: A) => {
+  const iconItem = icons.find((icon) => icon.value === value);
+  return iconItem ? React.cloneElement(iconItem.component, props) : null;
+};
+
 function DataList(props: IProps) {
   const { t } = useTranslation();
   const { confirm } = Modal;
@@ -23,9 +39,9 @@ function DataList(props: IProps) {
     setLoading(props.listLoading);
   }, [props.listLoading]);
 
-  const deleteTaskStatus = async (item: TaskStatus.ITaskStatusModel) => {
+  const deleteTaskStatus = async (item: TaskPrioty.ITaskPriotyModel) => {
     confirm({
-      content: t('Task_Status_Delete_Remind_Text').replace('{0}', item.title),
+      content: t('Task_Status_Delete_Remind_Text').replace('{0}', item.pname),
       title: t('Common_Confirm'),
       okText: t('Common_Delete'),
       cancelText: t('Common_Cancel'),
@@ -38,7 +54,7 @@ function DataList(props: IProps) {
   const confirmDelete = async (id: string) => {
     try {
       setLoading(true);
-      await service.taskStatusService.delete({ isHardDelete: true, id: [id] });
+      await service.taskPriotyService.delete({ isHardDelete: true, id: [id] });
       props.refreshList();
     } catch (e) {
       console.log(e);
@@ -50,7 +66,6 @@ function DataList(props: IProps) {
   const onSearch = (val: A) => {
     props.onSearch(val);
   };
-
   const TableHeader = (
     <div className={styles.listheader}>
       <Button type="text" onClick={() => props.openPanel()} icon={<PlusOutlined />}>
@@ -59,7 +74,7 @@ function DataList(props: IProps) {
       <Search placeholder={t('Common_SearchByTitle')} allowClear onSearch={onSearch} style={{ width: 250 }} />
     </div>
   );
-  const item = (item: TaskStatus.ITaskStatusModel) => (
+  const item = (item: TaskPrioty.ITaskPriotyModel) => (
     <List.Item>
       <List.Item.Meta
         title={
@@ -67,19 +82,19 @@ function DataList(props: IProps) {
             <Col style={{ width: '80%' }}>
               <div className={styles.itemContent}>
                 <Col>
-                  <ColorPicker value={item?.color} disabled size="small" style={{ marginRight: 20 }} />
+                  <IconShow value={item?.iconUrl} disabled style={{ marginRight: 20 }} />
                 </Col>
                 <Col style={{ width: '80%' }}>
                   {item?.isDefault ? (
                     <Paragraph ellipsis={{ rows: 1, expandable: false }} style={{ width: 'auto', maxWidth: '100%' }}>
-                      {item?.title}{' '}
+                      {item?.pname}{' '}
                       <Tag style={{ marginLeft: 5 }} color="red">
                         {t('default')}
                       </Tag>
                     </Paragraph>
                   ) : (
                     <Paragraph ellipsis={{ rows: 1, expandable: false }} style={{ width: 'auto', maxWidth: '100%' }}>
-                      {item?.title}
+                      {item?.pname}
                     </Paragraph>
                   )}
                   <Tooltip placement="bottom" title={item?.description} color="#ffffff" arrow={true}>
@@ -96,7 +111,7 @@ function DataList(props: IProps) {
             <Col>
               <Tooltip placement="bottom" title={t('Common_Edit')} color="#ffffff" arrow={true}>
                 <Button
-                  // disabled={!!item?.isDefault}
+                  disabled={!!item?.isDefault}
                   type="text"
                   onClick={() => props.openPanel(item)}
                   icon={<EditOutlined />}

@@ -6,6 +6,7 @@ const EmailConfiguration = lazy(() => import('../../pages/configuration/email/Em
 const SmtpConfiguration = lazy(() => import('../../pages/configuration/smtp/Smtp'));
 const StarConfiguration = lazy(() => import('../../pages/configuration/star/StarConfiguration'));
 const TaskStatusConfiguration = lazy(() => import('../../pages/configuration/task-status/TaskStatusConfiguration'));
+const TaskPriotyConfiguration = lazy(() => import('../../pages/configuration/task-prioty/TaskPriotyConfiguration'));
 
 const routes: IRouter.IRoute<'/configuration'>[] = [
   {
@@ -42,6 +43,13 @@ const routes: IRouter.IRoute<'/configuration'>[] = [
     exact: true,
     element: TaskStatusConfiguration,
     meta: { role: [ERole.Admin], pageTitle: 'Task Status Configuration' }
+  },
+  {
+    path: '/configuration/task-prioty-configuration',
+    name: 'taskpriotyconfiguration',
+    exact: true,
+    element: TaskPriotyConfiguration,
+    meta: { role: [ERole.Admin], pageTitle: 'Task Prioty Configuration' }
   }
 ];
 

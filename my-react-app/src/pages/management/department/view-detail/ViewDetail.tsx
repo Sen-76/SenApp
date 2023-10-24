@@ -12,6 +12,7 @@ import { useLoading } from '@/common/context/useLoading';
 import Members from './components/Members/Members';
 import Teams from './components/Teams/Teams';
 import Project from './components/Projects/Project';
+import Paragraph from 'antd/es/typography/Paragraph';
 
 function ViewDetail() {
   const { setBreadcrumb } = useBreadcrumb();
@@ -29,21 +30,21 @@ function ViewDetail() {
     ]);
   }, [t]);
 
-  useEffect(() => {
-    getUserDetail(data.id ?? '');
-  }, []);
+  // useEffect(() => {
+  //   getUserDetail(data.id ?? '');
+  // }, []);
 
-  const getUserDetail = async (id: string) => {
-    try {
-      showLoading();
-      const { data } = await service.departmentService.getDetail(id);
-      setEditData(data);
-    } catch (e) {
-      console.log(e);
-    } finally {
-      closeLoading();
-    }
-  };
+  // const getUserDetail = async (id: string) => {
+  //   try {
+  //     showLoading();
+  //     const { data } = await service.departmentService.getDetail(id);
+  //     setEditData(data);
+  //   } catch (e) {
+  //     console.log(e);
+  //   } finally {
+  //     closeLoading();
+  //   }
+  // };
   const tabItems = [
     {
       key: 'members',
@@ -64,7 +65,7 @@ function ViewDetail() {
 
   return (
     <div className={styles.viewdetail}>
-      <Collapse
+      {/* <Collapse
         defaultActiveKey={['1']}
         items={[
           {
@@ -74,7 +75,7 @@ function ViewDetail() {
               <Row style={{ display: 'flex', gap: 10 }}>
                 <Col style={{ width: 'calc(50% - 10px)', display: 'flex', flexDirection: 'column', gap: 10 }}>
                   <Row className={styles.detailRow}>
-                    <Col className={styles.keyCol}>{t('Common_Title')}</Col>
+                    <Col className={styles.keyCol}>{t('Department_Name')}</Col>
                     <Col className={styles.valueCol}>{editData?.title}</Col>
                   </Row>
                   <Row className={styles.detailRow}>
@@ -91,7 +92,7 @@ function ViewDetail() {
                       className={styles.valueCol}
                       style={{ width: 'calc(100% - 110px)', lineHeight: '20px', paddingTop: 10 }}
                     >
-                      {editData?.description}
+                      <Paragraph ellipsis={{ rows: 5, expandable: false }}>{editData?.description}</Paragraph>
                     </Col>
                   </Row>
                 </Col>
@@ -99,7 +100,7 @@ function ViewDetail() {
             )
           }
         ]}
-      />
+      /> */}
 
       <Tabs items={tabItems} size="large" />
     </div>

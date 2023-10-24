@@ -42,8 +42,8 @@ function Panel(props: IProps, ref: A) {
     try {
       showLoading();
       const { data } = await service.departmentService.getDetail(id);
-      setMemberList(data.users);
-      setSelectedUser(data.users?.map((x: A) => x.id));
+      setMemberList(data.users.filter((x: A) => x.id !== data.manager.id));
+      setSelectedUser([...(data.users?.map((x: A) => x.id) ?? []), data.manager.id]);
     } catch (e) {
       console.log(e);
     } finally {
@@ -118,16 +118,6 @@ function Panel(props: IProps, ref: A) {
   const onMemberSelect = async (val: A) => {
     try {
       setTableLoading(true);
-      // const draftParam = { ...initDataGrid };
-      // if (draftParam.searchInfor) {
-      //   const id = draftParam.filter?.findIndex((x) => x.key === 'Id');
-      //   id !== -1 && draftParam.filter?.splice(id as number, 1);
-      //   draftParam.filter?.push({
-      //     key: 'Id',
-      //     value: [val]
-      //   });
-      // }
-      // const result = await service.accountService.getAccount(draftParam);
       setSearchUserValue('');
       form.setFieldValue('members', '');
       const result = await service.accountService.getDetal(val.key);
@@ -203,10 +193,9 @@ function Panel(props: IProps, ref: A) {
         value: x.id
       }));
       setUserList(optionsValue);
+      setSelectLoading(false);
     } catch (e) {
       console.log(e);
-    } finally {
-      setSelectLoading(false);
     }
   };
 

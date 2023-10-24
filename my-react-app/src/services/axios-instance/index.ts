@@ -1,10 +1,12 @@
 import { cookie } from '@/common/helpers/cookie/cookie';
 import { Modal } from 'antd';
-import axios from 'axios';
+import axios, { Canceler } from 'axios';
 
 const apiUrl = import.meta.env.VITE_REACT_APP_API_URL;
 const user: A = cookie.getCookie('userLogin');
 const token = JSON.parse(user)?.token ?? '';
+const source = axios.CancelToken.source();
+let cancelToken: Canceler | undefined;
 
 const instance = axios.create({
   timeout: 600000,
@@ -13,12 +15,19 @@ const instance = axios.create({
     Authorization: `Bearer ${token}`,
     // 'Content-Type': 'application/json',
     'Access-Control-Allow-Origin': '*'
-  }
+  },
+  cancelToken: source.token
 });
 
 // Request Interceptor
 instance.interceptors.request.use(
   (config) => {
+    if (cancelToken) {
+      cancelToken('Request canceled by the user.');
+    }
+    config.cancelToken = new axios.CancelToken(function executor(c) {
+      cancelToken = c;
+    });
     return config;
   },
   (error) => {
