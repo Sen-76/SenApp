@@ -1,7 +1,7 @@
 import { ERole } from '../../common/ERole';
 import { lazy } from 'react';
 
-const Tasks = lazy(() => import('../../pages/tasks/Tasks'));
+const Tasks = lazy(() => import('../../pages/tasks/list/Tasks'));
 
 const routes: IRouter.IRoute<'/tasks'>[] = [
   {

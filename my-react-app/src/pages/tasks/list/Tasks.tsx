@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-non-null-assertion */
 import { useBreadcrumb } from '@/components/breadcrum/Breadcrum';
 import { SnippetsOutlined } from '@ant-design/icons';
 import { Select, Tabs } from 'antd';
@@ -8,9 +9,8 @@ import { useTranslation } from 'react-i18next';
 import Panel from './components/Panel';
 import Kanban from './components/Kanban';
 import { service } from '@/services/apis';
-import { EStatus } from '../projects/list/Project.model';
 import { useLoading } from '@/common/context/useLoading';
-import FilterPanel from '../management/account/components/FilterPanel';
+import FilterPanel from './components/FilterPanel';
 
 function Tasks() {
   const { setBreadcrumb } = useBreadcrumb();
@@ -25,6 +25,10 @@ function Tasks() {
       searchColumn: ['summary']
     },
     filter: []
+    // orderInfor: {
+    //   orderBy: ['updateDate'],
+    //   isAssending: [true]
+    // }
   };
   const [tabStatus, setTabStatus] = useState<string>('table');
   const [projectList, setProjectList] = useState<Project.IProjectModel[]>();
@@ -78,8 +82,8 @@ function Tasks() {
   const onChangeProject = (val: string) => {
     const draftParam = { ...param };
     if (draftParam.filter) {
-      const project = draftParam.filter.findIndex((x) => x.key === 'projectId');
-      project !== -1 && draftParam.filter.splice(project, 1);
+      const projectId = draftParam.filter.findIndex((x) => x.key === 'projectId');
+      projectId !== -1 && draftParam.filter.splice(projectId, 1);
       draftParam.filter.push({
         key: 'projectId',
         value: [val]
@@ -109,8 +113,8 @@ function Tasks() {
     (panelRef.current as A).openDrawer(data);
   };
 
-  const openFilterPanel = (data?: A) => {
-    (filterPanelRef.current as A).openDrawer(data);
+  const openFilterPanel = () => {
+    (filterPanelRef.current as A).openDrawer(param.filter);
   };
 
   const onSearch = (value: string) => {
@@ -126,28 +130,60 @@ function Tasks() {
   const onFilter = (val: A) => {
     const draftGrid = { ...param };
     if (draftGrid.filter) {
-      const gender = draftGrid.filter.findIndex((x) => x.key === 'Gender');
-      gender !== -1 && draftGrid.filter.splice(gender, 1);
-      const department = draftGrid.filter.findIndex((x) => x.key === 'UserDepartment');
-      department !== -1 && draftGrid.filter.splice(department, 1);
-      const role = draftGrid.filter.findIndex((x) => x.key === 'UserRole');
-      role !== -1 && draftGrid.filter.splice(role, 1);
-      val.gender?.length > 0 &&
+      const projectId = draftGrid.filter.findIndex((x) => x.key === 'projectId');
+      projectId !== -1 && draftGrid.filter.splice(projectId, 1);
+      const milestoneId = draftGrid.filter.findIndex((x) => x.key === 'milestoneId');
+      milestoneId !== -1 && draftGrid.filter.splice(milestoneId, 1);
+      const statusId = draftGrid.filter.findIndex((x) => x.key === 'statusId');
+      statusId !== -1 && draftGrid.filter.splice(statusId, 1);
+      const taskPriotyId = draftGrid.filter.findIndex((x) => x.key === 'taskPriotyId');
+      taskPriotyId !== -1 && draftGrid.filter.splice(taskPriotyId, 1);
+      const assignee = draftGrid.filter.findIndex((x) => x.key === 'assignee');
+      assignee !== -1 && draftGrid.filter.splice(assignee, 1);
+      const reportTo = draftGrid.filter.findIndex((x) => x.key === 'reportTo');
+      reportTo !== -1 && draftGrid.filter.splice(reportTo, 1);
+      val.projectId?.length > 0 &&
         draftGrid.filter.push({
-          key: 'Gender',
-          value: val.gender
+          key: 'projectId',
+          value: val.projectId
         });
-      val.role?.length > 0 &&
+      val.statusId?.length > 0 &&
         draftGrid.filter.push({
-          key: 'UserRole',
-          value: val.role
+          key: 'statusId',
+          value: val.statusId
         });
-      val.department?.length > 0 &&
+      val.milestoneId?.length > 0 &&
         draftGrid.filter.push({
-          key: 'UserDepartment',
-          value: val.department
+          key: 'milestoneId',
+          value: val.milestoneId
+        });
+      val.taskPriotyId?.length > 0 &&
+        draftGrid.filter.push({
+          key: 'taskPriotyId',
+          value: val.taskPriotyId
+        });
+      val.assignee?.length > 0 &&
+        draftGrid.filter.push({
+          key: 'assignee',
+          value: val.assignee
+        });
+      val.reportTo?.length > 0 &&
+        draftGrid.filter.push({
+          key: 'reportTo',
+          value: val.reportTo
         });
     }
+    getTaskList(draftGrid);
+  };
+
+  const onOrder = (value: string, des: boolean) => {
+    const draftGrid = { ...param };
+    if (draftGrid.orderInfor) {
+      draftGrid.orderInfor.orderBy = [value];
+      draftGrid.orderInfor.isAssending = [des];
+    }
+    draftGrid.pageInfor!.pageNumber = 1;
+    setParam(draftGrid);
     getTaskList(draftGrid);
   };
 
@@ -159,12 +195,13 @@ function Tasks() {
           size="large"
           onChange={onTabChanged}
           tabBarExtraContent={
-            <Select
-              className={styles.select}
-              placeholder={t('Task_Select_Project')}
-              options={projectList}
-              onChange={onChangeProject}
-            />
+            <></>
+            // <Select
+            //   className={styles.select}
+            //   placeholder={t('Task_Select_Project')}
+            //   options={projectList}
+            //   onChange={onChangeProject}
+            // />
           }
         />
         {tabStatus === 'table' && (
@@ -175,7 +212,8 @@ function Tasks() {
             onSearch={onSearch}
             openFilterPanel={openFilterPanel}
             openDetailPanel={() => console.log('cc')}
-            param={{}}
+            onOrder={onOrder}
+            param={param}
           />
         )}
         {tabStatus === 'kanban' && <Kanban />}

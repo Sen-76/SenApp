@@ -74,6 +74,11 @@ td {
       margin: 2.5px 0;
       margin-left: 5px;
     }
+    .ant-select-selection-item-content {
+      display: flex;
+      align-items: center;
+      margin-right: 10px;
+    }
   }
 }
 .ant-upload {

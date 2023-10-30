@@ -229,7 +229,8 @@ function Panel(props: IProps, ref: A) {
           ...val,
           assignee: val.assignee.value,
           reportTo: val.reportTo.value,
-          taskType: 'la cai gi?'
+          taskType: null,
+          dueDate: dayjs(val.dueDate).format('YYYY-MM-DD')
         });
         notification.open({
           message: t('Common_UpdateSuccess'),
@@ -240,7 +241,9 @@ function Panel(props: IProps, ref: A) {
         ...val,
         assignee: val.assignee.value,
         reportTo: val.reportTo.value,
-        taskType: 'la cai gi?'
+        taskType: null,
+        dueDate: dayjs(val.dueDate).format('YYYY-MM-DD'),
+        statusId: `c24ddc20-68b5-4556-b34f-93b3b70a4e88`
       });
       notification.open({
         message: t('Common_CreateSuccess'),
@@ -307,9 +310,11 @@ function Panel(props: IProps, ref: A) {
           <Form.Item name="projectId" label={t('Task_Project')} rules={formRule.project}>
             <Select options={projectList} />
           </Form.Item>
-          <Form.Item name="statusId" label={t('Common_Status')} rules={formRule.status}>
-            <Select options={statusList} />
-          </Form.Item>
+          {isEdit && (
+            <Form.Item name="statusId" label={t('Common_Status')} rules={formRule.status}>
+              <Select options={statusList} />
+            </Form.Item>
+          )}
           <Form.Item name="summary" label={t('Task_Summary')} rules={formRule.summary}>
             <Input maxLength={250} showCount />
           </Form.Item>

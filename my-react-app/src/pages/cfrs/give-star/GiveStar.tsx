@@ -16,6 +16,7 @@ function GiveStar() {
   const { showLoading } = useLoading();
   const { setBreadcrumb } = useBreadcrumb();
   const [data, setData] = useState<A>(true);
+
   useEffect(() => {
     getStar();
   }, []);
