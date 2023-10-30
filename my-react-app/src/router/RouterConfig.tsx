@@ -8,6 +8,8 @@ import Management from './routes/ManagementRoutes';
 import Task from './routes/TaskRoutes';
 import Okrs from './routes/OkrsRoutes';
 import Projects from './routes/ProjectRoutes';
+import Department from './routes/DepartmentRoutes';
+import Team from './routes/TeamRoutes';
 
 const NotFound = lazy(() => import('../common/pages/not-found/NotFound'));
 const AppLayout = lazy(() => import('../AppLayout'));
@@ -22,7 +24,18 @@ export const routers: IRouter.IRoute[] = [
     element: AppLayout,
     name: 'layout',
     meta: { role: [ERole.Admin], pageTitle: 'layout' },
-    children: [...Overview, ...TestRoutes, ...User, ...Configuration, ...Management, ...Task, ...Okrs, ...Projects]
+    children: [
+      ...Overview,
+      ...TestRoutes,
+      ...User,
+      ...Configuration,
+      ...Management,
+      ...Task,
+      ...Okrs,
+      ...Projects,
+      ...Department,
+      ...Team
+    ]
   },
   { path: '/404', name: '404page', element: NotFound, meta: { pageTitle: '404' } },
   { path: '*', name: '404', element: NotFound, meta: { pageTitle: '404' } }

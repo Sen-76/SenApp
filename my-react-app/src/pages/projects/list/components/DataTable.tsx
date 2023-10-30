@@ -151,10 +151,10 @@ function DataTable(props: IProps) {
     }
   ];
 
-  const restoreUser = async (user?: A) => {
+  const restoreUser = async (project?: A) => {
     try {
       showLoading();
-      await service.accountService.restoreAccount([user.id]);
+      await service.projectService.restoreProject([project.id]);
       notification.open({
         message: t('Common_RestoreSuccess'),
         type: 'success'

@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-non-null-assertion */
 import { Button, Col, Dropdown, Empty, Modal, Progress, Row, Tree } from 'antd';
 import { DataNode } from 'antd/es/tree';
 import { useTranslation } from 'react-i18next';
@@ -10,6 +11,7 @@ import { useLoading } from '@/common/context/useLoading';
 import Panel from './Panel';
 import Search from 'antd/es/input/Search';
 import { useParams } from 'react-router';
+import PermissionBlock from '@/common/helpers/permission/PermissionBlock';
 
 function Milestone() {
   const dataLocation = useParams();
@@ -29,6 +31,7 @@ function Milestone() {
   const [treeData, setTreeData] = useState<DataNode[]>([]);
   const { showLoading, closeLoading } = useLoading();
   const [param, setParam] = useState<Common.IDataGrid>(initDataGrid);
+  const allPermission = JSON.parse(sessionStorage.getItem('allPermissions') ?? '');
   const panelRef = useRef();
   const { confirm } = Modal;
 
@@ -75,17 +78,21 @@ function Milestone() {
                       {
                         key: '1',
                         label: (
-                          <div className={styles.menuitem} onClick={() => openPanel(item)}>
-                            <EditOutlined /> <div>{t('Common_Edit')}</div>
-                          </div>
+                          <PermissionBlock module={allPermission?.Project?.Permission_Update_Milestone}>
+                            <div className={styles.menuitem} onClick={() => openPanel(item)}>
+                              <EditOutlined /> <div>{t('Common_Edit')}</div>
+                            </div>
+                          </PermissionBlock>
                         )
                       },
                       {
                         key: '2',
                         label: (
-                          <div className={styles.menuitem} onClick={() => deleteMilestone(item)}>
-                            <DeleteOutlined /> <div>{t('Common_Delete')}</div>
-                          </div>
+                          <PermissionBlock module={allPermission?.Project?.Permission_Delete_Milestone}>
+                            <div className={styles.menuitem} onClick={() => deleteMilestone(item)}>
+                              <DeleteOutlined /> <div>{t('Common_Delete')}</div>
+                            </div>
+                          </PermissionBlock>
                         )
                       }
                     ]
@@ -144,9 +151,11 @@ function Milestone() {
     <>
       <Row className={styles.header}>
         <Col className={styles.tableHeaderLeft}>
-          <Button type="text" onClick={openPanel} icon={<PlusOutlined />}>
-            {t('Common_AddNew')}
-          </Button>
+          <PermissionBlock module={allPermission?.Project?.Permission_Create_Milestone}>
+            <Button type="text" onClick={openPanel} icon={<PlusOutlined />}>
+              {t('Common_AddNew')}
+            </Button>
+          </PermissionBlock>
         </Col>
         <Col className={styles.tableHeaderRight}>
           <Search placeholder={t('Common_SearchByTitle')} allowClear onSearch={onSearch} style={{ width: 250 }} />

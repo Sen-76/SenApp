@@ -12,22 +12,23 @@ const instance = axios.create({
   timeout: 600000,
   baseURL: apiUrl,
   headers: {
-    Authorization: `Bearer ${token}`,
     // 'Content-Type': 'application/json',
     'Access-Control-Allow-Origin': '*'
   },
+  // withCredentials: true,
   cancelToken: source.token
 });
 
 // Request Interceptor
 instance.interceptors.request.use(
   (config) => {
-    if (cancelToken) {
-      cancelToken('Request canceled by the user.');
-    }
-    config.cancelToken = new axios.CancelToken(function executor(c) {
-      cancelToken = c;
-    });
+    // if (cancelToken) {
+    //   cancelToken('Request canceled by the user.');
+    // }
+    // config.cancelToken = new axios.CancelToken(function executor(c) {
+    //   cancelToken = c;
+    // });
+    config.headers.Authorization = `Bearer ${token}`;
     return config;
   },
   (error) => {

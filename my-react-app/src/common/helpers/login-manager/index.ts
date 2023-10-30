@@ -3,7 +3,7 @@ import { cookie } from '../cookie/cookie';
 import { permissionManager } from '../permission/permission';
 
 export const useLoginManager = () => {
-  const { getAllPermission } = permissionManager();
+  const { getAllPermissionTest } = permissionManager();
   const loginOut = async () => {
     const url = '/login';
     if (url) {
@@ -32,16 +32,49 @@ export const useLoginManager = () => {
         cookie.setCookie('userSave', serializedObject, 30);
       }
       cookie.setCookie('userLogin', JSON.stringify(data), 1);
+      localStorage.setItem('token', data.token);
       localStorage.setItem('avatar', result.user.photoUrl);
-      sessionStorage.setItem('permissions', JSON.stringify(result.user.userRole2.permissions));
-      const permissons = await getAllPermission();
-      sessionStorage.setItem('allPermissions', JSON.stringify(permissons));
+      sessionStorage.setItem('permissions', JSON.stringify(result.user.userRole2.permissions.map((x: A) => x.id)));
+      const permissions = await getAllPermissionTest(result.token);
+      const customPermission = permissions.data.reduce((result: A, x: A) => {
+        result[x.title] = x.permissions.reduce((result2: A, y: A) => {
+          result2[y.keyI18n] = y.id;
+          return result2;
+        }, {});
+        return result;
+      }, {});
+      sessionStorage.setItem('allPermissions', JSON.stringify(customPermission));
+      const userDetail = await getUserLoginProfile(result.token, result.user.id);
+      sessionStorage.setItem('userDetail', JSON.stringify(userDetail.data));
       location.href = '/';
     } catch (e: A) {
       console.log(e);
       if (e.response?.data.status === 422) {
         return e.response.data.errors;
       }
+    }
+  };
+
+  const getUserLoginProfile = async (authToken: string, id: string) => {
+    const url = import.meta.env.VITE_REACT_APP_API_URL + '/users/userDetail/' + id;
+
+    try {
+      const response = await fetch(url, {
+        method: 'GET',
+        headers: {
+          Authorization: `Bearer ${authToken}`
+        }
+      });
+
+      if (!response.ok) {
+        throw new Error(`Request failed with status: ${response.status}`);
+      }
+
+      const data = await response.json();
+      return data;
+    } catch (error) {
+      console.error(error);
+      throw error;
     }
   };
 

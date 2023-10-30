@@ -10,6 +10,7 @@ import { downloadService } from './Download';
 import { taskStatusService } from './TaskStatus';
 import { milestoneService } from './Milestone';
 import { taskPriotyService } from './TaskPrioty';
+import { taskService } from './Task';
 export const service = {
   accountService,
   globalSettingsService,
@@ -22,5 +23,6 @@ export const service = {
   downloadService,
   taskStatusService,
   milestoneService,
-  taskPriotyService
+  taskPriotyService,
+  taskService
 };

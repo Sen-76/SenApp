@@ -1,6 +1,7 @@
 import { ReactSortable } from 'react-sortablejs';
 import { useState } from 'react';
-import { Image } from 'antd';
+import { Image, Tag } from 'antd';
+import styles from '../Task.module.scss';
 
 function Kanban() {
   const [projectList, setProjectList] = useState<A[]>([
@@ -82,10 +83,11 @@ function Kanban() {
   };
 
   return (
-    <div style={{ display: 'flex', gap: 20 }}>
+    <div className={styles.kanban}>
       {projectList.map((project: A) => {
         return (
           <div key={project.id} data-group={project.id}>
+            <div className={styles.title}>{project.title}</div>
             <ReactSortable
               list={project.tasks}
               setList={(newState: A, sortable: A) => sortList(newState, sortable)}
@@ -93,48 +95,31 @@ function Kanban() {
               group={{ name: 'shared', pull: true, put: true }}
               ghostClass="sortable-ghost"
               dragClass="sortable-drag"
-              style={{
-                width: 250,
-                border: '1px solid #d9d9d9',
-                padding: 10,
-                borderRadius: 8,
-                minHeight: 500,
-                transition: 'all 0.5s',
-                display: 'flex',
-                flexDirection: 'column',
-                gap: 10
-              }}
+              className={styles.reactSortable}
             >
               {project.tasks.map((task: A) => {
                 return (
-                  <div
-                    style={{
-                      border: '1px solid #d9d9d9',
-                      padding: 10,
-                      borderRadius: 4
-                    }}
-                    key={project.id + '' + task.id}
-                  >
+                  <div className={styles.task} key={project.id + '' + task.id}>
                     <div>
                       <Image src="https://d1hjkbq40fs2x4.cloudfront.net/2017-08-21/files/landscape-photography_1645.jpg" />
-                      <div className="text-base font-medium">{task.title}</div>
-                      <p className="break-all">{task.description}</p>
-                      <div className="flex gap-2 items-center flex-wrap">
+                      <div>{task.title}</div>
+                      <p>{task.description}</p>
+                      <div>
                         {task.tags?.length ? (
                           task.tags.map((tag: A, i: A) => {
                             return (
                               <div key={i}>
-                                <span className="ltr:ml-2 rtl:mr-2">{tag}</span>
+                                <Tag>{tag}</Tag>
                               </div>
                             );
                           })
                         ) : (
                           <div>
-                            <span className="ltr:ml-2 rtl:mr-2">No Tags</span>
+                            <span>No Tags</span>
                           </div>
                         )}
                       </div>
-                      <div className="flex items-center justify-between">
+                      <div>
                         <span>{task.date}</span>
                       </div>
                     </div>

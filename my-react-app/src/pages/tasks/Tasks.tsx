@@ -8,22 +8,26 @@ import { useTranslation } from 'react-i18next';
 import Panel from './components/Panel';
 import Kanban from './components/Kanban';
 import { service } from '@/services/apis';
-import { EStatus } from '../projects/list/Project.model';
 import { useLoading } from '@/common/context/useLoading';
 
-const draftTask = [
-  {
-    id: '1',
-    title: 'MKTPMS Marketing Project Management System',
-    assignee: 'Sen',
-    reportTo: 'Elwyn'
-  }
-];
-
+const initDataGrid: Common.IDataGrid = {
+  pageInfor: {
+    pageSize: 10,
+    pageNumber: 1,
+    totalItems: 0
+  },
+  searchInfor: {
+    searchValue: '',
+    searchColumn: ['Title']
+  },
+  filter: []
+};
 function Tasks() {
   const { setBreadcrumb } = useBreadcrumb();
   const [tabStatus, setTabStatus] = useState<string>('table');
-  const [projectList, setProjectList] = useState<Project.IProjectModel[]>();
+  const [projectList, setProjectList] = useState<Project.IProjectModel[]>([]);
+  const [taskList, setTaskList] = useState<Project.IProjectModel[]>([]);
+  const [param, setParam] = useState<Common.IDataGrid>(initDataGrid);
   const { showLoading, closeLoading } = useLoading();
   const { t } = useTranslation();
   const panelRef = useRef();
@@ -37,23 +41,17 @@ function Tasks() {
       key: 'kanban'
     }
   ];
-  const initDataGrid: Common.IDataGrid = {
-    pageInfor: {
-      pageSize: 10,
-      pageNumber: 1,
-      totalItems: 0
-    },
-    searchInfor: {
-      searchValue: '',
-      searchColumn: ['Title']
-    },
-    filter: [{ key: 'Status', value: [EStatus.Active] }]
-  };
 
   const getProjectList = async () => {
     try {
       showLoading();
-      const result = await service.projectService.get(initDataGrid);
+      const result = await service.projectService.get({
+        pageInfor: {
+          pageSize: 100,
+          pageNumber: 1,
+          totalItems: 0
+        }
+      });
       setProjectList(result.data.map((x: A) => ({ label: x.title, value: x.id })));
     } catch (e) {
       console.log(e);
@@ -62,8 +60,23 @@ function Tasks() {
     }
   };
 
+  const getTaskList = async (draftParam?: Common.IDataGrid) => {
+    try {
+      showLoading();
+      const result = await service.taskService.get(draftParam ?? param);
+      setTaskList(result.data);
+    } catch (e) {
+      console.log(e);
+    } finally {
+      closeLoading();
+    }
+  };
+
   const onChangeProject = (val: string) => {
-    console.log(val);
+    const draftParam = { ...initDataGrid };
+    draftParam.filter = [{ key: 'ProjectId', value: [val] }];
+    setParam(draftParam);
+    getTaskList(draftParam);
   };
 
   const onTabChanged = (e: A) => {
@@ -75,7 +88,12 @@ function Tasks() {
   }, [t]);
 
   useEffect(() => {
-    getProjectList();
+    const fetchData = async () => {
+      await getTaskList();
+      await getProjectList();
+    };
+
+    fetchData();
   }, []);
 
   const openPanel = (data?: A) => {
@@ -85,16 +103,22 @@ function Tasks() {
   return (
     <div className={styles.tasks}>
       <div>
-        <Select
-          className={styles.select}
-          placeholder={t('Task_Select_Project')}
-          options={projectList}
-          onChange={onChangeProject}
+        <Tabs
+          items={tabItems}
+          size="large"
+          onChange={onTabChanged}
+          tabBarExtraContent={
+            <Select
+              className={styles.select}
+              placeholder={t('Task_Select_Project')}
+              options={projectList}
+              onChange={onChangeProject}
+            />
+          }
         />
-        <Tabs items={tabItems} size="large" onChange={onTabChanged} />
         {tabStatus === 'table' && (
           <DataTable
-            data={draftTask}
+            data={taskList}
             openPanel={openPanel}
             loading={false}
             openFilterPanel={() => console.log('cc')}

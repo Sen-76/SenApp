@@ -237,5 +237,8 @@
     "Department_Name" : "Tên",
     "Common_Login_Failed" : "Tài khoản này không tồn tại trong hệ thống, hãy thử lại!",
     "Project_Delete_Title_Confirm" : "Xóa dự án",
-    "Status_Field_HiddenInKanbanBoard_Entry" : "Ẩn trên bảng Kanban"
+    "Status_Field_HiddenInKanbanBoard_Entry" : "Ẩn trên bảng Kanban",
+    "Department_Allocate_Member_Entry" : "Thêm thành viên",
+    "Department_Assign_Member_Search_Placeholder" : "Nhập tên hoặc thư điện tử để thêm thành viên",
+    "Team_Assign_Member_Search_Placeholder" : "Nhập tên hoặc thư điện tử để thêm thành viên"
 }

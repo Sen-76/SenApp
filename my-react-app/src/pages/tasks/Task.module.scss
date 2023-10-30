@@ -4,3 +4,36 @@
     width: 250px;
   }
 }
+.kanban {
+  display: flex;
+  flex-direction: row;
+  gap: 20px;
+  margin-top: 10px;
+
+  .title {
+    font-weight: 600;
+    line-height: 3;
+    margin-left: 10px;
+    color: #3f3535;
+  }
+
+  .reactSortable {
+    width: 250px;
+    border: 1px solid #d9d9d9;
+    background: #f4f5f7;
+    padding: 5px;
+    border-radius: 4px;
+    min-height: 500px;
+    transition: all 0.5s;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+
+    .task {
+      border: 1px solid #d9d9d9;
+      padding: 10px;
+      border-radius: 4px;
+      background: #ffffff;
+    }
+  }
+}

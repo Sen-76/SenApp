@@ -35,10 +35,10 @@ function TaskStatus() {
   }, [t]);
 
   useEffect(() => {
-    getFileList();
+    getTaskStatusList();
   }, []);
 
-  const getFileList = async (draftParam?: Common.IDataGrid) => {
+  const getTaskStatusList = async (draftParam?: Common.IDataGrid) => {
     try {
       setLoading(true);
       const result = await service.taskStatusService.get(draftParam ?? param);
@@ -60,7 +60,7 @@ function TaskStatus() {
     }
     draftGrid.pageInfor!.pageNumber = 1;
     setParam(draftGrid);
-    getFileList(draftGrid);
+    getTaskStatusList(draftGrid);
   };
 
   return (
@@ -69,10 +69,10 @@ function TaskStatus() {
         data={taskStatusList}
         openPanel={openPanel}
         listLoading={loading}
-        refreshList={getFileList}
+        refreshList={getTaskStatusList}
         onSearch={onSearch}
       />
-      <Panel ref={panelRef} refreshList={getFileList} />
+      <Panel ref={panelRef} refreshList={getTaskStatusList} />
     </div>
   );
 }

@@ -122,6 +122,10 @@ function Projects() {
       key: EStatus.Active.toString()
     },
     {
+      label: t('Project_Mine'),
+      key: '99'
+    },
+    {
       label: t('Project_Inactive'),
       key: EStatus.Inactive.toString()
     }

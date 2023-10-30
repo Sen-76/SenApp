@@ -9,34 +9,31 @@ export const permissionManager = () => {
       console.log(error);
     }
   };
-  const getAllPermissionTest = async () => {
-    const url = 'https://api.example.com/data';
-    const authToken = 'your_auth_token_here';
+  const getAllPermissionTest = async (authToken: string) => {
+    const url = import.meta.env.VITE_REACT_APP_API_URL + '/permission/get';
 
-    const headers = new Headers({
-      Authorization: `Bearer ${authToken}`
-    });
-
-    const requestOptions = {
-      method: 'GET',
-      headers: headers
-    };
-    fetch(url, requestOptions)
-      .then((response) => {
-        if (response.ok) {
-          return response.text(); 
-        } else {
-          throw new Error(`Request failed with status: ${response.status}`);
+    try {
+      const response = await fetch(url, {
+        method: 'GET',
+        headers: {
+          Authorization: `Bearer ${authToken}`
         }
-      })
-      .then((data) => {
-        return(data);
-      })
-      .catch((error) => {
-        console.error(error);
       });
+
+      if (!response.ok) {
+        throw new Error(`Request failed with status: ${response.status}`);
+      }
+
+      const data = await response.json();
+      return data;
+    } catch (error) {
+      console.error(error);
+      throw error; // Rethrow the error for further handling if needed
+    }
   };
+
   return {
-    getAllPermission
+    getAllPermission,
+    getAllPermissionTest
   };
 };

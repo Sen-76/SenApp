@@ -10,6 +10,7 @@ import {
   MailOutlined,
   ManOutlined,
   PhoneOutlined,
+  TeamOutlined,
   WomanOutlined
 } from '@ant-design/icons';
 import { useTranslation } from 'react-i18next';
@@ -34,11 +35,7 @@ function Information(props: IProps) {
       <div className={styles.body}>
         <div style={{ marginBottom: 10 }}>
           {userLoged.photoUrl ? (
-            <Image
-              className={styles.avatar}
-              width={100}
-              src={userLoged.photoUrl}
-            />
+            <Image className={styles.avatar} width={100} src={userLoged.photoUrl} />
           ) : (
             <Avatar size={100} style={{ backgroundColor: util.randomColor() }}>
               {userLoged.fullName?.charAt(0) ?? 'N/A'}
@@ -101,7 +98,7 @@ function Information(props: IProps) {
           </Row>
           <Row gutter={8} className={styles.row}>
             <Col className={styles.keyCol}>
-              <ContactsOutlined /> {t('team')}
+              <TeamOutlined /> {t('team')}
             </Col>
             <Col className={styles.valCol}>
               <Paragraph ellipsis={{ rows: 1, expandable: false }} style={{ maxWidth: 130, minWidth: 30 }}>

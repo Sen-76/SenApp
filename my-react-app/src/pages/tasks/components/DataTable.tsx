@@ -12,6 +12,7 @@ import { useTranslation } from 'react-i18next';
 import styles from '../Task.module.scss';
 import Search from 'antd/es/input/Search';
 import Paragraph from 'antd/es/typography/Paragraph';
+import PermissionBlock from '@/common/helpers/permission/PermissionBlock';
 
 interface IProps {
   data: A[];
@@ -50,7 +51,7 @@ function DataTable(props: IProps) {
       dataIndex: 'modifiedOn',
       key: 'modifiedOn',
       render: (_, record) => {
-        return record.assignee;
+        return record.assignee2.fullName;
       }
     },
     {

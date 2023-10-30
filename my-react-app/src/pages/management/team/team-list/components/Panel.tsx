@@ -54,19 +54,25 @@ function Panel(props: IProps, ref: A) {
     openDrawer
   }));
 
-  const openDrawer = (data?: A) => {
-    setOpen(true);
-    setIsEdit(false);
-    getDepartmentList();
-    if (data) {
-      getTeamDetail(data.id);
-      setIsEdit(true);
+  const openDrawer = async (data?: A) => {
+    try {
+      showLoading();
+      setOpen(true);
+      setIsEdit(false);
+      await getDepartmentList();
+      if (data) {
+        await getTeamDetail(data.id);
+        setIsEdit(true);
+      }
+    } catch (e) {
+      console.log(e);
+    } finally {
+      closeLoading();
     }
   };
 
   const getTeamDetail = async (id: string) => {
     try {
-      showLoading();
       const { data } = await service.teamService.getDetail(id);
       setEditData(data);
       data.owner = {
@@ -103,8 +109,6 @@ function Panel(props: IProps, ref: A) {
       form.setFieldsValue(data);
     } catch (e) {
       console.log(e);
-    } finally {
-      closeLoading();
     }
   };
 
@@ -465,7 +469,7 @@ function Panel(props: IProps, ref: A) {
                   options={userList}
                   suffixIcon={<SearchOutlined />}
                   onSelect={onMemberSelect}
-                  placeholder="Assign members to department"
+                  placeholder={t('Department_Assign_Member_Search_Placeholder')}
                 />
               </Form.Item>
               <div>

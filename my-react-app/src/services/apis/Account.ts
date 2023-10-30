@@ -93,7 +93,6 @@ export const accountService = {
   },
   async importExcel(userData: A): Promise<A> {
     try {
-      console.log(userData);
       const response = await axiosInstance.post('/users/excel', userData);
       return response.data;
     } catch (error) {
@@ -103,7 +102,6 @@ export const accountService = {
   },
   async uploadAvatar(userData: A): Promise<A> {
     try {
-      console.log(userData);
       const response = await axiosInstance.post('/users/uploadAvatar', userData);
       return response.data;
     } catch (error) {

@@ -10,6 +10,15 @@ export const projectService = {
       throw error;
     }
   },
+  async restoreProject(ids: string[]): Promise<Response.IDefaultResponse> {
+    try {
+      const response = await axiosInstance.post('/project/restore', ids);
+      return response.data;
+    } catch (error) {
+      console.error('An error occurred while restore project:', error);
+      throw error;
+    }
+  },
   async getDetail(param: string): Promise<Response.IDefaultResponse> {
     try {
       const response = await axiosInstance.get('/project/project/' + param);

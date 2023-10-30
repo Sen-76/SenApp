@@ -1,11 +1,12 @@
 import { CloseOutlined, EllipsisOutlined, EyeOutlined, ShareAltOutlined, UploadOutlined } from '@ant-design/icons';
-import { Button, DatePicker, Drawer, Form, Input, Select, Upload, UploadFile, notification } from 'antd';
+import { Button, DatePicker, Drawer, Form, Input, Select, Upload, UploadFile, UploadProps, notification } from 'antd';
 import { forwardRef, useImperativeHandle, useState } from 'react';
 import styles from '../Task.module.scss';
 import { useTranslation } from 'react-i18next';
 import { useLoading } from '@/common/context/useLoading';
 import dayjs from 'dayjs';
 import TextArea from 'antd/es/input/TextArea';
+import { service } from '@/services/apis';
 
 const fileList: UploadFile[] = [
   {
@@ -37,17 +38,28 @@ function Panel(props: IProps, ref: A) {
   const [isEdit, setIsEdit] = useState<boolean>(false);
   const { showLoading, closeLoading } = useLoading();
   const [form] = Form.useForm();
+  const [fileList, setFileList] = useState<UploadFile[]>([]);
+  const [taskStatusList, setTaskStatusList] = useState<TaskStatus.ITaskStatusModel[]>([]);
 
   useImperativeHandle(ref, () => ({
     openDrawer
   }));
 
-  const openDrawer = (data?: A) => {
-    setOpen(true);
-    setIsEdit(false);
-    if (data) {
-      setIsEdit(true);
-      form.setFieldsValue({ ...data });
+  const openDrawer = async (data?: A) => {
+    try {
+      showLoading();
+      setOpen(true);
+      setIsEdit(false);
+      await getTaskStatusList();
+      form.setFieldValue('status', 'c24ddc20-68b5-4556-b34f-93b3b70a4e88');
+      if (data) {
+        setIsEdit(true);
+        form.setFieldsValue({ ...data });
+      }
+    } catch (e) {
+      console.log(e);
+    } finally {
+      closeLoading();
     }
   };
 
@@ -56,10 +68,31 @@ function Panel(props: IProps, ref: A) {
     form.resetFields();
   };
 
+  const getTaskStatusList = async () => {
+    try {
+      const { data } = await service.taskStatusService.get({
+        pageInfor: {
+          pageSize: 100,
+          pageNumber: 1,
+          totalItems: 0
+        }
+      });
+      setTaskStatusList(
+        data.map((x: A) => ({
+          label: x.title,
+          value: x.id
+        }))
+      );
+    } catch (e) {
+      console.log(e);
+    }
+  };
+
   const onFinish = async (val: A) => {
     try {
       showLoading();
       props.refreshList();
+      console.log(val);
       notification.open({
         message: t('Common_UpdateSuccess'),
         type: 'success'
@@ -81,7 +114,22 @@ function Panel(props: IProps, ref: A) {
   };
 
   const disabledDate = (current: dayjs.Dayjs) => {
-    return current && current < dayjs().endOf('day');
+    return current && current < dayjs().startOf('day');
+  };
+
+  const fileProps: UploadProps = {
+    onRemove: (file) => {
+      const index = fileList.indexOf(file);
+      const newFileList = fileList.slice();
+      newFileList.splice(index, 1);
+      setFileList(newFileList);
+    },
+    beforeUpload: (file) => {
+      setFileList([...fileList, file]);
+
+      return false;
+    },
+    fileList
   };
 
   return (
@@ -109,24 +157,19 @@ function Panel(props: IProps, ref: A) {
             <Input maxLength={250} showCount />
           </Form.Item>
           <Form.Item name="status" label={t('Common_Status')}>
-            <Select />
+            <Select disabled={!isEdit} options={taskStatusList} />
           </Form.Item>
           <Form.Item name="prioty" label={t('Task_Prioty')}>
             <Select />
           </Form.Item>
-          <Form.Item name="title" label={t('Task_DueDate')}>
+          <Form.Item name="duedate" label={t('Task_DueDate')}>
             <DatePicker disabledDate={disabledDate} />
           </Form.Item>
-          <Form.Item name="title" label={t('Common_Description')}>
+          <Form.Item name="description" label={t('Common_Description')}>
             <TextArea maxLength={1000} rows={5} showCount />
           </Form.Item>
           <Form.Item name="attachment" label={t('Task_Attachment')}>
-            <Upload
-              action="https://run.mocky.io/v3/435e224c-44fb-4773-9faf-380c5e6a2188"
-              listType="picture"
-              defaultFileList={[...fileList]}
-              multiple
-            >
+            <Upload {...fileProps} listType="picture" multiple>
               <Button icon={<UploadOutlined />}>Upload</Button>
             </Upload>
           </Form.Item>

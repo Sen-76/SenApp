@@ -242,5 +242,8 @@
     "Department_Name" : "Name",
     "Common_Login_Failed" : "This account is not exist in system, please try again!",
     "Project_Delete_Title_Confirm" : "Delete project",
-    "Status_Field_HiddenInKanbanBoard_Entry" : "Hidden in Kanban board"
+    "Status_Field_HiddenInKanbanBoard_Entry" : "Hidden in Kanban board",
+    "Department_Allocate_Member_Entry" : "Allocate Member",
+    "Department_Assign_Member_Search_Placeholder" : "Enter name or email to allocate members",
+    "Team_Assign_Member_Search_Placeholder" : "Enter name or email to assign members"
 }

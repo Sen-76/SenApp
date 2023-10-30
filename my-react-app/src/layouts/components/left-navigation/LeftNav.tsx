@@ -6,7 +6,10 @@ import {
   SettingOutlined,
   AppstoreOutlined,
   SnippetsOutlined,
-  BookOutlined
+  BookOutlined,
+  ContactsOutlined,
+  ClusterOutlined,
+  TeamOutlined
 } from '@ant-design/icons';
 import styles from './LeftNav.module.scss';
 import { useNavigate, useLocation } from 'react-router';
@@ -58,6 +61,18 @@ function LeftNav(props: IProps) {
       key: 'tasks'
     },
     {
+      label: t('department'),
+      path: '/department',
+      icon: renderIcon(ContactsOutlined),
+      key: 'department'
+    },
+    {
+      label: t('team'),
+      path: '/team',
+      icon: renderIcon(TeamOutlined),
+      key: 'team'
+    },
+    {
       label: 'OKRs',
       icon: renderIcon(BulbOutlined),
       key: 'okrs',
@@ -84,7 +99,7 @@ function LeftNav(props: IProps) {
     },
     {
       label: t('management'),
-      icon: renderIcon(BulbOutlined),
+      icon: renderIcon(ClusterOutlined),
       key: 'management',
       children: [
         {

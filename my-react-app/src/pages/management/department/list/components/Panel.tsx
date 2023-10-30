@@ -327,7 +327,7 @@ function Panel(props: IProps, ref: A) {
           style={{ width: '70%', margin: 'auto', marginBottom: 20 }}
           onChange={onStepChange}
           current={step}
-          items={[{ title: t('Manage_Deparment_Info') }, { title: t('Common_AssignMember') }]}
+          items={[{ title: t('Manage_Deparment_Info') }, { title: t('Department_Allocate_Member_Entry') }]}
         />
         <Form form={form} layout="vertical" className={styles.panelform}>
           {step === 0 && (
@@ -432,7 +432,7 @@ function Panel(props: IProps, ref: A) {
                   options={userList}
                   suffixIcon={<SearchOutlined />}
                   onSelect={onMemberSelect}
-                  placeholder="Assign members to department"
+                  placeholder={t('Department_Assign_Member_Search_Placeholder')}
                 />
               </Form.Item>
               <div>

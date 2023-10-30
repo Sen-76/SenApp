@@ -15,6 +15,7 @@ import PieChart from '@/components/chart/pie-chart/PieChart';
 import BarChart from '@/components/chart/bar-chart/BarChart';
 import useGetData from './useGetData';
 import { useTranslation } from 'react-i18next';
+import PermissionBlock from '@/common/helpers/permission/PermissionBlock';
 
 const Overview = () => {
   const monthNamesAbbreviated = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
@@ -44,6 +45,9 @@ const Overview = () => {
   }, []);
   return (
     <div className={styles.overview}>
+      <PermissionBlock module={'0ab7907a-afc1-4311-98e1-2ca3307e7f07'}>
+        <div>CC gi day</div>
+      </PermissionBlock>
       <Row className={styles.wrapProcessManage}>
         <Col className={styles.processManage}>
           <Row className={styles.processInfo}>
