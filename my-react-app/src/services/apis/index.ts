@@ -11,6 +11,7 @@ import { taskStatusService } from './TaskStatus';
 import { milestoneService } from './Milestone';
 import { taskPriotyService } from './TaskPrioty';
 import { taskService } from './Task';
+import { postService } from './Post';
 export const service = {
   accountService,
   globalSettingsService,
@@ -24,5 +25,6 @@ export const service = {
   taskStatusService,
   milestoneService,
   taskPriotyService,
-  taskService
+  taskService,
+  postService
 };

@@ -170,6 +170,15 @@ function Panel(props: IProps, ref: A) {
       >
         <Form form={form} layout="vertical" onFinish={onFinish} className={styles.panelform}>
           <Form.Item
+            name="key"
+            label={t('Project_Key')}
+            rules={formRule.title}
+            className={customAlert?.key && 'customFieldAlert'}
+          >
+            <Input maxLength={250} showCount onChange={() => setCustomAlert({ ...customAlert, key: '' })} />
+          </Form.Item>
+          {customAlert?.key && <div className="customAlert">{t('Manage_Account_Exist_Key')}</div>}
+          <Form.Item
             name="title"
             label={t('Common_Title')}
             rules={formRule.title}

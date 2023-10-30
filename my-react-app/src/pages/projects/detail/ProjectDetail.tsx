@@ -20,7 +20,7 @@ function ProjectDetail() {
   const tabItems = [
     {
       key: 'generalInfo',
-      label: t('Common_General_Information'),
+      label: t('General_Information'),
       children: <GeneralInfo />
     },
     {

@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-non-null-assertion */
 import { Button, Col, Dropdown, Empty, Modal, Progress, Row, Tree } from 'antd';
 import { DataNode } from 'antd/es/tree';
 import { useTranslation } from 'react-i18next';

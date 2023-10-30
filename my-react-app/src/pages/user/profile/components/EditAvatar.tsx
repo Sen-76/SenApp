@@ -7,7 +7,6 @@ import { util } from '@/common/helpers/util';
 import ImgCrop from 'antd-img-crop';
 import { service } from '@/services/apis';
 import { useLoading } from '@/common/context/useLoading';
-import { useLoginManager } from '@/common/helpers/login-manager';
 
 const getBase64 = (img: RcFile, callback: (url: string) => void) => {
   const reader = new FileReader();

@@ -166,7 +166,7 @@ function AccountManagement() {
         defaultselected={selectedItem}
       />
       <Panel refreshList={getAccountsList} ref={panelRef} />
-      <FilterPanel ref={filterPanelRef} filterAccount={filterAccount} />
+      <FilterPanel ref={filterPanelRef} onFilter={filterAccount} />
       <DetailPanel refreshList={getAccountsList} ref={detailPanelRef} openPanel={openPanel} />
     </div>
   );

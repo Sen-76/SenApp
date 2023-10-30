@@ -64,6 +64,18 @@ function DataTable(props: IProps) {
   };
   const columns: ColumnsType<A> = [
     {
+      title: t('Project_Key'),
+      dataIndex: 'key',
+      key: 'key',
+      render: (_, record) => {
+        return (
+          <Tooltip placement="bottom" title={record.key} color="#ffffff" arrow={true}>
+            <Paragraph ellipsis={{ rows: 1, expandable: false }}>{record.key}</Paragraph>
+          </Tooltip>
+        );
+      }
+    },
+    {
       title: t('Common_Title'),
       dataIndex: 'title',
       key: 'title',

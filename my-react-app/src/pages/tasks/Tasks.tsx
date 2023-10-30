@@ -8,29 +8,32 @@ import { useTranslation } from 'react-i18next';
 import Panel from './components/Panel';
 import Kanban from './components/Kanban';
 import { service } from '@/services/apis';
+import { EStatus } from '../projects/list/Project.model';
 import { useLoading } from '@/common/context/useLoading';
+import FilterPanel from '../management/account/components/FilterPanel';
 
-const initDataGrid: Common.IDataGrid = {
-  pageInfor: {
-    pageSize: 10,
-    pageNumber: 1,
-    totalItems: 0
-  },
-  searchInfor: {
-    searchValue: '',
-    searchColumn: ['Title']
-  },
-  filter: []
-};
 function Tasks() {
   const { setBreadcrumb } = useBreadcrumb();
+  const initDataGrid: Common.IDataGrid = {
+    pageInfor: {
+      pageSize: 10,
+      pageNumber: 1,
+      totalItems: 0
+    },
+    searchInfor: {
+      searchValue: '',
+      searchColumn: ['summary']
+    },
+    filter: []
+  };
   const [tabStatus, setTabStatus] = useState<string>('table');
-  const [projectList, setProjectList] = useState<Project.IProjectModel[]>([]);
-  const [taskList, setTaskList] = useState<Project.IProjectModel[]>([]);
+  const [projectList, setProjectList] = useState<Project.IProjectModel[]>();
+  const [taskList, setTaskList] = useState<A[]>([]);
   const [param, setParam] = useState<Common.IDataGrid>(initDataGrid);
   const { showLoading, closeLoading } = useLoading();
   const { t } = useTranslation();
   const panelRef = useRef();
+  const filterPanelRef = useRef();
   const tabItems = [
     {
       label: t('Task_Table_View'),
@@ -60,10 +63,10 @@ function Tasks() {
     }
   };
 
-  const getTaskList = async (draftParam?: Common.IDataGrid) => {
+  const getTaskList = async (drafParam?: Common.IDataGrid) => {
     try {
       showLoading();
-      const result = await service.taskService.get(draftParam ?? param);
+      const result = await service.taskService.get(drafParam ?? param);
       setTaskList(result.data);
     } catch (e) {
       console.log(e);
@@ -73,8 +76,15 @@ function Tasks() {
   };
 
   const onChangeProject = (val: string) => {
-    const draftParam = { ...initDataGrid };
-    draftParam.filter = [{ key: 'ProjectId', value: [val] }];
+    const draftParam = { ...param };
+    if (draftParam.filter) {
+      const project = draftParam.filter.findIndex((x) => x.key === 'projectId');
+      project !== -1 && draftParam.filter.splice(project, 1);
+      draftParam.filter.push({
+        key: 'projectId',
+        value: [val]
+      });
+    }
     setParam(draftParam);
     getTaskList(draftParam);
   };
@@ -88,16 +98,57 @@ function Tasks() {
   }, [t]);
 
   useEffect(() => {
-    const fetchData = async () => {
-      await getTaskList();
+    const fetchApi = async () => {
       await getProjectList();
+      await getTaskList();
     };
-
-    fetchData();
+    fetchApi();
   }, []);
 
   const openPanel = (data?: A) => {
     (panelRef.current as A).openDrawer(data);
+  };
+
+  const openFilterPanel = (data?: A) => {
+    (filterPanelRef.current as A).openDrawer(data);
+  };
+
+  const onSearch = (value: string) => {
+    const draftGrid = { ...param };
+    if (draftGrid.searchInfor) {
+      draftGrid.searchInfor.searchValue = value;
+    }
+    draftGrid.pageInfor!.pageNumber = 1;
+    setParam(draftGrid);
+    getTaskList(draftGrid);
+  };
+
+  const onFilter = (val: A) => {
+    const draftGrid = { ...param };
+    if (draftGrid.filter) {
+      const gender = draftGrid.filter.findIndex((x) => x.key === 'Gender');
+      gender !== -1 && draftGrid.filter.splice(gender, 1);
+      const department = draftGrid.filter.findIndex((x) => x.key === 'UserDepartment');
+      department !== -1 && draftGrid.filter.splice(department, 1);
+      const role = draftGrid.filter.findIndex((x) => x.key === 'UserRole');
+      role !== -1 && draftGrid.filter.splice(role, 1);
+      val.gender?.length > 0 &&
+        draftGrid.filter.push({
+          key: 'Gender',
+          value: val.gender
+        });
+      val.role?.length > 0 &&
+        draftGrid.filter.push({
+          key: 'UserRole',
+          value: val.role
+        });
+      val.department?.length > 0 &&
+        draftGrid.filter.push({
+          key: 'UserDepartment',
+          value: val.department
+        });
+    }
+    getTaskList(draftGrid);
   };
 
   return (
@@ -121,13 +172,15 @@ function Tasks() {
             data={taskList}
             openPanel={openPanel}
             loading={false}
-            openFilterPanel={() => console.log('cc')}
+            onSearch={onSearch}
+            openFilterPanel={openFilterPanel}
             openDetailPanel={() => console.log('cc')}
             param={{}}
           />
         )}
         {tabStatus === 'kanban' && <Kanban />}
         <Panel refreshList={() => console.log('cc')} ref={panelRef} />
+        <FilterPanel ref={filterPanelRef} onFilter={onFilter} />
       </div>
     </div>
   );

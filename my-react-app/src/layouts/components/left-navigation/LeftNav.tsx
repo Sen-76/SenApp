@@ -9,7 +9,8 @@ import {
   BookOutlined,
   ContactsOutlined,
   ClusterOutlined,
-  TeamOutlined
+  TeamOutlined,
+  StarOutlined
 } from '@ant-design/icons';
 import styles from './LeftNav.module.scss';
 import { useNavigate, useLocation } from 'react-router';
@@ -98,6 +99,25 @@ function LeftNav(props: IProps) {
       ]
     },
     {
+      label: 'CFRs',
+      icon: renderIcon(StarOutlined),
+      key: 'cfrs',
+      children: [
+        {
+          label: 'Recognition',
+          path: '/cfrs/recognition',
+          icon: renderIcon(ArrowRightOutlined),
+          key: 'recognition'
+        },
+        {
+          label: 'Give star',
+          path: '/cfrs/give-star',
+          icon: renderIcon(ArrowRightOutlined),
+          key: 'give-star'
+        }
+      ]
+    },
+    {
       label: t('management'),
       icon: renderIcon(ClusterOutlined),
       key: 'management',
@@ -140,13 +160,13 @@ function LeftNav(props: IProps) {
           key: 'file-configuration'
         },
         {
-          label: t('Configuration_Email'),
+          label: t('Configuration_Email_Template'),
           path: '/configuration/email-configuration',
           icon: renderIcon(ArrowRightOutlined),
           key: 'email-configuration'
         },
         {
-          label: t('Configuration_SMTP'),
+          label: t('Configuration_Email_Setting'),
           path: '/configuration/smtp-configuration',
           icon: renderIcon(ArrowRightOutlined),
           key: 'smtp-configuration'
@@ -164,7 +184,7 @@ function LeftNav(props: IProps) {
           key: 'task-status-configuration'
         },
         {
-          label: t('Configuration_Task_Prioty'),
+          label: t('Configuration_Task_Priority'),
           path: '/configuration/task-prioty-configuration',
           icon: renderIcon(ArrowRightOutlined),
           key: 'task-prioty-configuration'

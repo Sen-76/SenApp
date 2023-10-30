@@ -45,7 +45,7 @@ function GeneralInfo() {
                     <Col className={styles.valueCol}>{editData?.title}</Col>
                   </Row>
                   <Row className={styles.detailRow}>
-                    <Col className={styles.keyCol}>{t('Project_Deparment')}</Col>
+                    <Col className={styles.keyCol}>{t('Project_Department')}</Col>
                     <Col className={styles.valueCol}>{editData?.department?.title}</Col>
                   </Row>
                   <Row className={styles.detailRow}>

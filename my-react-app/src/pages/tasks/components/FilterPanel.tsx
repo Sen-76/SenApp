@@ -2,13 +2,12 @@ import { CloseOutlined } from '@ant-design/icons';
 import { Button, Checkbox, Col, Collapse, CollapseProps, Drawer, Form, Row, Typography } from 'antd';
 import { forwardRef, useEffect, useImperativeHandle, useState } from 'react';
 import styles from '../AccountManagement.module.scss';
-import { GenderOptions } from '../AccountManagement.Model';
 import { useTranslation } from 'react-i18next';
 import { service } from '@/services/apis';
 import { useLoading } from '@/common/context/useLoading';
 
 interface IProps {
-  onFilter: (val: A) => void;
+  filterAccount: (val: A) => void;
 }
 
 function FilterPanel(props: IProps, ref: A) {
@@ -81,21 +80,6 @@ function FilterPanel(props: IProps, ref: A) {
         </Checkbox.Group>
       </Form.Item>
     );
-    const GenderElement = (
-      <Form.Item name="gender">
-        <Checkbox.Group>
-          <Row>
-            {GenderOptions.map((item: A) => (
-              <Col span={12} key={item.value} className={styles.col}>
-                <Checkbox value={item.value}>
-                  <Paragraph ellipsis={{ rows: 4, expandable: false }}>{item.label}</Paragraph>
-                </Checkbox>
-              </Col>
-            ))}
-          </Row>
-        </Checkbox.Group>
-      </Form.Item>
-    );
     const RoleElement = (
       <Form.Item name="role">
         <Checkbox.Group>
@@ -113,7 +97,6 @@ function FilterPanel(props: IProps, ref: A) {
     );
     const item = [
       { key: 'department', label: t('department'), children: DepartmentElement },
-      { key: 'gender', label: t('gender'), children: GenderElement },
       { key: 'role', label: t('role'), children: RoleElement }
     ];
     setItems(item);
@@ -153,7 +136,7 @@ function FilterPanel(props: IProps, ref: A) {
   };
 
   const onFinish = (val: A) => {
-    props.onFilter(val);
+    props.filterAccount(val);
     closeDrawer();
   };
 

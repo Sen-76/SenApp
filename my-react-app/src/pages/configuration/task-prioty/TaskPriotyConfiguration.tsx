@@ -30,7 +30,7 @@ function TaskPrioty() {
   useEffect(() => {
     setBreadcrumb([
       { icon: <SettingOutlined />, text: `${t('configuration')}` },
-      { text: `${t('Configuration_Task_Prioty')}` }
+      { text: `${t('Configuration_Task_Priority')}` }
     ]);
   }, [t]);
 

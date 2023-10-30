@@ -48,16 +48,16 @@ function ChangePassword() {
 
   const validatePasword = (rule: A, value: string) => {
     if (!/[A-Z]/.test(value)) {
-      return Promise.reject('At_Least_1_Uppercase_Character');
+      return Promise.reject(t('At_Least_1_Uppercase_Character'));
     }
     if (!/[a-z]/.test(value)) {
-      return Promise.reject('At_Least_1_Lowercase_Character');
+      return Promise.reject(t('At_Least_1_Lowercase_Character'));
     }
     if (!/\d/.test(value)) {
-      return Promise.reject('At_Least_1_Digit');
+      return Promise.reject(t('At_Least_1_Digit'));
     }
     if (value.length < 8) {
-      return Promise.reject('At_Least_8_Character');
+      return Promise.reject(t('At_Least_8_Character'));
     }
     return Promise.resolve();
   };

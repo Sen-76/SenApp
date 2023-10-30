@@ -18,6 +18,7 @@ interface IProps {
   data: A[];
   loading: boolean;
   param: Common.IDataGrid;
+  onSearch: (value: string) => void;
   openPanel: (data?: A) => void;
   openFilterPanel: (data?: A) => void;
   openDetailPanel: (data?: A) => void;
@@ -33,17 +34,17 @@ function DataTable(props: IProps) {
       render: (_, record) => {
         return (
           <Tooltip placement="bottom" title={record.title} color="#ffffff" arrow={true}>
-            <Paragraph ellipsis={{ rows: 1, expandable: false }}>{record.title}</Paragraph>
+            <Paragraph ellipsis={{ rows: 1, expandable: false }}>{record.summary}</Paragraph>
           </Tooltip>
         );
       }
     },
     {
-      title: t('Task_Prioty'),
+      title: t('Task_Priority'),
       dataIndex: 'description',
       key: 'description',
       render: (_, record) => {
-        return <Tag>Bloker</Tag>;
+        return <Tag>{record.taskPrioty.pname}</Tag>;
       }
     },
     {
@@ -58,14 +59,14 @@ function DataTable(props: IProps) {
       title: t('Task_ReportTo'),
       dataIndex: 'modifiedBy',
       key: 'modifiedBy',
-      render: (_, record) => record.reportTo
+      render: (_, record) => record.reportToRelation.fullName
     },
     {
       title: t('Task_Status'),
       dataIndex: 'description',
       key: 'description',
       render: (_, record) => {
-        return <Tag>Done</Tag>;
+        return <Tag color={record.status.color}>{record.status.title}</Tag>;
       }
     },
     {
@@ -91,7 +92,7 @@ function DataTable(props: IProps) {
   ];
 
   const onSearch = (val: A) => {
-    console.log(val);
+    props.onSearch(val);
   };
 
   const TableHeader = () => {

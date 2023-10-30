@@ -8,6 +8,7 @@ import Management from './routes/ManagementRoutes';
 import Task from './routes/TaskRoutes';
 import Okrs from './routes/OkrsRoutes';
 import Projects from './routes/ProjectRoutes';
+import CRFs from './routes/CFRsRoutes';
 import Department from './routes/DepartmentRoutes';
 import Team from './routes/TeamRoutes';
 
@@ -33,6 +34,7 @@ export const routers: IRouter.IRoute[] = [
       ...Task,
       ...Okrs,
       ...Projects,
+      ...CRFs,
       ...Department,
       ...Team
     ]
